@@ -7,7 +7,7 @@ import ReaderPage from './pages/ReaderPage';
 import SearchPage from './pages/SearchPage';
 import BioPage from './pages/BioPage';
 import IdeologyPage from './pages/IdeologyPage';
-import ArticleDetail from './pages/ArticleDetail'; 
+import ArticleDetail from './pages/ArticleDetail';
 import VideoDetailPage from './pages/VideoDetailPage';
 import BG2 from './assets/bg2.jpeg';
 import FooterImg from './assets/bg1.jpg';
@@ -19,14 +19,12 @@ const MainLayout = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [keyword, setKeyword] = useState("");
   const [isListening, setIsListening] = useState(false);
-  
+
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  // Thêm State để đóng/mở Menu trên Mobile
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Tự động đóng menu mobile khi chuyển trang
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location]);
@@ -57,7 +55,7 @@ const MainLayout = () => {
       setIsListening(false);
     };
     recognition.onend = () => setIsListening(false);
-    
+
     recognition.start();
   };
 
@@ -117,7 +115,7 @@ const MainLayout = () => {
         }
       `}</style>
 
-      {/* SEARCH OVERLAY - Giảm padding và font chữ trên Mobile */}
+      {/* SEARCH OVERLAY */}
       {isSearchOpen && (
         <div className="fixed inset-0 z-[1000] bg-red-900/95 backdrop-blur-md flex flex-col items-center justify-start pt-24 md:pt-40 px-4 transition-all duration-500">
           <button
@@ -168,7 +166,7 @@ const MainLayout = () => {
         </div>
       )}
 
-      {/* TOPBAR - Đổi thành flex-col trên điện thoại để chữ không bị tràn ngang */}
+      {/* TOPBAR */}
       <div className="bg-[#da251d] text-red-100 text-[10px] md:text-[11px] lg:text-[12px] py-1 md:py-1.5 px-2 md:px-4 font-medium tracking-wide">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-center md:justify-end items-center gap-0 md:gap-0.5 text-center md:text-left">
           <div className="flex items-center">
@@ -193,12 +191,12 @@ const MainLayout = () => {
         <img src={BG2} alt="Banner" className="w-full h-full object-cover object-left" />
       </div>
 
-      {/* NAVBAR CHÍNH */}
+      {/* 🌟 NAVBAR CHÍNH (ĐÃ CẬP NHẬT THEO CẤU TRÚC MỚI) 🌟 */}
       <header className="bg-[#da251d] text-white shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-2 lg:px-4 h-11 md:h-12 flex justify-between items-center">
-          
-          {/* 🌟 NÚT MENU MOBILE (Chỉ hiện trên điện thoại) 🌟 */}
-          <button 
+
+          {/* NÚT MENU MOBILE */}
+          <button
             className="md:hidden p-1.5 hover:bg-red-800 rounded text-white"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
@@ -207,63 +205,140 @@ const MainLayout = () => {
             </svg>
           </button>
 
-          {/* 🌟 GIAO DIỆN DESKTOP CỦA BẠN (Được bảo tồn 100%, thêm hidden md:flex) 🌟 */}
+          {/* GIAO DIỆN DESKTOP MENU MỚI */}
           <nav className="hidden md:flex items-center h-full overflow-visible whitespace-nowrap">
-            <Link to="/" className="h-full px-3 md:px-4 flex items-center hover:bg-red-800 transition-colors">
+
+            {/* Nút Home */}
+            <Link to="/" className="h-full px-3 md:px-4 gap-2 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
               </svg>
+              Trang chủ
             </Link>
+
+            {/* 1. Cuộc đời, sự nghiệp (Giữ nguyên không có Dropdown) */}
             <Link to="/bio" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors">
               Cuộc đời, sự nghiệp
             </Link>
-            <div className="relative group h-full">
-              <Link to="/ideology" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors cursor-pointer">
-                Tư tưởng, đạo đức
-              </Link>
-              <div className="absolute left-0 top-full hidden group-hover:block w-[280px] bg-[#fdfbf2] text-gray-800 shadow-2xl border-t-[3px] border-red-700 py-1 z-[999]">
-                <Link to="/ideology" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Nguồn gốc hình thành</Link>
-                <Link to="/ideology" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Nội dung tư tưởng, đạo đức</Link>
-                <Link to="/ideology" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 transition-colors">Nghiên cứu tư tưởng, đạo đức Hồ Chí Minh</Link>
-              </div>
-            </div>
 
+            {/* 2. Tác phẩm của Hồ Chí Minh */}
             <div className="relative group h-full">
-              <Link to="/" className="h-full px-3 md:px-4 flex items-center text-[11px] md:text-[13px] font-bold uppercase bg-[#b71a14] group-hover:bg-red-800 transition-all cursor-pointer">
-                Tủ sách điện tử
+              <Link to="/category/cua-ho-chi-minh" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors cursor-pointer">
+                Tác phẩm của Hồ Chí Minh
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </Link>
-              <div className="absolute left-0 top-full hidden group-hover:block w-64 bg-white text-gray-800 shadow-2xl border-t-2 border-red-700 py-2 z-[999]">
-                <Link to="/category/cua-ho-chi-minh" className="block px-4 py-3 text-[13px] font-medium hover:bg-red-50 hover:text-red-700 border-b border-gray-100">Tác phẩm của Hồ Chí Minh</Link>
-                <Link to="/category/ve-ho-chi-minh" className="block px-4 py-3 text-[13px] font-medium hover:bg-red-50 hover:text-red-700 border-b border-gray-100">Tác phẩm về Hồ Chí Minh</Link>
-                <Link to="/category/bai-bao" className="block px-4 py-3 text-[13px] font-medium hover:bg-red-50 hover:text-red-700">Những bài báo của Hồ Chí Minh</Link>
+              <div className="absolute left-0 top-full hidden group-hover:block w-[280px] bg-[#fdfbf2] text-gray-800 shadow-2xl border-t-[3px] border-red-700 py-1 z-[999]">
+                <Link to="/category/ho-chi-minh-toan-tap" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Hồ Chí Minh Toàn tập</Link>
+                <Link to="/category/nhat-ky-trong-tu" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Nhật ký trong tù</Link>
+                <Link to="/category/tho-ho-chi-minh" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Thơ Hồ Chí Minh</Link>
+                <Link to="/category/bai-bao" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 transition-colors">Những bài báo của Hồ Chí Minh</Link>
               </div>
             </div>
 
-            <a href="#" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors">Hồ Chí Minh & Thế giới</a>
-            <a href="#" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors">Học tập theo Bác</a>
+            {/* 3. Sáng mãi niềm tin theo Bác */}
+            <div className="relative group h-full">
+              <Link to="/ideology/sang-mai-niem-tin" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors cursor-pointer">
+                Sáng mãi niềm tin theo Bác
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </Link>
+              <div className="absolute left-0 top-full hidden group-hover:block w-[300px] bg-[#fdfbf2] text-gray-800 shadow-2xl border-t-[3px] border-red-700 py-1 z-[999]">
+                <Link to="/ideology/vang-vong-loi-non-nuoc" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Hồ Chí Minh – Vang vọng lời non nước</Link>
+                <Link to="/ideology/ve-ho-chi-minh" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Những tác phẩm viết về Hồ Chí Minh</Link>
+                <Link to="/ideology/tai-lieu-hoc-tap" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 transition-colors">Tài liệu học tập làm theo Bác</Link>
+                <Link to="/ideology/trong-long-dan-toc" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Hồ Chí Minh trong lòng dân tộc và thế giới</Link>
+
+              </div>
+            </div>
+
+            {/* 4. Sáng mãi niềm tin theo Bác
+            <div className="relative group h-full">
+              <Link to="/category/sang-mai-niem-tin" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors cursor-pointer">
+                Sáng mãi niềm tin theo Bác
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </Link>
+              <div className="absolute left-0 top-full hidden group-hover:block w-[320px] bg-[#fdfbf2] text-gray-800 shadow-2xl border-t-[3px] border-red-700 py-1 z-[999]">
+                <Link to="/category/trong-long-dan-toc" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 transition-colors">Hồ Chí Minh trong lòng dân tộc và thế giới</Link>
+              </div>
+            </div> */}
+
           </nav>
 
-          <div className="ml-auto md:ml-2 flex items-center shrink-0">
-            <button onClick={() => setIsSearchOpen(true)} className="bg-white/20 hover:bg-white/30 p-1.5 rounded-full transition-all">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="ml-auto flex items-center shrink-0 z-[1000]">
+
+            {/* Nút Search Mobile (Giữ nguyên vì màn hình điện thoại nhỏ) */}
+            <button onClick={() => setIsSearchOpen(true)} className="md:hidden bg-white/20 hover:bg-white/30 p-1.5 rounded-full transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button>
+
+            {/* Thanh Search Desktop (Tự động mở rộng khi focus) */}
+            <div className="hidden md:block relative group">
+
+              {/* Input field */}
+              <input
+                type="text"
+                placeholder="Tìm kiếm tài liệu..."
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                onKeyDown={handleSearch}
+                className="bg-black/10 text-white placeholder-white/70 px-4 py-2 pl-10 pr-10 rounded-full border border-white/20 hover:bg-black/20 focus:bg-white focus:text-gray-900 focus:placeholder-gray-400 focus:outline-none focus:border-transparent focus:ring-2 focus:ring-red-400/50 transition-all duration-500 w-[200px] lg:w-[240px] xl:w-[280px] focus:!w-[340px] xl:focus:!w-[400px] shadow-inner"
+              />
+
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-white/70 group-focus-within:text-red-700 transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+
+              <button
+                onClick={handleVoiceSearch}
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-white/70 hover:text-white group-focus-within:text-gray-400 group-focus-within:hover:text-red-600 transition-colors rounded-full focus:outline-none"
+                title="Tìm kiếm bằng giọng nói"
+              >
+                {isListening ? (
+                  <span className="flex h-3 w-3 relative">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
+                  </span>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                  </svg>
+                )}
+              </button>
+
+            </div>
           </div>
         </div>
 
-        {/* 🌟 DROPDOWN MENU CHO MOBILE 🌟 */}
+        {/* DROPDOWN MENU CHO MOBILE */}
         {isMobileMenuOpen && (
-          <div className="md:hidden bg-[#b71a14] w-full border-t border-red-800 shadow-xl flex flex-col absolute top-full left-0 z-50">
-            <Link to="/" className="px-4 py-3 text-sm font-bold uppercase border-b border-red-800/50">Trang chủ</Link>
-            <Link to="/bio" className="px-4 py-3 text-sm font-bold uppercase border-b border-red-800/50">Cuộc đời, sự nghiệp</Link>
-            <Link to="/ideology" className="px-4 py-3 text-sm font-bold uppercase border-b border-red-800/50">Tư tưởng, đạo đức</Link>
-            <Link to="/category/cua-ho-chi-minh" className="px-4 py-3 text-sm font-bold uppercase border-b border-red-800/50">Tác phẩm của Bác</Link>
-            <Link to="/category/ve-ho-chi-minh" className="px-4 py-3 text-sm font-bold uppercase border-b border-red-800/50">Tác phẩm về Bác</Link>
-            <Link to="/category/bai-bao" className="px-4 py-3 text-sm font-bold uppercase border-b border-red-800/50">Bài báo của Bác</Link>
+          <div className="md:hidden bg-[#b71a14] w-full border-t border-red-800 shadow-xl flex flex-col absolute top-full left-0 z-50 max-h-[75vh] overflow-y-auto">
+            <Link to="/" className="px-4 py-3 text-sm font-bold uppercase border-b border-red-800/50 text-white">Trang chủ</Link>
+            <Link to="/bio" className="px-4 py-3 text-sm font-bold uppercase border-b border-red-800/50 text-white">Cuộc đời, sự nghiệp</Link>
+
+            {/* Tác phẩm của Bác */}
+            <div className="flex flex-col border-b border-red-800/50">
+              <Link to="/category/cua-ho-chi-minh" className="px-4 py-3 text-sm font-bold uppercase text-white bg-red-800/30">Tác phẩm của Hồ Chí Minh</Link>
+              <Link to="/category/ho-chi-minh-toan-tap" className="px-8 py-2 text-sm text-red-100 border-t border-red-800/30">- Hồ Chí Minh Toàn tập</Link>
+              <Link to="/category/nhat-ky-trong-tu" className="px-8 py-2 text-sm text-red-100 border-t border-red-800/30">- Nhật ký trong tù</Link>
+              <Link to="/category/tho-ho-chi-minh" className="px-8 py-2 text-sm text-red-100 border-t border-red-800/30">- Thơ Hồ Chí Minh</Link>
+              <Link to="/category/bai-bao" className="px-8 py-2 text-sm text-red-100 border-t border-red-800/30">- Những bài báo của Hồ Chí Minh</Link>
+            </div>
+
+            {/* Sáng mãi niềm tin theo Bác */}
+            <div className="flex flex-col border-b border-red-800/50">
+              <div className="px-4 py-3 text-sm font-bold uppercase text-white bg-red-800/30">Sáng mãi niềm tin theo Bác</div>
+              <Link to="/ideology/vang-vong-loi-non-nuoc" className="px-8 py-2 text-sm text-red-100 border-t border-red-800/30">- Vang vọng lời non nước</Link>
+              <Link to="/ideology/ve-ho-chi-minh" className="px-8 py-2 text-sm text-red-100 border-t border-red-800/30">- Những tác phẩm viết về Bác</Link>
+              <Link to="/ideology/tai-lieu-hoc-tap" className="px-8 py-2 text-sm text-red-100 border-t border-red-800/30">- Tài liệu học tập</Link>
+              <Link to="/ideology/trong-long-dan-toc" className="px-8 py-3 text-sm text-red-100 border-t border-red-800/30 pb-4">- Bác trong lòng dân tộc và thế giới</Link>
+            </div>
           </div>
         )}
       </header>
@@ -333,7 +408,7 @@ const MainLayout = () => {
         <div className="max-w-7xl mx-auto px-4 relative z-10">
           <div className="mb-6 border-b border-red-100 pb-4 text-center md:text-left">
             <h2 className="text-red-700 font-bold text-lg md:text-xl uppercase tracking-wider">
-              Cơ quan chủ quản: <br className="md:hidden"/><span className="font-black">Trường THPT Thái Phiên - Thăng Bình</span>
+              Cơ quan chủ quản: <br className="md:hidden" /><span className="font-black">Trường THPT Thái Phiên - Thăng Bình</span>
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-gray-700 text-sm md:text-[15px]">
@@ -364,7 +439,7 @@ const MainLayout = () => {
         </div>
       </footer>
 
-      {/* NÚT CUỘN TRANG - Thu nhỏ padding góc màn hình điện thoại */}
+      {/* NÚT CUỘN TRANG */}
       <button
         onClick={scrollToTop}
         className={`fixed bottom-6 right-6 md:bottom-15 md:right-15 z-[1000] p-3 md:p-4 rounded-full bg-red-800 text-white shadow-2xl transition-all duration-500 hover:bg-red-700 hover:-translate-y-2 active:scale-90 ${showScrollTop ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0 pointer-events-none'}`}
@@ -379,7 +454,7 @@ const MainLayout = () => {
   );
 };
 
-// 🌟 APP CHÍNH GỌN GÀNG, CHỈ CHỨA ROUTER 🌟
+// 🌟 APP CHÍNH 🌟
 function App() {
   return (
     <Router>
@@ -390,7 +465,7 @@ function App() {
           <Route path="/category/:type" element={<CategoryPage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/bio" element={<BioPage />} />
-          <Route path="/ideology" element={<IdeologyPage />} />
+          <Route path="/ideology/:type?" element={<IdeologyPage />} />
           <Route path="/article/:id" element={<ArticleDetail />} />
           <Route path="/video/:id" element={<VideoDetailPage />} />
         </Route>

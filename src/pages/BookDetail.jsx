@@ -137,7 +137,7 @@ function BookDetail() {
               </button>
               
               <a 
-                href={`/pdfs/${book.pdfUrl}`} 
+                href={book.pdfUrl} 
                 target="_blank" 
                 rel="noreferrer"
                 download

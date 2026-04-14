@@ -1,0 +1,28 @@
+// File: src/data/videos.js
+export const videosList = [
+    { id: 1, youtubeId: "58HGVK6j-80", title: "Hành trình tìm đường cứu nước của Chủ tịch Hồ Chí Minh | Phim tài liệu lịch sử" },
+    { id: 2, youtubeId: "RR0p5Aqrhto", title: "TOÀN CẢNH HÀNH TRÌM TÌM ĐƯỜNG CỨU NƯỚC CỦA NGUYỄN ÁI QUỐC" },
+    { id: 3, youtubeId: "d5MYTDacTZ4", title: "[Phim tài liệu] Hồ Chí Minh - Chân dung một con người" },
+    { id: 4, youtubeId: "H5_Hu1ju1QM", title: "Hồ Chí Minh - Một hành trình (Bản chuẩn Full)" },
+    { id: 5, youtubeId: "e0CEWmWG79U", title: "Phim tài liệu: Hồ Chí Minh – Dấu chân đầu tiên (Tập 1)" },
+    { id: 6, youtubeId: "VzpimJtKfnE", title: "Hồ Chí Minh thắp sáng niềm tin" },
+    { id: 7, youtubeId: "01q6P2LfgxE", title: "Việt Nam - Hồ Chí Minh giữ trọn một con đường" },
+    { id: 8, youtubeId: "H4xEN0wMzEo", title: "Bác Hồ với nhân dân - Những thước phim vô giá" },
+    { id: 9, youtubeId: "xjMcJ7yJA8M", title: "Hồ Chí Minh - Bài ca kết đoàn (Phim Tài Liệu)" },
+    { id: 10, youtubeId: "34GKvR8nZus", title: "Bác Hồ đọc Tuyên ngôn Độc lập ngày 2/9/1945" },
+    { id: 11, youtubeId: "AzUPBa7mqIk", title: "Những giây phút cuối đời của Chủ tịch Hồ Chí Minh" },
+    { id: 12, youtubeId: "GwBMSDExRQ4", title: "Bác Hồ - Người là niềm tin tất thắng" },
+    { id: 13, youtubeId: "8tnJv0M9iTA", title: "Hồ Chí Minh: Tư tưởng và sự nghiệp vĩ đại" },
+    { id: 14, youtubeId: "EoNmDC4WzhA", title: "Dấu ấn Hồ Chí Minh trong lòng bạn bè quốc tế" },
+    { id: 15, youtubeId: "e0CEWmWG79U", title: "Chuyện kể về Bác Hồ - Tình yêu thương bao la" },
+    { id: 16, youtubeId: "GzDDgOwqy_A", title: "Phim tài liệu: Ngày Độc Lập 2/9 và Tuyên ngôn" },
+    { id: 17, youtubeId: "Qu3yMoQfWXI", title: "Hồ Chí Minh - Hành trình kiến tạo đất nước" },
+    { id: 18, youtubeId: "IRgmHJE8f_A", title: "Ký ức về Bác Hồ qua lời kể của các cận vệ" },
+    { id: 19, youtubeId: "euqtheBsAYo", title: "Tư tưởng đại đoàn kết của Hồ Chí Minh" },
+    { id: 20, youtubeId: "9tlKd_cCa-g", title: "Chủ tịch Hồ Chí Minh với công tác xây dựng Đảng" },
+    { id: 21, youtubeId: "wJy4QDhhFro", title: "Bác Hồ với thế hệ trẻ và thanh niên Việt Nam" },
+    { id: 22, youtubeId: "Om5Xhvl4QOk", title: "Hồ Chí Minh - Biểu tượng của hòa bình và hữu nghị" },
+    { id: 23, youtubeId: "Rba1NOLfha4", title: "Phong cách ngoại giao Hồ Chí Minh trong thời kỳ đổi mới" },
+    { id: 24, youtubeId: "GtghaD3pwaw", title: "Những bài học sâu sắc từ đạo đức Hồ Chí Minh" },
+    { id: 25, youtubeId: "ycbkLF_TV7g", title: "Hồ Chí Minh - Sáng mãi tên Người trong lòng dân tộc" }
+];

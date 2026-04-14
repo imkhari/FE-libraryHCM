@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+/* Định nghĩa màu đỏ chuẩn của trang web (thay thế cho tailwind.config.js) */
+@theme {
+  --color-primary: #cc0000;
+}

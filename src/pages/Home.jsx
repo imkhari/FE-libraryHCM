@@ -63,7 +63,7 @@ function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.get('/documents?page=0&size=20')
+    api.get('/documents?page=0&size=50')
       .then((response) => {
         setDocuments(response.data.content);
         setLoading(false);

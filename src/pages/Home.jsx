@@ -78,8 +78,7 @@ function Home() {
   const booksByHoChiMinh = documents.slice(0, Math.ceil(documents.length / 2));
   const booksAboutHoChiMinh = documents.slice(Math.ceil(documents.length / 2));
 
-  // 🌟 CODE THÊM MỚI: Lọc riêng các bài báo dựa vào cột category 🌟
-  const articles = documents.filter(doc => doc.category === 'BaiBao');
+  const articles = documents.filter(doc => doc.categoryId === 2);
 
   // Variants cho hiệu ứng xuất hiện
   const containerVariants = {

@@ -19,8 +19,8 @@ function CategoryPage() {
         const allDocs = res.data.content;
         
         // 1. Tách mảng giống hệt trang Home
-        const articles = allDocs.filter(doc => doc.readType === 'BAI_BAO' || doc.read_type === 'BAI_BAO');
-        const books = allDocs.filter(doc => doc.readType !== 'BAI_BAO' && doc.read_type !== 'BAI_BAO');
+        const articles = allDocs.filter(doc => doc.readType === 'HTML' || doc.read_type === 'HTML');
+        const books = allDocs.filter(doc => doc.readType !== 'HTML' && doc.read_type !== 'HTML');
         
         const booksByHoChiMinh = books.slice(0, Math.ceil(books.length / 2));
         const booksAboutHoChiMinh = books.slice(Math.ceil(books.length / 2));

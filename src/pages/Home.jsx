@@ -77,7 +77,7 @@ function Home() {
   // GIỮ NGUYÊN LOGIC CŨ CỦA KHẢI
   const booksByHoChiMinh = documents.slice(0, Math.ceil(documents.length / 2));
   const booksAboutHoChiMinh = documents.slice(Math.ceil(documents.length / 2));
-  
+
   // 🌟 CODE THÊM MỚI: Lọc riêng các bài báo dựa vào cột category 🌟
   const articles = documents.filter(doc => doc.category === 'BaiBao');
 
@@ -249,58 +249,55 @@ function Home() {
             </motion.section>
 
             {/* 🌟 ĐÂY LÀ PHẦN THÊM MỚI: BÀI BÁO (GIỮ ĐÚNG FORMAT CỦA BẠN) 🌟 */}
-            {articles.length > 0 && (
-              <>
-                <div className="w-full flex justify-center my-16 opacity-20">
-                  <div className="w-1/2 h-px bg-gradient-to-r from-transparent via-red-800 to-transparent"></div>
-                </div>
 
-                <motion.section
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8 }}
+            <div className="w-full flex justify-center my-16 opacity-20">
+              <div className="w-1/2 h-px bg-gradient-to-r from-transparent via-red-800 to-transparent"></div>
+            </div>
+
+            <motion.section
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <div className="flex flex-col items-center justify-center mb-10">
+                <h3 className="text-red-700 font-bold uppercase text-xs md:text-sm tracking-[0.3em] mb-2">Những bài báo của</h3>
+                <h2 className="text-3xl md:text-4xl font-black text-center text-red-800 uppercase tracking-tight">
+                  Hồ Chí Minh
+                </h2>
+                <div className="h-1 w-20 bg-red-600 mt-4 rounded-full"></div>
+              </div>
+
+              <div className="px-2 md:px-10 relative">
+                <Swiper
+                  style={{ '--swiper-navigation-color': '#b91c1c', '--swiper-pagination-color': '#b91c1c', '--swiper-navigation-size': '24px' }}
+                  modules={[Navigation, Pagination, Autoplay]}
+                  spaceBetween={20}
+                  slidesPerView={2}
+                  navigation
+                  pagination={{ clickable: true, dynamicBullets: true }}
+                  autoplay={{ delay: 4500, disableOnInteraction: false }}
+                  breakpoints={{ 640: { slidesPerView: 3 }, 1024: { slidesPerView: 4 }, 1280: { slidesPerView: 5 } }}
+                  className="pb-12 pt-4 px-2"
                 >
-                  <div className="flex flex-col items-center justify-center mb-10">
-                    <h3 className="text-red-700 font-bold uppercase text-xs md:text-sm tracking-[0.3em] mb-2">Những bài báo của</h3>
-                    <h2 className="text-3xl md:text-4xl font-black text-center text-red-800 uppercase tracking-tight">
-                      Hồ Chí Minh
-                    </h2>
-                    <div className="h-1 w-20 bg-red-600 mt-4 rounded-full"></div>
-                  </div>
+                  {articles.map((doc) => (
+                    <SwiperSlide key={`article-${doc.id}`} className="!h-auto flex">
+                      <BookCard doc={doc} navigate={navigate} />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              </div>
 
-                  <div className="px-2 md:px-10 relative">
-                    <Swiper
-                      style={{ '--swiper-navigation-color': '#b91c1c', '--swiper-pagination-color': '#b91c1c', '--swiper-navigation-size': '24px' }}
-                      modules={[Navigation, Pagination, Autoplay]}
-                      spaceBetween={20}
-                      slidesPerView={2}
-                      navigation
-                      pagination={{ clickable: true, dynamicBullets: true }}
-                      autoplay={{ delay: 4500, disableOnInteraction: false }}
-                      breakpoints={{ 640: { slidesPerView: 3 }, 1024: { slidesPerView: 4 }, 1280: { slidesPerView: 5 } }}
-                      className="pb-12 pt-4 px-2"
-                    >
-                      {articles.map((doc) => (
-                        <SwiperSlide key={`article-${doc.id}`} className="!h-auto flex">
-                          <BookCard doc={doc} navigate={navigate} />
-                        </SwiperSlide>
-                      ))}
-                    </Swiper>
-                  </div>
-
-                  <div className="flex justify-center mt-6">
-                    <button onClick={() => navigate('/category/bai-bao')} className="group flex items-center gap-2 border-2 border-red-700 text-red-700 font-bold px-8 py-2.5 rounded-full hover:bg-red-700 hover:text-white transition-all duration-300 shadow-sm">
-                      Xem tất cả
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-                    </button>
-                  </div>
-                </motion.section>
-              </>
-            )}
-
+              <div className="flex justify-center mt-6">
+                <button onClick={() => navigate('/category/bai-bao')} className="group flex items-center gap-2 border-2 border-red-700 text-red-700 font-bold px-8 py-2.5 rounded-full hover:bg-red-700 hover:text-white transition-all duration-300 shadow-sm">
+                  Xem tất cả
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                </button>
+              </div>
+            </motion.section>
           </>
         )}
+
       </main>
     </div>
   );

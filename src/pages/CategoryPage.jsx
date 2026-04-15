@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import api from '../services/api';
 import { motion } from 'framer-motion';
 import Vid1 from '../assets/bai-tho-ngam-trang.mp3';
@@ -60,7 +60,6 @@ const bannerVariants = {
   visible: { opacity: 1, scale: 1, transition: { duration: 0.8, ease: "easeOut" } }
 };
 
-
 function CategoryPage() {
   const { type } = useParams(); 
   const navigate = useNavigate();
@@ -70,57 +69,88 @@ function CategoryPage() {
   const [loading, setLoading] = useState(true);
 
   const [activeTabs, setActiveTabs] = useState({ 1: 'dich', 2: 'dich', 3: 'dich' });
+  const isInitialMount = useRef(true);
+
+  // Hàm cốt lõi để phân loại dữ liệu (Giữ nguyên của Khải)
+  const processAndSetData = (allDocs) => {
+    const articles = allDocs.filter(doc => doc.readType === 'HTML' || doc.read_type === 'HTML');
+    const toanTap = allDocs.filter(doc => doc.title.toLowerCase().includes('toàn tập'));
+    
+    const books = allDocs.filter(doc => 
+        (doc.readType !== 'HTML' && doc.read_type !== 'HTML') &&
+        !doc.title.toLowerCase().includes('toàn tập')
+    );
+    
+    const booksByHoChiMinh = books.slice(0, Math.ceil(books.length / 2));
+    const booksAboutHoChiMinh = books.slice(Math.ceil(books.length / 2));
+
+    if (type === 'ho-chi-minh-toan-tap') {
+      const sortedToanTap = [...toanTap].sort((a, b) => {
+         const numA = parseInt(a.title.match(/\d+/)) || 0;
+         const numB = parseInt(b.title.match(/\d+/)) || 0;
+         return numA - numB;
+      });
+      setDisplayDocs(sortedToanTap);
+      setPageTitle("Hồ Chí Minh Toàn Tập (15 Tập)");
+    }
+    else if (type === 'bai-bao') {
+      setDisplayDocs(articles);
+      setPageTitle("Những bài báo của Hồ Chí Minh");
+    } 
+    else if (type === 'cua-ho-chi-minh') {
+      setDisplayDocs(booksByHoChiMinh);
+      setPageTitle("Tác phẩm của Hồ Chí Minh");
+    } 
+    else if (type === 'nhat-ky-trong-tu') {
+      setDisplayDocs(allDocs.filter(doc => doc.title.toLowerCase().includes('nhật ký')));
+      setPageTitle('TÁC PHẨM "NHẬT KÝ TRONG TÙ"');
+    }
+    else if (type === 'tho-ho-chi-minh') {
+      const targetThoTitles = [
+        "Thơ Hồ Chí Minh - NXB Nghệ An", 
+        "Tuyển tập Thơ chúc Tết",
+        "Cảnh khuya",
+        "Báo tiệp",
+        "Tức cảnh Pác Bó",
+        "Mộ (Chiều tối)"
+      ];
+      setDisplayDocs(allDocs.filter(doc => 
+        targetThoTitles.some(t => (doc.title || "").toUpperCase().includes(t.toUpperCase()))
+      ));
+      setPageTitle("THƠ HỒ CHÍ MINH");
+    }
+    else {
+      setDisplayDocs(booksAboutHoChiMinh);
+      setPageTitle("Tác phẩm về Hồ Chí Minh");
+    }
+    
+    setLoading(false);
+  };
 
   useEffect(() => {
-    setLoading(true);
+    // 🚀 BƯỚC 1: Hiển thị ngay lập tức nếu có dữ liệu cũ trong Cache (Không cần Loading)
+    const cachedData = sessionStorage.getItem('allLibraryDocs');
+    if (cachedData) {
+        processAndSetData(JSON.parse(cachedData));
+    } else {
+        setLoading(true); // Chỉ bật Loading nếu chưa từng có Cache
+    }
+
+    // 🚀 BƯỚC 2: Ngầm gọi API để lấy dữ liệu mới nhất
     api.get('/documents?page=0&size=150')
       .then((res) => {
-        const allDocs = res.data.content;
-        
-        const articles = allDocs.filter(doc => doc.readType === 'HTML' || doc.read_type === 'HTML');
-        const toanTap = allDocs.filter(doc => doc.title.toLowerCase().includes('toàn tập'));
-        
-        const books = allDocs.filter(doc => 
-            (doc.readType !== 'HTML' && doc.read_type !== 'HTML') &&
-            !doc.title.toLowerCase().includes('toàn tập')
-        );
-        
-        const booksByHoChiMinh = books.slice(0, Math.ceil(books.length / 2));
-        const booksAboutHoChiMinh = books.slice(Math.ceil(books.length / 2));
-
-        if (type === 'ho-chi-minh-toan-tap') {
-          const sortedToanTap = [...toanTap].sort((a, b) => {
-             const numA = parseInt(a.title.match(/\d+/)) || 0;
-             const numB = parseInt(b.title.match(/\d+/)) || 0;
-             return numA - numB;
-          });
-          setDisplayDocs(sortedToanTap);
-          setPageTitle("Hồ Chí Minh Toàn Tập (15 Tập)");
+        const allDocs = res.data.content || res.data;
+        // Nếu dữ liệu API trả về KHÁC với Cache, tiến hành cập nhật giao diện
+        if (JSON.stringify(allDocs) !== cachedData) {
+            sessionStorage.setItem('allLibraryDocs', JSON.stringify(allDocs));
+            processAndSetData(allDocs);
         }
-        else if (type === 'bai-bao') {
-          setDisplayDocs(articles);
-          setPageTitle("Những bài báo của Hồ Chí Minh");
-        } 
-        else if (type === 'cua-ho-chi-minh') {
-          setDisplayDocs(booksByHoChiMinh);
-          setPageTitle("Tác phẩm của Hồ Chí Minh");
-        } 
-        else if (type === 'nhat-ky-trong-tu') {
-          setDisplayDocs(allDocs.filter(doc => doc.title.toLowerCase().includes('nhật ký')));
-          setPageTitle('TÁC PHẨM "NHẬT KÝ TRONG TÙ"');
-        }
-        else if (type === 'tho-ho-chi-minh') {
-          setDisplayDocs(allDocs.filter(doc => doc.title.toLowerCase().includes('thơ')));
-          setPageTitle("THƠ HỒ CHÍ MINH");
-        }
-        else {
-          setDisplayDocs(booksAboutHoChiMinh);
-          setPageTitle("Tác phẩm về Hồ Chí Minh");
-        }
-        
-        setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch((err) => {
+         console.error("API Fetch Error:", err);
+         if (!cachedData) setLoading(false); // Chỉ tắt loading nếu chưa có cache
+      });
+      
   }, [type]);
 
   const mainDiaryBook = displayDocs.find(doc => doc.slug === 'nhat-ky-trong-tu-full') || displayDocs[0];
@@ -172,6 +202,7 @@ function CategoryPage() {
                 <div className="absolute inset-0 bg-black/20 transform rotate-3 rounded-lg blur-sm transition-transform group-hover:rotate-6 duration-300"></div>
                 <img 
                   src="https://bizweb.dktcdn.net/100/567/082/products/nhat-ky-trong-tu-14176-500-master.jpg?v=1747325389133" 
+                  loading="lazy"
                   className="rounded-lg shadow-xl relative z-10 w-[180px] md:w-[240px] transform transition-transform group-hover:-translate-y-2 duration-300" 
                   alt="Ngục trung nhật ký" 
                 />
@@ -306,7 +337,8 @@ function CategoryPage() {
                       <div className="bg-red-700 text-white rounded-full p-2 shrink-0 animate-pulse">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" /></svg>
                       </div>
-                      <audio controls className="h-8 w-full outline-none" src={poem.audio}>
+                      {/* 🚀 TỐI ƯU AUDIO: Preload Metadata giúp load siêu nhanh, k tải ngầm tốn 4G */}
+                      <audio controls preload="metadata" className="h-8 w-full outline-none" src={poem.audio}>
                         Trình duyệt không hỗ trợ audio
                       </audio>
                     </div>
@@ -319,7 +351,7 @@ function CategoryPage() {
         </div>
       )}
 
-      {/* DANH SÁCH CÁC TRANG CÒN LẠI (CÓ ANIMATION TỪNG THẺ) */}
+      {/* DANH SÁCH CÁC TRANG CÒN LẠI */}
       {type !== 'nhat-ky-trong-tu' && (
         <>
           {loading ? (
@@ -340,10 +372,12 @@ function CategoryPage() {
                     className="group cursor-pointer flex flex-col h-full bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200 hover:shadow-xl hover:border-red-300 transition-shadow duration-300 relative"
                   >
                     <div className="aspect-[2/3] overflow-hidden bg-gray-100">
+                      {/* 🚀 TỐI ƯU ẢNH: Lazy load - Chỉ tải khi cuộn chuột tới */}
                       <motion.img 
                         whileHover={{ scale: 1.05 }}
                         transition={{ duration: 0.5 }}
                         src={doc.coverImageUrl || 'https://via.placeholder.com/400x600?text=No+Cover'} 
+                        loading="lazy"
                         className="w-full h-full object-cover" 
                         alt={doc.title} 
                       />

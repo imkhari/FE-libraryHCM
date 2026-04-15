@@ -67,7 +67,7 @@ function ReaderPage() {
         </button>
 
         {/* TÊN SÁCH Ở GIỮA */}
-        <div className="text-red-900 font-serif italic text-sm md:text-xl font-bold bg-white/80 px-4 md:px-6 py-1.5 md:py-2 rounded-full shadow-sm max-w-[50%] md:max-w-[60%] truncate text-center">
+        <div className="text-red-900 font-serif italic text-sm md:text-xl font-bold bg-white/80 px-4 md:px-6 py-1.5 md:py-2 rounded-full shadow-sm max-w-[40%] md:max-w-[60%] truncate text-center">
           {book.title}
         </div>
 
@@ -87,7 +87,7 @@ function ReaderPage() {
       </div>
 
       {/* KHUNG IFRAME ĐỌC SÁCH GOOGLE DRIVE */}
-      <div className="relative z-10 w-full max-w-6xl h-[80vh] md:h-[85vh] px-2 md:px-6 pb-6 mt-2">
+      <div className="relative z-10 w-full max-w-6xl h-[80vh] md:h-[88vh] px-2 md:px-6 pb-6 mt-2">
         <div className="w-full h-full bg-white rounded-xl shadow-2xl overflow-hidden border-2 border-red-800/20 relative">
           
           <iframe

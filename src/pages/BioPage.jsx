@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-// 🌟 ANIMATION VARIANTS 🌟
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { staggerChildren: 0.2, delayChildren: 0.1 } }
@@ -196,7 +195,7 @@ function BioPage() {
 
                   <div className="flex justify-between w-full pt-8 items-start">
 
-                    {/* ❌ CỘT TRÁI: TIỀN BỐI */}
+                    {/* CỘT TRÁI: TIỀN BỐI */}
                     <div className="w-[47%] flex flex-col items-center">
                       <motion.div variants={mapNodeVariants} className="bg-white border-2 border-gray-300 p-5 lg:p-6 rounded-2xl w-full shadow-lg relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-1.5 bg-gray-400"></div>
@@ -230,7 +229,7 @@ function BioPage() {
                       </motion.div>
                     </div>
 
-                    {/* ✅ CỘT PHẢI: BÁC HỒ */}
+                    {/* CỘT PHẢI: BÁC HỒ */}
                     <div className="w-[47%] flex flex-col items-center">
                       <motion.div variants={mapNodeVariants} className="bg-red-50 border-2 border-red-600 p-5 lg:p-6 rounded-2xl w-full shadow-[0_8px_20px_rgba(220,38,38,0.15)] relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-1.5 bg-red-600"></div>

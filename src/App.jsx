@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, Outlet, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import React from 'react';
 import Home from './pages/Home';
 import BookDetail from './pages/BookDetail';
 import CategoryPage from './pages/CategoryPage';
@@ -96,6 +97,14 @@ const MainLayout = () => {
     const ss = String(date.getSeconds()).padStart(2, '0');
     return `${dayName}, ${d}/${m}/${y} - ${hh}:${mm}:${ss}`;
   };
+
+  const currentYear = new Date().getFullYear();
+  const tickerEvents = [
+    `Kỷ niệm ${currentYear - 1890} năm Ngày sinh Chủ tịch Hồ Chí Minh (19/05/1890 - 19/05/${currentYear})`,
+    `Kỷ niệm ${currentYear - 1911} năm Ngày Bác ra đi tìm đường cứu nước (05/06/1911)`,
+    `Kỷ niệm ${currentYear - 1945} năm Quốc khánh nước CHXHCN Việt Nam (02/09/1945)`,
+    `Kỷ niệm ${currentYear - 1969} năm thực hiện Di chúc của Chủ tịch Hồ Chí Minh`
+  ];
 
   return (
     <div className="min-h-screen bg-stone-50 font-sans selection:bg-red-200 flex flex-col relative">
@@ -247,7 +256,7 @@ const MainLayout = () => {
               </Link>
               <div className="absolute left-0 top-full hidden group-hover:block w-[300px] bg-[#fdfbf2] text-gray-800 shadow-2xl border-t-[3px] border-red-700 py-1 z-[999]">
                 <Link to="/ideology/vang-vong-loi-non-nuoc" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Hồ Chí Minh – Vang vọng lời non nước</Link>
-                <Link to="/ideology/ve-ho-chi-minh" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Những tác phẩm viết về Hồ Chí Minh</Link>
+                <Link to="/category/ve-ho-chi-minh" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Những tác phẩm viết về Hồ Chí Minh</Link>
                 <Link to="/ideology/tai-lieu-hoc-tap" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 transition-colors">Tài liệu học tập làm theo Bác</Link>
                 <Link to="/ideology/trong-long-dan-toc" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Hồ Chí Minh trong lòng dân tộc và thế giới</Link>
 
@@ -356,38 +365,40 @@ const MainLayout = () => {
             </div>
 
             <div className="flex-1 overflow-hidden ml-1 md:ml-4 relative h-full">
-              <div className="absolute top-0 bottom-0 left-0 flex items-center animate-marquee">
+              <div className="absolute top-0 bottom-0 left-0 flex items-center animate-marquee whitespace-nowrap">
                 {/* SET 1 */}
                 <div className="flex items-center">
-                  <span className="flex items-center text-red-700 hover:text-red-900 transition-colors cursor-pointer">
-                    Học tập và làm theo Bác ở xã Hiếu Giang
-                    <span className="bg-red-600 text-white text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded ml-2 shadow-sm animate-pulse">NEW</span>
-                  </span>
-                  <span className="mx-4 md:mx-8 text-gray-300">|</span>
-                  <span className="flex items-center text-red-700 hover:text-red-900 transition-colors cursor-pointer">
-                    Chiến sĩ quân y làm theo lời Bác
-                  </span>
-                  <span className="mx-4 md:mx-8 text-gray-300">|</span>
-                  <span className="flex items-center text-red-700 hover:text-red-900 transition-colors cursor-pointer">
-                    Lan tỏa những cách làm hay
-                  </span>
-                  <span className="mx-4 md:mx-8 text-gray-300">|</span>
+                  {tickerEvents.map((event, index) => (
+                    <React.Fragment key={`set1-${index}`}>
+                      <span className="flex items-center text-red-700 hover:text-red-900 transition-colors cursor-pointer">
+                        {event}
+                        {/* Gắn badge NEW/HOT cho sự kiện đầu tiên */}
+                        {index === 0 && (
+                          <span className="bg-red-600 text-white text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded ml-2 shadow-sm animate-pulse">
+                            HOT
+                          </span>
+                        )}
+                      </span>
+                      <span className="mx-4 md:mx-8 text-gray-300">|</span>
+                    </React.Fragment>
+                  ))}
                 </div>
-                {/* SET 2 */}
+
+                {/* SET 2 (Copy y hệt SET 1 để chữ chạy liên tục không bị đứt quãng) */}
                 <div className="flex items-center">
-                  <span className="flex items-center text-red-700 hover:text-red-900 transition-colors cursor-pointer">
-                    Học tập và làm theo Bác ở xã Hiếu Giang
-                    <span className="bg-red-600 text-white text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded ml-2 shadow-sm animate-pulse">NEW</span>
-                  </span>
-                  <span className="mx-4 md:mx-8 text-gray-300">|</span>
-                  <span className="flex items-center text-red-700 hover:text-red-900 transition-colors cursor-pointer">
-                    Chiến sĩ quân y làm theo lời Bác
-                  </span>
-                  <span className="mx-4 md:mx-8 text-gray-300">|</span>
-                  <span className="flex items-center text-red-700 hover:text-red-900 transition-colors cursor-pointer">
-                    Lan tỏa những cách làm hay
-                  </span>
-                  <span className="mx-4 md:mx-8 text-gray-300">|</span>
+                  {tickerEvents.map((event, index) => (
+                    <React.Fragment key={`set2-${index}`}>
+                      <span className="flex items-center text-red-700 hover:text-red-900 transition-colors cursor-pointer">
+                        {event}
+                        {index === 0 && (
+                          <span className="bg-red-600 text-white text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded ml-2 shadow-sm animate-pulse">
+                            HOT
+                          </span>
+                        )}
+                      </span>
+                      <span className="mx-4 md:mx-8 text-gray-300">|</span>
+                    </React.Fragment>
+                  ))}
                 </div>
               </div>
             </div>

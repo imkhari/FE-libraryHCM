@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { videosList } from '../data/videos'; // 🌟 Import chung 1 cục data
+import { videosList } from '../data/videos'; 
 
 function VideoDetailPage() {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    // Mỗi khi bấm vào video mới, tự động cuộn lên đỉnh trang
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [id]);
@@ -55,7 +54,6 @@ function VideoDetailPage() {
                     </div>
                 </div>
 
-                {/* 🌟 Khu vực hiển thị TẤT CẢ 24 Tư liệu Video Khác 🌟 */}
                 <div className="border-b-[3px] border-red-700 pb-2 mb-8 inline-block w-full">
                     <h2 className="text-lg md:text-xl font-bold text-red-700 uppercase">Tư liệu Video Khác</h2>
                 </div>

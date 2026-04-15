@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../services/api';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
@@ -13,7 +13,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
-// 1. COMPONENT CARD SÁCH - TỐI ƯU HIỂN THỊ ĐỀU NHAU
+// 1. COMPONENT CARD SÁCH - TỐI ƯU HIỂN THỊ ĐỀU NHAU VÀ LAZY LOAD
 const BookCard = ({ doc, navigate }) => {
   const [imgError, setImgError] = useState(false);
   const hasValidImageURL = doc.coverImageUrl && doc.coverImageUrl.trim() !== "" && doc.coverImageUrl !== "null";
@@ -29,6 +29,7 @@ const BookCard = ({ doc, navigate }) => {
           <img
             src={doc.coverImageUrl}
             alt={doc.title}
+            loading="lazy" 
             onError={() => setImgError(true)}
             className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
           />
@@ -61,28 +62,48 @@ function Home() {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    // Gọi tối đa 50 cuốn để lấy được hết dữ liệu
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }, [location.pathname]); // Theo dõi sự thay đổi URL để cuộn lên
+
+  useEffect(() => {
+    // STALE-WHILE-REVALIDATE (Hiển thị Cache, gọi ngầm API)
+    const cachedData = sessionStorage.getItem('homeDocsCache');
+    
+    if (cachedData) {
+        // Nếu có Cache -> Bỏ qua Loading, hiển thị ngay lập tức
+        setDocuments(JSON.parse(cachedData));
+        setLoading(false);
+    } else {
+        // Lần đầu tiên vào web -> Hiện Loading
+        setLoading(true);
+    }
+
+    // Luôn gọi ngầm API để kiểm tra xem có Sách/Báo mới không
     api.get('/documents?page=0&size=50')
       .then((response) => {
-        setDocuments(response.data.content);
+        const newData = response.data.content || response.data;
+        // Nếu dữ liệu API mới khác với Cache hiện tại -> Cập nhật UI và lưu Cache mới
+        if (JSON.stringify(newData) !== cachedData) {
+            sessionStorage.setItem('homeDocsCache', JSON.stringify(newData));
+            setDocuments(newData);
+        }
         setLoading(false);
       })
       .catch((error) => {
         console.error("Lỗi API:", error);
-        setLoading(false);
+        if (!cachedData) setLoading(false); // Chỉ tắt loading nếu web trống không
       });
   }, []);
 
-  // 🌟 LOGIC LỌC DỮ LIỆU ĐÃ ĐƯỢC CHUẨN HÓA LẠI 🌟
 
-  // 1. Bài báo: Lấy những bài có category_id là null (hoặc không có category)
-  // Trong DB, nãy Khải insert 6 cuốn đều có category_id = null
   const articles = documents.filter(doc => doc.readType === 'HTML' || doc.read_type === 'HTML');
-  // 2. Sách: Lấy những cái còn lại (có category_id)
   const books = documents.filter(doc => doc.readType !== 'HTML' && doc.read_type !== 'HTML');
-  // 3. Chia sách làm 2 phần (Của Bác và Về Bác) như cũ Khải làm
   const booksByHoChiMinh = books.slice(0, Math.ceil(books.length / 2));
   const booksAboutHoChiMinh = books.slice(Math.ceil(books.length / 2));
 
@@ -162,7 +183,7 @@ function Home() {
           </div>
         ) : (
           <>
-            {/* === PHẦN 1: TÁC PHẨM CỦA HỒ CHÍ MINH === */}
+            {/* TÁC PHẨM CỦA HỒ CHÍ MINH */}
             {booksByHoChiMinh.length > 0 && (
               <motion.section
                 initial={{ opacity: 0, y: 50 }}
@@ -201,7 +222,7 @@ function Home() {
 
                 <div className="flex justify-center mt-6">
                   {/* Điều hướng đến trang Xem tất cả Sách */}
-                  <button onClick={() => navigate('/category/cua-ho-chi-minh')} className="group flex items-center gap-2 border-2 border-red-700 text-red-700 font-bold px-8 py-2.5 rounded-full hover:bg-red-700 hover:text-white transition-all duration-300 shadow-sm">
+                  <button onClick={() => {window.scrollTo(0, 0); navigate('/category/cua-ho-chi-minh')}} className="group flex items-center gap-2 border-2 border-red-700 text-red-700 font-bold px-8 py-2.5 rounded-full hover:bg-red-700 hover:text-white transition-all duration-300 shadow-sm">
                     Xem tất cả
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                   </button>
@@ -213,7 +234,7 @@ function Home() {
               <div className="w-1/2 h-px bg-gradient-to-r from-transparent via-red-800 to-transparent"></div>
             </div>
 
-            {/* === PHẦN 2: TÁC PHẨM VỀ HỒ CHÍ MINH === */}
+            {/* TÁC PHẨM VỀ HỒ CHÍ MINH */}
             {booksAboutHoChiMinh.length > 0 && (
               <motion.section
                 initial={{ opacity: 0, y: 50 }}
@@ -259,7 +280,7 @@ function Home() {
               </motion.section>
             )}
 
-            {/* 🌟 PHẦN 3: NHỮNG BÀI BÁO CỦA HỒ CHÍ MINH 🌟 */}
+            {/* NHỮNG BÀI BÁO CỦA HỒ CHÍ MINH */}
             {articles.length > 0 && (
               <>
                 <div className="w-full flex justify-center my-16 opacity-20">
@@ -301,7 +322,7 @@ function Home() {
                   </div>
 
                   <div className="flex justify-center mt-6">
-                    {/* ĐIỀU HƯỚNG ĐẾN TRANG HIỂN THỊ TẤT CẢ BÀI BÁO (Khải tự tạo route /category/bai-bao nhé) */}
+                    {/* ĐIỀU HƯỚNG ĐẾN TRANG HIỂN THỊ TẤT CẢ BÀI BÁO */}
                     <button onClick={() => navigate('/category/bai-bao')} className="group flex items-center gap-2 border-2 border-red-700 text-red-700 font-bold px-8 py-2.5 rounded-full hover:bg-red-700 hover:text-white transition-all duration-300 shadow-sm">
                       Xem tất cả
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>

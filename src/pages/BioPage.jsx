@@ -163,7 +163,7 @@ function BioPage() {
               <div className="text-center mb-16 px-2">
                 <h3 className="text-red-700 font-bold uppercase text-sm tracking-[0.3em] mb-3">Phân tích Lịch sử</h3>
                 <h2 className="text-[26px] sm:text-3xl md:text-4xl font-black text-red-800 uppercase tracking-tight leading-tight mx-auto max-w-2xl">
-                  Tầm nhìn vĩ đại về <br className="hidden sm:block" /> con đường cứu nước
+                  Tầm nhìn vĩ đại <br className="hidden sm:block" /> về con đường cứu nước
                 </h2>
                 <div className="h-1.5 w-24 bg-red-600 mx-auto mt-5 rounded-full shadow-[0_0_10px_rgba(220,38,38,0.5)]"></div>
               </div>

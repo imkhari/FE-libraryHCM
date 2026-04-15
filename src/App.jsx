@@ -195,9 +195,13 @@ const MainLayout = () => {
         </div>
       </div>
 
-      {/* BANNER */}
-      <div className="relative w-full h-16 md:h-34 lg:h-40 bg-[#fdfbf2] overflow-hidden border-b border-red-200">
-        <img src={BG2} alt="Banner" className="w-full h-full object-cover object-left" />
+      {/* BANNER - Tối ưu chiều cao nhỏ gọn, không cắt xén logo */}
+      <div className="relative w-full h-[75px] sm:h-[90px] md:h-[120px] lg:h-[150px] overflow-hidden border-b border-red-200 bg-[#fdfbf2]">
+        <img
+          src={BG2}
+          alt="Banner"
+          className="w-full h-full object-fill"
+        />
       </div>
 
       {/* NAVBAR */}

@@ -128,7 +128,7 @@ function CategoryPage() {
   };
 
   useEffect(() => {
-    // 🚀 BƯỚC 1: Hiển thị ngay lập tức nếu có dữ liệu cũ trong Cache (Không cần Loading)
+    // Hiển thị ngay lập tức nếu có dữ liệu cũ trong Cache (Không cần Loading)
     const cachedData = sessionStorage.getItem('allLibraryDocs');
     if (cachedData) {
         processAndSetData(JSON.parse(cachedData));
@@ -136,7 +136,7 @@ function CategoryPage() {
         setLoading(true); // Chỉ bật Loading nếu chưa từng có Cache
     }
 
-    // 🚀 BƯỚC 2: Ngầm gọi API để lấy dữ liệu mới nhất
+    // Ngầm gọi API để lấy dữ liệu mới nhất
     api.get('/documents?page=0&size=150')
       .then((res) => {
         const allDocs = res.data.content || res.data;

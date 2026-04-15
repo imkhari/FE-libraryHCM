@@ -39,7 +39,7 @@ function BookDetail() {
           console.warn("Không tìm thấy cấu trúc mảng hợp lệ từ API", res.data);
         }
 
-        // 🌟 LOGIC MỚI: Xáo trộn ngẫu nhiên (Random) trước khi lấy 4 cuốn
+        // Xáo trộn ngẫu nhiên (Random) trước khi lấy 4 cuốn
         const related = booksArray
           .filter(b => b.id !== parseInt(id)) // Loại bỏ cuốn đang xem
           .sort(() => 0.5 - Math.random())    // Xáo trộn mảng ngẫu nhiên

@@ -32,21 +32,10 @@ const lineVerticalVariants = {
   visible: { scaleY: 1, opacity: 1, transition: { duration: 0.6, ease: "easeInOut" } }
 };
 
-const lineHorizontalVariants = {
-  hidden: { scaleX: 0, opacity: 0 },
-  visible: { scaleX: 1, opacity: 1, transition: { duration: 0.8, ease: "easeInOut" } }
-};
-
-// COMPONENT MŨI TÊN (Tái sử dụng)
+// COMPONENT MŨI TÊN 
 const ArrowDownRed = () => (
-  <motion.div variants={lineVerticalVariants} className="w-1 h-12 md:h-16 bg-red-400 relative my-2 origin-top">
-    <div className="absolute -bottom-1 -left-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-red-400"></div>
-  </motion.div>
-);
-
-const ArrowDownGray = () => (
-  <motion.div variants={lineVerticalVariants} className="w-1 h-12 md:h-16 bg-gray-300 relative my-2 origin-top">
-    <div className="absolute -bottom-1 -left-[5px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-gray-300"></div>
+  <motion.div variants={lineVerticalVariants} className="w-1.5 h-10 md:h-14 bg-red-500 relative my-1 origin-top rounded-full">
+    <div className="absolute -bottom-2 -left-[6px] w-0 h-0 border-l-[9px] border-l-transparent border-r-[9px] border-r-transparent border-t-[10px] border-t-red-500"></div>
   </motion.div>
 );
 
@@ -77,7 +66,7 @@ function BioPage() {
 
   const timelineData = [
     { year: "19/05/1890", title: "Quê hương và Tuổi thơ", content: "Chủ tịch Hồ Chí Minh (lúc nhỏ tên là Nguyễn Sinh Cung, sau đổi là Nguyễn Tất Thành, Nguyễn Ái Quốc) sinh ra trong một gia đình nhà nho yêu nước tại làng Hoàng Trù, xã Kim Liên, huyện Nam Đàn, tỉnh Nghệ An. Được nuôi dưỡng bởi truyền thống văn hóa tốt đẹp của gia đình và quê hương, Người sớm có lòng yêu nước thương dân sâu sắc và ý chí quyết tâm đánh đuổi thực dân Pháp, giành độc lập cho Tổ quốc." },
-    { year: "05/06/1911", title: "Ra đi tìm đường cứu nước", content: "Chứng kiến sự thất bại của các bậc tiền bối, Nguyễn Tất Thành quyết tâm đi ra nước ngoài tìm một con đường cứu nước mới. Ngày 5 tháng 6 năm 1911, với tên gọi Văn Ba, Người làm phụ bếp trên con tàu Amiral Latouche-Tréville, rời bến cảng Nhà Rồng (Sài Gòn), bắt đầu cuộc hành trình bôn ba suốt 30 năm qua ba đại dương, bốn châu lục." },
+    { year: "05/06/1911", title: "Ra đi tìm đường cứu nước", content: "Chứng kiến sự thất bại của các phong trào yêu nước trước đó, Nguyễn Tất Thành quyết tâm đi ra nước ngoài tìm một con đường cứu nước mới. Ngày 5 tháng 6 năm 1911, với tên gọi Văn Ba, Người làm phụ bếp trên con tàu Amiral Latouche-Tréville, rời bến cảng Nhà Rồng (Sài Gòn), bắt đầu cuộc hành trình bôn ba suốt 30 năm qua ba đại dương, bốn châu lục." },
     { year: "1911 - 1920", title: "Đến với Chủ nghĩa Mác - Lênin", content: "Người đi qua nhiều nước châu Âu, châu Phi, châu Mỹ, vừa lao động kiếm sống vừa quan sát, học hỏi. Năm 1919, Người gửi 'Bản yêu sách của nhân dân An Nam' tới Hội nghị Versailles. Tháng 7/1920, Người đọc 'Sơ thảo lần thứ nhất những luận cương về vấn đề dân tộc và vấn đề thuộc địa' của V.I. Lênin, từ đó tìm thấy con đường giải phóng dân tộc. Cuối năm 1920, Người tham gia sáng lập Đảng Cộng sản Pháp." },
     { year: "1923 - 1924", title: "Hoạt động tại Liên Xô", content: "Tháng 6/1923, Người rời Pháp sang Liên Xô - quê hương của Cách mạng Tháng Mười. Tại đây, Người học tập tại Đại học Phương Đông, tham dự Đại hội lần thứ V của Quốc tế Cộng sản và được bầu làm Ủy viên Đoàn Chủ tịch Quốc tế Nông dân. Đây là giai đoạn Người trực tiếp nghiên cứu lý luận và kinh nghiệm tổ chức cách mạng vô sản." },
     { year: "1925 - 1927", title: "Chuẩn bị lực lượng tại Quảng Châu (Trung Quốc)", content: "Cuối năm 1924, Người về Quảng Châu (Trung Quốc). Năm 1925, Người thành lập 'Hội Việt Nam Cách mạng Thanh niên' - tổ chức tiền thân của Đảng, xuất bản tờ báo 'Thanh Niên' và mở các lớp huấn luyện cán bộ. Những bài giảng của Người được tập hợp thành cuốn sách 'Đường Kách mệnh' (1927) - cuốn cẩm nang lý luận đầu tiên của cách mạng Việt Nam." },
@@ -117,7 +106,6 @@ function BioPage() {
           </p>
         </motion.div>
 
-        {/* GOM CHUNG CẢ TIMELINE VÀ SƠ ĐỒ VÀO CÙNG 1 KHUNG FLEX */}
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start relative w-full">
 
           {/* CỘT TRÁI (Ảnh chân dung - STICKY) */}
@@ -163,7 +151,7 @@ function BioPage() {
               </div>
             </motion.div>
 
-            {/* SƠ ĐỒ TƯ DUY (Nằm trong cột phải) */}
+            {/* SƠ ĐỒ TƯ DUY (Đã sửa lại chỉ tập trung vào Bác Hồ) */}
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -171,154 +159,77 @@ function BioPage() {
               variants={containerVariants}
               className="mt-20 pt-16 border-t-2 border-dashed border-red-200 w-full"
             >
-              <div className="text-center mb-16">
+              {/* 🚀 ĐÃ SỬA: Tối ưu kích thước Tiêu đề để không rớt chữ lộn xộn */}
+              <div className="text-center mb-16 px-2">
                 <h3 className="text-red-700 font-bold uppercase text-sm tracking-[0.3em] mb-3">Phân tích Lịch sử</h3>
-                <h2 className="text-3xl md:text-4xl font-black text-red-800 uppercase tracking-tight">
-                  Tầm nhìn vĩ đại về Con đường cứu nước
+                <h2 className="text-[26px] sm:text-3xl md:text-4xl font-black text-red-800 uppercase tracking-tight leading-tight mx-auto max-w-2xl">
+                  Tầm nhìn vĩ đại về <br className="hidden sm:block" /> con đường cứu nước
                 </h2>
                 <div className="h-1.5 w-24 bg-red-600 mx-auto mt-5 rounded-full shadow-[0_0_10px_rgba(220,38,38,0.5)]"></div>
               </div>
 
-              <div className="flex flex-col items-center w-full">
+              {/* 🚀 ĐÃ SỬA: Chuyển toàn bộ thành dạng 1 Cột Dọc (Không còn chia đôi) */}
+              <div className="flex flex-col items-center w-full px-4">
 
-                <motion.div variants={mapNodeVariants} className="bg-red-800 text-white font-black text-lg md:text-xl px-8 py-5 rounded-xl shadow-[0_10px_20px_rgba(185,28,28,0.3)] z-10 text-center border-2 border-red-600 w-full max-w-2xl">
+                {/* BƯỚC 1 */}
+                <motion.div variants={mapNodeVariants} className="bg-red-800 text-white font-black text-base md:text-xl px-6 py-5 rounded-xl shadow-[0_10px_20px_rgba(185,28,28,0.3)] z-10 text-center border-2 border-red-600 w-full max-w-2xl">
                   MỤC TIÊU TỐI THƯỢNG:<br />ĐÁNH ĐUỔI THỰC DÂN, GIÀNH ĐỘC LẬP
                 </motion.div>
 
                 <ArrowDownRed />
 
-                {/* NHÁNH RẼ CHO DESKTOP */}
-                <div className="hidden md:block w-full relative">
-                  <motion.div variants={lineHorizontalVariants} className="absolute top-0 left-[25%] right-[25%] h-1 bg-red-400 origin-center"></motion.div>
-                  <motion.div variants={lineVerticalVariants} className="absolute top-0 left-[25%] w-1 h-8 bg-gray-300 origin-top"></motion.div>
-                  <motion.div variants={lineVerticalVariants} className="absolute top-0 right-[25%] w-1 h-8 bg-red-400 origin-top"></motion.div>
+                {/* BƯỚC 2 */}
+                <motion.div variants={mapNodeVariants} className="bg-red-50 border-2 border-red-600 p-6 md:p-8 rounded-2xl w-full max-w-2xl shadow-[0_8px_20px_rgba(220,38,38,0.15)] relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-1.5 bg-red-600"></div>
+                  <h3 className="text-xl md:text-2xl font-black text-red-800 mb-1 text-center">NGUYỄN TẤT THÀNH</h3>
+                  <p className="text-sm md:text-base text-red-600 mb-6 text-center font-serif italic">Khởi hành từ Bến cảng Nhà Rồng</p>
 
-                  <div className="flex justify-between w-full pt-8 items-start">
-
-                    {/* CỘT TRÁI: TIỀN BỐI */}
-                    <div className="w-[47%] flex flex-col items-center">
-                      <motion.div variants={mapNodeVariants} className="bg-white border-2 border-gray-300 p-5 lg:p-6 rounded-2xl w-full shadow-lg relative overflow-hidden">
-                        <div className="absolute top-0 left-0 w-full h-1.5 bg-gray-400"></div>
-                        <h3 className="text-lg lg:text-xl font-black text-gray-800 mb-1 text-center">CÁC BẬC TIỀN BỐI</h3>
-                        <p className="text-xs lg:text-sm text-gray-500 mb-4 text-center font-serif italic">Những giới hạn của lịch sử</p>
-
-                        <ul className="space-y-3 text-[13px] lg:text-[14px] text-gray-700 text-justify">
-                          <li className="flex items-start gap-2">
-                            <span className="text-gray-500 font-bold mt-0.5">✖</span>
-                            <div><b>Phan Bội Châu:</b> Cầu viện Nhật Bản <i>(Đuổi hổ cửa trước, rước beo cửa sau)</i>.</div>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-gray-500 font-bold mt-0.5">✖</span>
-                            <div><b>Phan Châu Trinh:</b> Yêu cầu Pháp cải lương <i>(Xin giặc rủ lòng thương)</i>.</div>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-gray-500 font-bold mt-0.5">✖</span>
-                            <div><b>Hoàng Hoa Thám:</b> Thiếu đường lối giai cấp và vũ khí tư tưởng.</div>
-                          </li>
-                        </ul>
-                      </motion.div>
-
-                      <ArrowDownGray />
-
-                      <motion.div variants={mapNodeVariants} className="bg-gray-100 border border-gray-300 px-5 py-4 rounded-xl w-full text-center shadow-md">
-                        <h4 className="font-bold text-gray-700 flex items-center justify-center gap-2 mb-2 text-sm lg:text-base">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" /></svg>
-                          KẾT QUẢ: BẾ TẮC
-                        </h4>
-                        <p className="text-[13px] text-gray-600">Thiếu đường lối, các phong trào đều bị dìm trong biển máu.</p>
-                      </motion.div>
-                    </div>
-
-                    {/* CỘT PHẢI: BÁC HỒ */}
-                    <div className="w-[47%] flex flex-col items-center">
-                      <motion.div variants={mapNodeVariants} className="bg-red-50 border-2 border-red-600 p-5 lg:p-6 rounded-2xl w-full shadow-[0_8px_20px_rgba(220,38,38,0.15)] relative overflow-hidden">
-                        <div className="absolute top-0 left-0 w-full h-1.5 bg-red-600"></div>
-                        <h3 className="text-lg lg:text-xl font-black text-red-800 mb-1 text-center">NGUYỄN TẤT THÀNH</h3>
-                        <p className="text-xs lg:text-sm text-red-600 mb-4 text-center font-serif italic">Khởi hành từ Bến cảng Nhà Rồng</p>
-
-                        <ul className="space-y-3 text-[13px] lg:text-[14px] text-gray-800 text-justify">
-                          <li className="flex items-start gap-2">
-                            <span className="text-red-600 font-bold mt-0.5">✔</span>
-                            <div><b>Tư duy độc lập:</b> Kiên quyết không đi theo lối mòn đã thất bại.</div>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-red-600 font-bold mt-0.5">✔</span>
-                            <div><b>Đột phá:</b> Sang phương Tây tìm hiểu trung tâm của sào huyệt đế quốc.</div>
-                          </li>
-                        </ul>
-                        <div className="mt-4 p-3 bg-white border-l-4 border-red-600 italic text-[12px] lg:text-[13px] text-red-900">
-                          "Muốn đánh hổ phải vào hang hổ. Phải xem nước Pháp làm thế nào rồi về giúp đồng bào."
-                        </div>
-                      </motion.div>
-
-                      <ArrowDownRed />
-
-                      <motion.div variants={mapNodeVariants} className="bg-yellow-50 border-2 border-yellow-500 p-5 rounded-xl w-full shadow-lg relative">
-                        <div className="absolute -left-3 -top-3 bg-yellow-500 text-white text-xs font-black px-2 py-1 rounded shadow">1920</div>
-                        <h4 className="font-black text-red-800 uppercase text-[14px] lg:text-[15px] mb-2 text-center">Bắt gặp Ánh sáng Chân lý</h4>
-                        <p className="text-[13px] lg:text-[14px] text-gray-700 text-justify">
-                          Chỉ có <b>Chủ nghĩa xã hội và Chủ nghĩa cộng sản</b> mới giải phóng được các dân tộc bị áp bức.
-                        </p>
-                      </motion.div>
-
-                      <ArrowDownRed />
-
-                      <motion.div variants={mapNodeVariants} className="bg-white border-2 border-red-800 p-5 rounded-xl w-full shadow-[0_10px_25px_rgba(185,28,28,0.2)]">
-                        <h4 className="font-black text-red-800 uppercase text-[14px] lg:text-[15px] mb-3 text-center">Vận dụng sáng tạo</h4>
-                        <ul className="space-y-2 text-[12px] lg:text-[13px] text-gray-800 text-justify">
-                          <li className="flex items-start gap-2"><span className="text-red-600">★</span>Độc lập gắn liền Chủ nghĩa xã hội.</li>
-                          <li className="flex items-start gap-2"><span className="text-red-600">★</span>Cách mạng thuộc địa liên kết chính quốc.</li>
-                          <li className="flex items-start gap-2"><span className="text-red-600">★</span>Đại đoàn kết do Đảng Cộng sản lãnh đạo.</li>
-                        </ul>
-                      </motion.div>
-                    </div>
-
+                  <ul className="space-y-4 text-sm md:text-base text-gray-800 text-justify">
+                    <li className="flex items-start gap-3">
+                      <span className="text-red-600 font-bold mt-0.5 text-lg">✔</span>
+                      <div><b>Tư duy độc lập:</b> Kiên quyết không đi theo lối mòn đã thất bại của các phong trào trước đó.</div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="text-red-600 font-bold mt-0.5 text-lg">✔</span>
+                      <div><b>Tầm nhìn đột phá:</b> Hướng sang phương Tây để tìm hiểu tận gốc rễ sào huyệt của chủ nghĩa đế quốc.</div>
+                    </li>
+                  </ul>
+                  <div className="mt-6 p-4 bg-white border-l-4 border-red-600 italic text-[14px] md:text-base text-red-900 shadow-sm rounded-r">
+                    "Muốn đánh hổ phải vào hang hổ. Phải xem nước Pháp làm thế nào rồi về giúp đồng bào."
                   </div>
-                </div>
+                </motion.div>
 
-                {/* GIAO DIỆN DỌC CHO MOBILE */}
-                <div className="md:hidden flex flex-col items-center w-full">
-                  <motion.div variants={mapNodeVariants} className="bg-white border-2 border-gray-300 p-5 rounded-xl w-full shadow-md">
-                    <h3 className="text-lg font-black text-gray-800 mb-1">CÁC BẬC TIỀN BỐI</h3>
-                    <div className="text-[13px] text-gray-700 space-y-2 mt-3 text-justify">
-                      <p><b>• Phan Bội Châu:</b> Cầu viện Nhật Bản.</p>
-                      <p><b>• Phan Châu Trinh:</b> Yêu cầu Pháp cải lương.</p>
-                      <p><b>• Hoàng Hoa Thám:</b> Nặng tính phong kiến.</p>
-                    </div>
-                    <div className="bg-gray-100 p-2 mt-3 rounded text-red-700 font-bold text-center text-sm">
-                      ↳ KẾT QUẢ: BẾ TẮC, THẤT BẠI
-                    </div>
-                  </motion.div>
+                <ArrowDownRed />
 
-                  <ArrowDownRed />
+                {/* BƯỚC 3 */}
+                <motion.div variants={mapNodeVariants} className="bg-yellow-50 border-2 border-yellow-500 p-6 rounded-xl w-full max-w-2xl shadow-md relative">
+                  <div className="absolute -left-3 -top-3 bg-yellow-500 text-white text-sm font-black px-3 py-1 rounded-lg shadow-md tracking-wider">NĂM 1920</div>
+                  <h4 className="font-black text-red-800 uppercase text-lg md:text-xl mb-3 text-center mt-2">Bắt gặp Ánh sáng Chân lý</h4>
+                  <p className="text-sm md:text-base text-gray-700 text-center leading-relaxed">
+                    Tìm ra con đường giải phóng dân tộc: Chỉ có <b>Chủ nghĩa xã hội và Chủ nghĩa cộng sản</b> mới giải phóng được các dân tộc bị áp bức.
+                  </p>
+                </motion.div>
 
-                  <motion.div variants={mapNodeVariants} className="bg-red-50 border-2 border-red-600 p-5 rounded-xl w-full shadow-lg">
-                    <h3 className="text-lg font-black text-red-800 mb-1">NGUYỄN TẤT THÀNH</h3>
-                    <div className="text-[13px] text-gray-800 space-y-2 mt-3 text-justify">
-                      <p>Sang phương Tây (nước Pháp) để tìm hiểu cốt lõi sức mạnh kẻ thù.</p>
-                      <p className="italic text-red-800 bg-white p-2 rounded">"Phải xem họ làm thế nào rồi về giúp đồng bào."</p>
-                    </div>
-                  </motion.div>
+                <ArrowDownRed />
 
-                  <ArrowDownRed />
-
-                  <motion.div variants={mapNodeVariants} className="bg-yellow-50 border-2 border-yellow-500 p-5 rounded-xl w-full shadow-md relative">
-                    <div className="absolute -left-2 -top-3 bg-yellow-500 text-white text-xs font-black px-2 py-1 rounded shadow">1920</div>
-                    <h4 className="font-black text-red-800 uppercase text-sm mb-2 mt-1">Bắt gặp Ánh sáng Chân lý</h4>
-                    <p className="text-[13px] text-gray-700 text-justify">Tìm ra chân lý: Chỉ có Cách mạng vô sản mới giải phóng được dân tộc bị áp bức.</p>
-                  </motion.div>
-
-                  <ArrowDownRed />
-
-                  <motion.div variants={mapNodeVariants} className="bg-white border-2 border-red-800 p-5 rounded-xl w-full shadow-xl">
-                    <h4 className="font-black text-red-800 uppercase text-sm mb-3">Vận dụng Sáng tạo</h4>
-                    <ul className="space-y-2 text-[13px] text-gray-700 text-justify">
-                      <li>★ Độc lập dân tộc gắn liền Chủ nghĩa xã hội.</li>
-                      <li>★ Cách mạng thuộc địa liên kết chính quốc.</li>
-                      <li>★ Đại đoàn kết do Đảng Cộng sản lãnh đạo.</li>
-                    </ul>
-                  </motion.div>
-                </div>
+                {/* BƯỚC 4 */}
+                <motion.div variants={mapNodeVariants} className="bg-white border-2 border-red-800 p-6 md:p-8 rounded-xl w-full max-w-2xl shadow-[0_10px_25px_rgba(185,28,28,0.15)]">
+                  <h4 className="font-black text-red-800 uppercase text-lg md:text-xl mb-5 text-center">Vận dụng Sáng tạo</h4>
+                  <ul className="space-y-4 text-sm md:text-base text-gray-800 font-medium">
+                    <li className="flex items-center gap-3">
+                      <span className="text-red-600 text-xl">★</span>
+                      Độc lập dân tộc gắn liền với Chủ nghĩa xã hội.
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <span className="text-red-600 text-xl">★</span>
+                      Cách mạng thuộc địa liên kết chặt chẽ với chính quốc.
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <span className="text-red-600 text-xl">★</span>
+                      Đại đoàn kết toàn dân tộc do Đảng Cộng sản lãnh đạo.
+                    </li>
+                  </ul>
+                </motion.div>
 
               </div>
             </motion.div>

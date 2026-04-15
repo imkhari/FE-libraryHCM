@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, Outlet, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react'; // Đã thêm useRef
+import api from './services/api'; // Đã thêm import API
 import Home from './pages/Home';
 import BookDetail from './pages/BookDetail';
 import CategoryPage from './pages/CategoryPage';
@@ -24,11 +24,64 @@ const MainLayout = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
 
+  // STATE CHO DROP DOWN TÌM KIẾM
+  const [suggestions, setSuggestions] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const searchRef = useRef(null); 
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location]);
+
+  // LOGIC 1: Đóng dropdown khi click ra ngoài
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // LOGIC 2: Gọi API tìm kiếm Live (Debounce)
+  useEffect(() => {
+    if (keyword.trim().length < 2) {
+      setSuggestions([]);
+      setShowDropdown(false);
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      setIsSearching(true);
+      api.get('/documents?page=0&size=200')
+        .then(res => {
+          // Xử lý an toàn cấu trúc mảng từ API
+          let allDocs = [];
+          if (Array.isArray(res.data)) allDocs = res.data;
+          else if (res.data && Array.isArray(res.data.content)) allDocs = res.data.content;
+
+          const filtered = allDocs.filter(doc => 
+            doc.title?.toLowerCase().includes(keyword.toLowerCase()) ||
+            doc.author?.toLowerCase().includes(keyword.toLowerCase())
+          );
+          
+          setSuggestions(filtered.slice(0, 5)); // Lấy 5 kết quả đầu tiên
+          setShowDropdown(true);
+          setIsSearching(false);
+        })
+        .catch(err => {
+          console.error(err);
+          setIsSearching(false);
+        });
+    }, 400); // Đợi 0.4s sau khi ngừng gõ
+
+    return () => clearTimeout(timeoutId);
+  }, [keyword]);
+
 
   const handleVoiceSearch = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -49,6 +102,7 @@ const MainLayout = () => {
       setTimeout(() => {
         navigate(`/search?q=${transcript}`);
         setIsSearchOpen(false);
+        setShowDropdown(false);
       }, 500);
     };
     recognition.onerror = (event) => {
@@ -62,8 +116,9 @@ const MainLayout = () => {
 
   const handleSearch = (e) => {
     if (e.key === 'Enter' && keyword.trim() !== "") {
-      navigate(`/search?q=${keyword}`);
+      navigate(`/search?q=${encodeURIComponent(keyword)}`);
       setIsSearchOpen(false);
+      setShowDropdown(false); // Đóng dropdown khi đã search
       setKeyword("");
     }
   };
@@ -229,7 +284,7 @@ const MainLayout = () => {
               Trang chủ
             </Link>
 
-            {/* 1. Cuộc đời, sự nghiệp (Giữ nguyên không có Dropdown) */}
+            {/* 1. Cuộc đời, sự nghiệp */}
             <Link to="/bio" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors">
               Cuộc đời, sự nghiệp
             </Link>
@@ -263,48 +318,38 @@ const MainLayout = () => {
                 <Link to="/category/ve-ho-chi-minh" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Những tác phẩm viết về Hồ Chí Minh</Link>
                 <Link to="/ideology/tai-lieu-hoc-tap" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 transition-colors">Tài liệu học tập làm theo Bác</Link>
                 <Link to="/ideology/trong-long-dan-toc" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Hồ Chí Minh trong lòng dân tộc và thế giới</Link>
-
               </div>
             </div>
-
-            {/* 4. Sáng mãi niềm tin theo Bác
-            <div className="relative group h-full">
-              <Link to="/category/sang-mai-niem-tin" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors cursor-pointer">
-                Sáng mãi niềm tin theo Bác
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </Link>
-              <div className="absolute left-0 top-full hidden group-hover:block w-[320px] bg-[#fdfbf2] text-gray-800 shadow-2xl border-t-[3px] border-red-700 py-1 z-[999]">
-                <Link to="/category/trong-long-dan-toc" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 transition-colors">Hồ Chí Minh trong lòng dân tộc và thế giới</Link>
-              </div>
-            </div> */}
 
           </nav>
 
           <div className="ml-auto flex items-center shrink-0 z-[1000]">
 
-            {/* Nút Search Mobile (Giữ nguyên vì màn hình điện thoại nhỏ) */}
+            {/* Nút Search Mobile */}
             <button onClick={() => setIsSearchOpen(true)} className="md:hidden bg-white/20 hover:bg-white/30 p-1.5 rounded-full transition-all">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button>
 
-            {/* Thanh Search Desktop (Tự động mở rộng khi focus) */}
-            <div className="hidden md:block relative group">
+            {/* THANH SEARCH DESKTOP CÓ DROPDOWN LIVE SEARCH */}
+            <div className="hidden md:block relative group z-[9999]" ref={searchRef}>
 
               {/* Input field */}
               <input
                 type="text"
                 placeholder="Tìm kiếm tài liệu..."
                 value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
+                onChange={(e) => {
+                  setKeyword(e.target.value);
+                  setShowDropdown(true);
+                }}
+                onFocus={() => keyword.length >= 2 && setShowDropdown(true)}
                 onKeyDown={handleSearch}
                 className="bg-black/10 text-white placeholder-white/70 px-4 py-2 pl-10 pr-10 rounded-full border border-white/20 hover:bg-black/20 focus:bg-white focus:text-gray-900 focus:placeholder-gray-400 focus:outline-none focus:border-transparent focus:ring-2 focus:ring-red-400/50 transition-all duration-500 w-[200px] lg:w-[240px] xl:w-[280px] focus:!w-[340px] xl:focus:!w-[400px] shadow-inner"
               />
 
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-white/70 group-focus-within:text-red-700 transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-white/70 group-focus-within:text-red-700 transition-colors duration-300 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
 
@@ -324,6 +369,54 @@ const MainLayout = () => {
                   </svg>
                 )}
               </button>
+
+              {/* KHUNG GỢI Ý DROP-DOWN */}
+              {showDropdown && keyword.trim().length >= 2 && (
+                <div className="absolute top-[calc(100%+10px)] right-0 w-[340px] xl:w-[400px] bg-white rounded-xl shadow-[0_15px_50px_rgba(0,0,0,0.2)] border border-gray-100 overflow-hidden transform transition-all">
+                  {isSearching ? (
+                    <div className="flex justify-center items-center py-6 text-gray-500">
+                      <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-red-700"></div>
+                      <span className="ml-2 text-sm">Đang tìm kiếm...</span>
+                    </div>
+                  ) : suggestions.length > 0 ? (
+                    <div className="py-2">
+                      {suggestions.map((doc) => (
+                        <div 
+                          key={`sugg-${doc.id}`}
+                          onClick={() => {
+                            setShowDropdown(false);
+                            setKeyword("");
+                            navigate(`/book/${doc.id}`);
+                          }}
+                          className="flex items-center px-4 py-3 hover:bg-red-50 cursor-pointer transition-colors border-b border-gray-50 last:border-0"
+                        >
+                          <div className="w-10 h-14 bg-gray-100 rounded shadow-sm overflow-hidden flex-shrink-0 border border-gray-200">
+                            {doc.coverImageUrl && doc.coverImageUrl !== "null" ? (
+                              <img src={doc.coverImageUrl} className="w-full h-full object-cover" alt="" />
+                            ) : (
+                              <div className="h-full w-full flex items-center justify-center bg-red-100 text-red-800 text-[10px] font-bold">BÁC</div>
+                            )}
+                          </div>
+                          <div className="overflow-hidden flex-1 ml-3">
+                            <h4 className="text-[13px] font-bold text-gray-800 truncate">{doc.title}</h4>
+                            <p className="text-[11px] text-gray-500 italic truncate mt-0.5">{doc.author || "Đang cập nhật"}</p>
+                          </div>
+                        </div>
+                      ))}
+                      <button 
+                        onClick={() => { setShowDropdown(false); navigate(`/search?q=${encodeURIComponent(keyword)}`); setKeyword(""); }}
+                        className="w-full text-center p-3 text-sm text-red-700 font-bold hover:bg-red-50 hover:text-red-800 transition-colors bg-gray-50/50 mt-1"
+                      >
+                        Xem tất cả kết quả cho "{keyword}"
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="py-6 text-center text-gray-500 text-[13px]">
+                      Không tìm thấy tài liệu nào khớp với "{keyword}"
+                    </div>
+                  )}
+                </div>
+              )}
 
             </div>
           </div>
@@ -422,13 +515,7 @@ const MainLayout = () => {
           <img
             src={FooterImg}
             alt="Hoa văn"
-            className="
-        /* Mobile: Lấp đầy toàn bộ để không bị trắng nền */
-        w-full h-full object-cover object-bottom opacity-100 select-none
-        
-        /* Laptop (md:): Trở lại như cũ, không kéo giãn, không cắt hình */
-        md:w-full md:h-auto md:object-contain md:opacity-100 md:mb-100
-      "
+            className="w-full h-full object-cover object-bottom opacity-100 select-none md:w-full md:h-auto md:object-contain md:opacity-100 md:mb-100"
           />
         </div>
 

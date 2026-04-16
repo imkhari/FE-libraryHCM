@@ -108,7 +108,7 @@ function BioPage() {
 
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start relative w-full">
 
-          {/* CỘT TRÁI (Ảnh chân dung - STICKY) */}
+          {/* CỘT TRÁI (Ảnh chân dung - STICKY) - Giữ nguyên hoàn toàn */}
           <motion.div
             variants={leftColumnVariants}
             initial="hidden"
@@ -130,28 +130,65 @@ function BioPage() {
           {/* CỘT PHẢI (Chứa Timeline và Sơ đồ tư duy) */}
           <div className="w-full lg:w-[68%] flex flex-col">
 
-            {/* TIMELINE SECTION */}
+            {/* TIMELINE SECTION - Đã nâng cấp UI thẻ Card 3D và Framer Motion */}
             <motion.div variants={rightColumnVariants} initial="hidden" animate="visible" className="bg-white p-6 md:p-10 rounded-2xl shadow-xl border border-red-50/50 relative overflow-hidden">
               <div className="absolute top-0 right-0 opacity-[0.03] pointer-events-none w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')]"></div>
+              
               <div className="relative z-10">
                 <h2 className="text-2xl font-black text-gray-800 mb-10 pb-4 border-b-2 border-red-100 uppercase tracking-widest flex items-center gap-3">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   Dòng thời gian lịch sử
                 </h2>
-                <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} className="space-y-14 border-l-[3px] border-red-100 ml-3 md:ml-4">
-                  {timelineData.map((item, index) => (
-                    <motion.div variants={itemVariants} key={index} className="relative pl-8 md:pl-10 group">
-                      <div className="absolute -left-[11px] top-1.5 w-5 h-5 bg-red-700 rounded-full border-4 border-white shadow-md group-hover:bg-yellow-500 group-hover:scale-125 transition-all duration-300"></div>
-                      <div className="inline-block px-4 py-1.5 bg-red-50 text-red-800 text-sm font-black rounded-full mb-4 border border-red-200 shadow-sm shadow-red-100/50">{item.year}</div>
-                      <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 leading-snug group-hover:text-red-700 transition-colors">{item.title}</h3>
-                      <p className="text-gray-700 leading-[1.8] text-justify font-serif text-[15px] md:text-[16px]">{item.content}</p>
-                    </motion.div>
-                  ))}
-                </motion.div>
+                
+                {/* Dây cuộn Timeline */}
+                <div className="space-y-12 border-l-[3px] border-red-100 ml-3 md:ml-4 relative">
+                  {timelineData.map((item, index) => {
+                    const yearWatermark = item.year.slice(-4); // Lấy 4 số cuối làm watermark bóng mờ
+                    return (
+                      <motion.div 
+                        initial={{ opacity: 0, x: 50 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true, margin: "-50px" }}
+                        transition={{ duration: 0.6, type: "spring", stiffness: 100, delay: 0.1 }}
+                        key={index} 
+                        className="relative pl-8 md:pl-12 group"
+                      >
+                        {/* Nút mốc thời gian */}
+                        <div className="absolute -left-[14px] md:-left-[15px] top-4 w-6 h-6 md:w-7 md:h-7 bg-red-700 rounded-full border-4 border-white shadow-md group-hover:bg-yellow-500 group-hover:scale-125 transition-all duration-300 z-10 flex items-center justify-center">
+                          <div className="w-1.5 h-1.5 bg-white rounded-full group-hover:hidden"></div>
+                        </div>
+
+                        {/* Thẻ Card nội dung (Glassmorphism) */}
+                        <div className="bg-white p-6 md:p-8 rounded-2xl shadow-[0_5px_20px_rgba(185,28,28,0.05)] border border-red-50 group-hover:shadow-[0_15px_30px_rgba(185,28,28,0.12)] transition-all duration-300 relative overflow-hidden">
+                          
+                          {/* Hiệu ứng nền mờ khi Hover */}
+                          <div className="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-red-100 transition-colors duration-500"></div>
+
+                          {/* Hiển thị năm watermark to bản, nhạt màu phía sau */}
+                          <div className="absolute top-2 right-4 opacity-5 font-black text-6xl md:text-7xl text-red-900 pointer-events-none select-none">
+                            {yearWatermark}
+                          </div>
+
+                          <div className="relative z-10">
+                            <div className="inline-block px-4 py-1.5 bg-gradient-to-r from-red-50 to-white text-red-800 text-sm font-black rounded-lg mb-4 border border-red-100 shadow-sm">
+                              {item.year}
+                            </div>
+                            <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 leading-snug group-hover:text-red-700 transition-colors">
+                              {item.title}
+                            </h3>
+                            <p className="text-gray-700 leading-relaxed text-justify font-serif text-[15px] md:text-[16px]">
+                              {item.content}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
               </div>
             </motion.div>
 
-            {/* SƠ ĐỒ TƯ DUY (Đã sửa lại chỉ tập trung vào Bác Hồ) */}
+            {/* SƠ ĐỒ TƯ DUY - Giữ nguyên hoàn toàn */}
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -159,7 +196,6 @@ function BioPage() {
               variants={containerVariants}
               className="mt-20 pt-16 border-t-2 border-dashed border-red-200 w-full"
             >
-              {/* 🚀 ĐÃ SỬA: Tối ưu kích thước Tiêu đề để không rớt chữ lộn xộn */}
               <div className="text-center mb-16 px-2">
                 <h3 className="text-red-700 font-bold uppercase text-sm tracking-[0.3em] mb-3">Phân tích Lịch sử</h3>
                 <h2 className="text-[26px] sm:text-3xl md:text-4xl font-black text-red-800 uppercase tracking-tight leading-tight mx-auto max-w-2xl">
@@ -168,7 +204,6 @@ function BioPage() {
                 <div className="h-1.5 w-24 bg-red-600 mx-auto mt-5 rounded-full shadow-[0_0_10px_rgba(220,38,38,0.5)]"></div>
               </div>
 
-              {/* 🚀 ĐÃ SỬA: Chuyển toàn bộ thành dạng 1 Cột Dọc (Không còn chia đôi) */}
               <div className="flex flex-col items-center w-full px-4">
 
                 {/* BƯỚC 1 */}

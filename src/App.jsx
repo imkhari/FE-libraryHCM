@@ -10,6 +10,7 @@ import BioPage from './pages/BioPage';
 import IdeologyPage from './pages/IdeologyPage';
 import ArticleDetail from './pages/ArticleDetail';
 import VideoDetailPage from './pages/VideoDetailPage';
+import GalleryPage from './pages/GalleryPage';
 import BG2 from './assets/bg2.jpeg';
 import FooterImg from './assets/bg1.jpg';
 
@@ -28,7 +29,7 @@ const MainLayout = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-  const searchRef = useRef(null); 
+  const searchRef = useRef(null);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -64,11 +65,11 @@ const MainLayout = () => {
           if (Array.isArray(res.data)) allDocs = res.data;
           else if (res.data && Array.isArray(res.data.content)) allDocs = res.data.content;
 
-          const filtered = allDocs.filter(doc => 
+          const filtered = allDocs.filter(doc =>
             doc.title?.toLowerCase().includes(keyword.toLowerCase()) ||
             doc.author?.toLowerCase().includes(keyword.toLowerCase())
           );
-          
+
           setSuggestions(filtered.slice(0, 5)); // Lấy 5 kết quả đầu tiên
           setShowDropdown(true);
           setIsSearching(false);
@@ -181,7 +182,9 @@ const MainLayout = () => {
 
       {/* SEARCH OVERLAY */}
       {isSearchOpen && (
-        <div className="fixed inset-0 z-[1000] bg-red-900/95 backdrop-blur-md flex flex-col items-center justify-start pt-24 md:pt-40 px-4 transition-all duration-500">
+        <div className="fixed inset-0 z-[1000] bg-red-900/95 backdrop-blur-md flex flex-col items-center justify-start pt-20 md:pt-40 px-4 transition-all duration-500">
+
+          {/* Nút Đóng (Dấu X) */}
           <button
             onClick={() => setIsSearchOpen(false)}
             className="absolute top-6 right-6 md:top-8 md:right-8 text-white/60 hover:text-white hover:rotate-90 transition-all duration-300"
@@ -192,6 +195,8 @@ const MainLayout = () => {
           </button>
 
           <div className="w-full max-w-3xl flex flex-col items-center">
+
+            {/* Khung nhập liệu Search */}
             <div className="relative w-full group">
               <div className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-gray-400">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -202,7 +207,7 @@ const MainLayout = () => {
               <input
                 autoFocus
                 type="text"
-                placeholder={isListening ? "Đang lắng nghe..." : "Tìm kiếm..."}
+                placeholder={isListening ? "Đang lắng nghe..." : "Tìm kiếm tài liệu..."}
                 className={`w-full bg-white rounded-xl md:rounded-2xl py-4 md:py-5 pl-12 md:pl-14 pr-14 md:pr-16 text-lg md:text-2xl outline-none shadow-[0_0_40px_rgba(0,0,0,0.3)] transition-all duration-300 ${isListening ? 'ring-4 ring-red-400' : 'focus:ring-4 focus:ring-red-400/50'}`}
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
@@ -226,6 +231,55 @@ const MainLayout = () => {
                 )}
               </button>
             </div>
+
+            {/* KHUNG GỢI Ý KẾT QUẢ CHO MOBILE (Giống hệt Desktop) */}
+            {keyword.trim().length >= 2 && (
+              <div className="w-full mt-3 bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[50vh] md:max-h-[400px] animate-fade-in">
+                {isSearching ? (
+                  <div className="flex justify-center items-center py-6 text-gray-500">
+                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-red-700"></div>
+                    <span className="ml-2 text-sm">Đang tìm kiếm...</span>
+                  </div>
+                ) : suggestions.length > 0 ? (
+                  <div className="overflow-y-auto">
+                    {suggestions.map((doc) => (
+                      <div
+                        key={`mob-sugg-${doc.id}`}
+                        onClick={() => {
+                          setIsSearchOpen(false); // Đóng nền đỏ
+                          setKeyword(""); // Xóa chữ
+                          navigate(`/book/${doc.id}`); // Mở ngay sách
+                        }}
+                        className="flex items-center px-4 py-3 hover:bg-red-50 cursor-pointer transition-colors border-b border-gray-100 last:border-0"
+                      >
+                        <div className="w-10 h-14 bg-gray-100 rounded shadow-sm overflow-hidden flex-shrink-0 border border-gray-200">
+                          {doc.coverImageUrl && doc.coverImageUrl !== "null" ? (
+                            <img src={doc.coverImageUrl} className="w-full h-full object-cover" alt="" />
+                          ) : (
+                            <div className="h-full w-full flex items-center justify-center bg-red-100 text-red-800 text-[10px] font-bold">BÁC</div>
+                          )}
+                        </div>
+                        <div className="overflow-hidden flex-1 ml-3 text-left">
+                          <h4 className="text-[14px] font-bold text-gray-800 truncate">{doc.title}</h4>
+                          <p className="text-[12px] text-gray-500 italic truncate mt-0.5">{doc.author || "Đang cập nhật"}</p>
+                        </div>
+                      </div>
+                    ))}
+                    <button
+                      onClick={() => { setIsSearchOpen(false); navigate(`/search?q=${encodeURIComponent(keyword)}`); setKeyword(""); }}
+                      className="w-full text-center p-3 text-sm text-red-700 font-bold hover:bg-red-100 transition-colors bg-red-50 mt-1"
+                    >
+                      Xem tất cả kết quả cho "{keyword}"
+                    </button>
+                  </div>
+                ) : (
+                  <div className="py-6 text-center text-gray-500 text-[14px]">
+                    Không tìm thấy tài liệu nào khớp.
+                  </div>
+                )}
+              </div>
+            )}
+
           </div>
         </div>
       )}
@@ -250,12 +304,12 @@ const MainLayout = () => {
         </div>
       </div>
 
-      {/* BANNER - Tối ưu chiều cao nhỏ gọn, không cắt xén logo */}
-      <div className="relative w-full h-[75px] sm:h-[90px] md:h-[120px] lg:h-[150px] overflow-hidden border-b border-red-200 bg-[#fdfbf2]">
+      {/* BANNER - Tối ưu hiển thị không bị méo trên Mobile và chuẩn form trên Desktop */}
+      <div className="relative w-full bg-white border-b border-red-200 overflow-hidden flex justify-center">
         <img
           src={BG2}
-          alt="Banner"
-          className="w-full h-full object-fill"
+          alt="Banner THPT Thái Phiên"
+          className="w-full h-auto object-contain md:h-[135px] lg:h-[165px] md:object-cover md:object-center"
         />
       </div>
 
@@ -321,6 +375,10 @@ const MainLayout = () => {
               </div>
             </div>
 
+            <Link to="/gallery" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors">
+              Triển lãm Ảnh
+            </Link>
+
           </nav>
 
           <div className="ml-auto flex items-center shrink-0 z-[1000]">
@@ -381,7 +439,7 @@ const MainLayout = () => {
                   ) : suggestions.length > 0 ? (
                     <div className="py-2">
                       {suggestions.map((doc) => (
-                        <div 
+                        <div
                           key={`sugg-${doc.id}`}
                           onClick={() => {
                             setShowDropdown(false);
@@ -403,7 +461,7 @@ const MainLayout = () => {
                           </div>
                         </div>
                       ))}
-                      <button 
+                      <button
                         onClick={() => { setShowDropdown(false); navigate(`/search?q=${encodeURIComponent(keyword)}`); setKeyword(""); }}
                         className="w-full text-center p-3 text-sm text-red-700 font-bold hover:bg-red-50 hover:text-red-800 transition-colors bg-gray-50/50 mt-1"
                       >
@@ -424,7 +482,7 @@ const MainLayout = () => {
 
         {/* DROPDOWN MENU CHO MOBILE */}
         {isMobileMenuOpen && (
-          <div className="md:hidden bg-[#b71a14] w-full border-t border-red-800 shadow-xl flex flex-col absolute top-full left-0 z-50 max-h-[75vh] overflow-y-auto">
+          <div className="md:hidden bg-[#b71a14] w-full border-t border-red-800 shadow-xl flex flex-col absolute top-full left-0 z-50 max-h-[80vh] overflow-y-auto">
             <Link to="/" className="px-4 py-3 text-sm font-bold uppercase border-b border-red-800/50 text-white">Trang chủ</Link>
             <Link to="/bio" className="px-4 py-3 text-sm font-bold uppercase border-b border-red-800/50 text-white">Cuộc đời, sự nghiệp</Link>
 
@@ -441,10 +499,14 @@ const MainLayout = () => {
             <div className="flex flex-col border-b border-red-800/50">
               <div className="px-4 py-3 text-sm font-bold uppercase text-white bg-red-800/30">Sáng mãi niềm tin theo Bác</div>
               <Link to="/ideology/vang-vong-loi-non-nuoc" className="px-8 py-2 text-sm text-red-100 border-t border-red-800/30">- Vang vọng lời non nước</Link>
-              <Link to="/ideology/ve-ho-chi-minh" className="px-8 py-2 text-sm text-red-100 border-t border-red-800/30">- Những tác phẩm viết về Bác</Link>
+              <Link to="/category/ve-ho-chi-minh" className="px-8 py-2 text-sm text-red-100 border-t border-red-800/30">- Những tác phẩm viết về Bác</Link>
               <Link to="/ideology/tai-lieu-hoc-tap" className="px-8 py-2 text-sm text-red-100 border-t border-red-800/30">- Tài liệu học tập</Link>
               <Link to="/ideology/trong-long-dan-toc" className="px-8 py-3 text-sm text-red-100 border-t border-red-800/30 pb-4">- Bác trong lòng dân tộc và thế giới</Link>
             </div>
+
+            <Link to="/gallery" className="px-4 py-3 text-sm font-bold uppercase border-b border-red-800/50 text-white">
+               Triển lãm Ảnh
+            </Link>
           </div>
         )}
       </header>
@@ -584,6 +646,7 @@ function App() {
           <Route path="/ideology/:type?" element={<IdeologyPage />} />
           <Route path="/article/:id" element={<ArticleDetail />} />
           <Route path="/video/:id" element={<VideoDetailPage />} />
+          <Route path="/gallery" element={<GalleryPage />} />
         </Route>
 
         <Route path="/reader/:id" element={<ReaderPage />} />

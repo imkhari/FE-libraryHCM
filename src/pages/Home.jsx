@@ -61,6 +61,26 @@ const BookCard = ({ doc, navigate }) => {
   );
 };
 
+// 2. COMPONENT KHUNG XƯƠNG (SKELETON)
+const BookCardSkeleton = () => {
+  return (
+    <div className="bg-white rounded-xl shadow-sm flex flex-col h-full border border-gray-100 overflow-hidden w-full animate-pulse">
+      {/* Khung ảnh bìa giả - Giữ đúng tỷ lệ aspect-[2/3] */}
+      <div className="relative w-full aspect-[2/3] bg-gray-200 shrink-0 border-b border-gray-100"></div>
+      
+      {/* Khung nội dung (Tiêu đề, Tác giả) giả */}
+      <div className="p-3 flex-1 flex flex-col gap-2">
+        <div className="h-4 bg-gray-200 rounded w-full"></div>
+        <div className="h-4 bg-gray-200 rounded w-4/5"></div>
+        <div className="mt-auto pt-3">
+          <div className="h-3 bg-gray-100 rounded w-1/2 mb-2"></div>
+          <div className="h-3 bg-gray-100 rounded w-1/3"></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 function Home() {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -96,7 +116,7 @@ function Home() {
       .catch((error) => {
         console.error("Lỗi API:", error);
         if (!cachedData) setLoading(false);
-      });
+      }, 3000);
   }, []);
 
   const articles = documents.filter(doc => doc.readType === 'HTML' || doc.read_type === 'HTML');
@@ -125,7 +145,7 @@ function Home() {
         initial="hidden"
         animate="visible"
         variants={containerVariants}
-        className="relative bg-cover bg-[85%_center] md:bg-center bg-no-repeat pt-12 pb-12 md:py-32 shadow-2xl overflow-hidden flex flex-col md:flex-row items-center justify-start md:justify-center min-h-[65vh] md:min-h-[auto]"
+        className="relative bg-cover bg-[85%_center] md:bg-center bg-no-repeat pt-12 pb-12 md:py-31 shadow-2xl overflow-hidden flex flex-col md:flex-row items-center justify-start md:justify-center min-h-[55vh] md:min-h-[auto]"
         style={{ backgroundImage: `url(${MyBackgroundImage})` }}
       >
         <motion.div
@@ -135,10 +155,10 @@ function Home() {
           className="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"
         ></motion.div>
 
-        <div className="relative z-30 w-full max-w-5xl mx-auto text-center px-4 pt-8 md:pt-0 pb-0 md:pb-0">
+        <div className="relative z-30 w-full max-w-5xl mx-auto text-center px-4 pt-6 md:pt-0 pb-0 md:pb-0">
           <motion.h1
             variants={itemVariants}
-            className="text-4xl sm:text-5xl md:text-5xl lg:text-7xl font-black mb-4 md:mb-6 uppercase tracking-tight text-yellow-300 drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] leading-tight pb-3"
+            className="text-4xl sm:text-5xl md:text-5xl lg:text-7xl font-black mb-2 md:mb-4 uppercase tracking-tight text-yellow-300 drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] leading-tight pb-3"
           >
             Không gian văn hoá <br className="hidden md:block" />
             Hồ Chí Minh
@@ -177,9 +197,32 @@ function Home() {
       {/* NỘI DUNG CHÍNH */}
       <main className="flex-grow max-w-7xl mx-auto px-4 py-16 overflow-hidden w-full">
         {loading ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-700"></div>
+          
+          /* HIỆN SKELETON TRONG LÚC ĐỢI API */
+          <div className="space-y-16 md:space-y-20 animate-fade-in pt-4">
+            {/* Tạo 3 khối danh mục giả lập */}
+            {[1, 2, 3].map((sectionIndex) => (
+              <section key={`skeleton-section-${sectionIndex}`}>
+                {/* Tiêu đề danh mục giả */}
+                <div className="flex flex-col items-center justify-center mb-8 md:mb-10">
+                  <div className="h-3 w-24 bg-red-100 rounded mb-4 animate-pulse"></div>
+                  <div className="h-8 md:h-10 w-64 md:w-96 bg-red-100 rounded animate-pulse"></div>
+                  <div className="h-1 w-16 md:w-20 bg-red-200 mt-4 rounded-full animate-pulse"></div>
+                </div>
+                
+                {/* Lưới sách giả */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5 px-0 sm:px-2 md:px-10">
+                  {[...Array(5)].map((_, i) => (
+                    /* Ẩn bớt card trên mobile để không làm trang quá dài, tạo cảm giác giống Swiper */
+                    <div key={`skeleton-card-${i}`} className={i >= 2 ? "hidden sm:block" : ""}>
+                      <BookCardSkeleton />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            ))}
           </div>
+
         ) : (
           <>
             {booksByHoChiMinh.length > 0 && (

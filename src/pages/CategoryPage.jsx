@@ -67,24 +67,16 @@ function CategoryPage() {
   const [displayDocs, setDisplayDocs] = useState([]); 
   const [pageTitle, setPageTitle] = useState("");
   const [loading, setLoading] = useState(true);
-
   const [activeTabs, setActiveTabs] = useState({ 1: 'dich', 2: 'dich', 3: 'dich' });
   
-  // STATE CHO PHÂN TRANG VÀ SCROLL
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 15;
-  
-  const listRef = useRef(null); 
   const titleRef = useRef(null); 
 
-  // =========================================================================
-  // 1. USE-EFFECT XỬ LÝ KHI ĐỔI CHUYÊN MỤC (Đổi type trên URL)
-  // =========================================================================
   useEffect(() => {
-    setCurrentPage(1); // Reset về trang 1
+    setCurrentPage(1);
     
-    // Đặt lại Tiêu đề trang
     const titleMap = {
       'ho-chi-minh-toan-tap': "Hồ Chí Minh Toàn Tập (15 Tập)",
       'bai-bao': "Những bài báo của Hồ Chí Minh",
@@ -95,28 +87,18 @@ function CategoryPage() {
     };
     setPageTitle(titleMap[type] || "Tác phẩm về Hồ Chí Minh");
 
-    fetchData(1); // Gọi API lấy trang 1
+    fetchData(1);
   }, [type]);
 
-  // =========================================================================
-  // 2. USE-EFFECT XỬ LÝ KHI BẤM CHUYỂN TRANG
-  // =========================================================================
   useEffect(() => {
-    // Không gọi lại fetchData nếu đang ở trang 1 mà vừa đổi chuyên mục (tránh gọi API 2 lần)
     if (currentPage === 1 && displayDocs.length > 0 && !loading) return; 
-    
     fetchData(currentPage);
   }, [currentPage]);
 
-  // =========================================================================
-  // 3. HÀM GỌI API CHUẨN MỚI
-  // =========================================================================
   const fetchData = (page) => {
     setLoading(true);
-    // API mới siêu nhẹ: Chỉ trả về 15 cuốn sách của trang hiện tại
     api.get(`/documents/category/${type}?page=${page - 1}&size=${itemsPerPage}`)
       .then((res) => {
-        // Spring Boot Page trả về list sách nằm trong `content`
         const data = res.data.content || res.data;
         setDisplayDocs(data);
         setTotalPages(res.data.totalPages || 1);
@@ -130,10 +112,8 @@ function CategoryPage() {
 
   const mainDiaryBook = displayDocs.find(doc => doc.slug === 'nhat-ky-trong-tu-full') || displayDocs[0];
 
-  // Hàm xử lý bấm nút phân trang
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
-    // Cuộn lên vị trí của Tiêu đề
     if (titleRef.current) {
       const yOffset = titleRef.current.getBoundingClientRect().top + window.scrollY - 100;
       window.scrollTo({ top: yOffset, behavior: 'smooth' });
@@ -143,7 +123,6 @@ function CategoryPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-12 overflow-hidden">
       
-      {/* TIÊU ĐỀ TRANG CÓ ANIMATION - ĐÃ GẮN titleRef */}
       <motion.div 
         ref={titleRef} 
         initial={{ opacity: 0, y: -20 }}
@@ -167,7 +146,6 @@ function CategoryPage() {
         ></motion.div>
       </motion.div>
 
-      {/* BANNER ĐẶC BIỆT CHỈ HIỆN CHO NHẬT KÝ TRONG TÙ */}
       {type === 'nhat-ky-trong-tu' && !loading && (
         <motion.div 
           variants={bannerVariants}
@@ -244,7 +222,6 @@ function CategoryPage() {
         </motion.div>
       )}
 
-      {/* KHU VỰC ĐẶC BIỆT: NHỮNG VẦN THƠ TUYỆT BÚT */}
       {type === 'nhat-ky-trong-tu' && !loading && (
         <div className="mt-16 mb-6">
           <motion.div 
@@ -336,9 +313,8 @@ function CategoryPage() {
         </div>
       )}
 
-      {/* DANH SÁCH CÁC TRANG CÒN LẠI */}
       {type !== 'nhat-ky-trong-tu' && (
-        <div ref={listRef}>
+        <div>
           {loading ? (
             <div className="flex flex-col items-center justify-center py-32">
               <div className="w-12 h-12 border-4 border-red-200 border-t-red-700 rounded-full animate-spin"></div>
@@ -346,7 +322,6 @@ function CategoryPage() {
             </div>
           ) : (
             <>
-              {/* LƯỚI SÁCH */}
               <motion.div 
                 variants={containerVariants}
                 initial="hidden"
@@ -393,7 +368,6 @@ function CategoryPage() {
                 )}
               </motion.div>
 
-              {/* NÚT PHÂN TRANG CHUẨN BACKEND */}
               {totalPages > 1 && (
                 <div className="flex flex-wrap justify-center items-center mt-12 gap-2">
                   <button

@@ -11,6 +11,7 @@ import IdeologyPage from './pages/IdeologyPage';
 import ArticleDetail from './pages/ArticleDetail';
 import VideoDetailPage from './pages/VideoDetailPage';
 import GalleryPage from './pages/GalleryPage';
+// import JourneyMapPage from './pages/JourneyMapPage';
 import BG2 from './assets/bg2.jpeg';
 import FooterImg from './assets/bg1.jpg';
 
@@ -647,6 +648,8 @@ function App() {
           <Route path="/article/:id" element={<ArticleDetail />} />
           <Route path="/video/:id" element={<VideoDetailPage />} />
           <Route path="/gallery" element={<GalleryPage />} />
+
+          {/* <Route path="/map" element={<JourneyMapPage />} /> */}
         </Route>
 
         <Route path="/reader/:id" element={<ReaderPage />} />

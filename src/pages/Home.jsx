@@ -145,7 +145,7 @@ function Home() {
         initial="hidden"
         animate="visible"
         variants={containerVariants}
-        className="relative bg-cover bg-[85%_center] md:bg-center bg-no-repeat pt-12 pb-12 md:py-31 shadow-2xl overflow-hidden flex flex-col md:flex-row items-center justify-start md:justify-center min-h-[55vh] md:min-h-[auto]"
+        className="relative bg-cover bg-[85%_center] md:bg-center bg-no-repeat pt-6 pb-12 md:py-31 shadow-2xl overflow-hidden flex flex-col md:flex-row items-center justify-start md:justify-center min-h-[55vh] md:min-h-[auto]"
         style={{ backgroundImage: `url(${MyBackgroundImage})` }}
       >
         <motion.div
@@ -155,7 +155,7 @@ function Home() {
           className="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"
         ></motion.div>
 
-        <div className="relative z-30 w-full max-w-5xl mx-auto text-center px-4 pt-6 md:pt-0 pb-0 md:pb-0">
+        <div className="relative z-30 w-full max-w-5xl mx-auto text-center px-4 pt-4 md:pt-0 pb-0 md:pb-0">
           <motion.h1
             variants={itemVariants}
             className="text-4xl sm:text-5xl md:text-5xl lg:text-7xl font-black mb-2 md:mb-4 uppercase tracking-tight text-yellow-300 drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] leading-tight pb-3"

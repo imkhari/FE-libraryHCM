@@ -69,20 +69,38 @@ function CategoryPage() {
   const [loading, setLoading] = useState(true);
 
   const [activeTabs, setActiveTabs] = useState({ 1: 'dich', 2: 'dich', 3: 'dich' });
-  const isInitialMount = useRef(true);
+  
+  // STATE CHO PHÂN TRANG VÀ SCROLL
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 15;
+  const listRef = useRef(null); 
+  const titleRef = useRef(null); 
 
-  // Hàm cốt lõi để phân loại dữ liệu (Giữ nguyên của Khải)
+  // Hàm cốt lõi để phân loại dữ liệu
   const processAndSetData = (allDocs) => {
     const articles = allDocs.filter(doc => doc.readType === 'HTML' || doc.read_type === 'HTML');
     const toanTap = allDocs.filter(doc => doc.title.toLowerCase().includes('toàn tập'));
     
+    // Lấy tất cả sách (không phải bài báo HTML và không phải Toàn tập)
     const books = allDocs.filter(doc => 
         (doc.readType !== 'HTML' && doc.read_type !== 'HTML') &&
         !doc.title.toLowerCase().includes('toàn tập')
     );
     
-    const booksByHoChiMinh = books.slice(0, Math.ceil(books.length / 2));
-    const booksAboutHoChiMinh = books.slice(Math.ceil(books.length / 2));
+    // DANH SÁCH BÚT DANH CỦA BÁC
+    const butDanhBac = ["hồ chí minh", "nguyễn ái quốc", "x.y.z"];
+
+    // Tác phẩm CỦA Hồ Chí Minh (Tác giả chứa bút danh của Bác)
+    const booksByHoChiMinh = books.filter(doc => {
+      const author = (doc.author || "").toLowerCase();
+      return butDanhBac.some(ten => author.includes(ten));
+    });
+
+    // Tác phẩm VỀ Hồ Chí Minh (Không chứa bút danh của Bác)
+    const booksAboutHoChiMinh = books.filter(doc => {
+      const author = (doc.author || "").toLowerCase();
+      return !butDanhBac.some(ten => author.includes(ten));
+    });
 
     if (type === 'ho-chi-minh-toan-tap') {
       const sortedToanTap = [...toanTap].sort((a, b) => {
@@ -124,23 +142,21 @@ function CategoryPage() {
       setPageTitle("Tác phẩm về Hồ Chí Minh");
     }
     
+    setCurrentPage(1); 
     setLoading(false);
   };
 
   useEffect(() => {
-    // Hiển thị ngay lập tức nếu có dữ liệu cũ trong Cache (Không cần Loading)
     const cachedData = sessionStorage.getItem('allLibraryDocs');
     if (cachedData) {
         processAndSetData(JSON.parse(cachedData));
     } else {
-        setLoading(true); // Chỉ bật Loading nếu chưa từng có Cache
+        setLoading(true); 
     }
 
-    // Ngầm gọi API để lấy dữ liệu mới nhất
     api.get('/documents?page=0&size=150')
       .then((res) => {
         const allDocs = res.data.content || res.data;
-        // Nếu dữ liệu API trả về KHÁC với Cache, tiến hành cập nhật giao diện
         if (JSON.stringify(allDocs) !== cachedData) {
             sessionStorage.setItem('allLibraryDocs', JSON.stringify(allDocs));
             processAndSetData(allDocs);
@@ -148,22 +164,35 @@ function CategoryPage() {
       })
       .catch((err) => {
          console.error("API Fetch Error:", err);
-         if (!cachedData) setLoading(false); // Chỉ tắt loading nếu chưa có cache
+         if (!cachedData) setLoading(false); 
       });
       
   }, [type]);
 
   const mainDiaryBook = displayDocs.find(doc => doc.slug === 'nhat-ky-trong-tu-full') || displayDocs[0];
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = displayDocs.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(displayDocs.length / itemsPerPage);
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    if (titleRef.current) {
+      const yOffset = titleRef.current.getBoundingClientRect().top + window.scrollY - 100;
+      window.scrollTo({ top: yOffset, behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-12 overflow-hidden">
       
-      {/* TIÊU ĐỀ TRANG CÓ ANIMATION */}
       <motion.div 
+        ref={titleRef} 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="flex flex-col items-center justify-center mb-12"
+        className="flex flex-col items-center justify-center mb-12 pt-4" 
       >
         {type === 'nhat-ky-trong-tu' && (
           <h3 className="text-red-700 font-bold uppercase text-xs md:text-sm tracking-[0.3em] mb-3 animate-pulse">
@@ -181,7 +210,6 @@ function CategoryPage() {
         ></motion.div>
       </motion.div>
 
-      {/* BANNER ĐẶC BIỆT CHỈ HIỆN CHO NHẬT KÝ TRONG TÙ */}
       {type === 'nhat-ky-trong-tu' && !loading && (
         <motion.div 
           variants={bannerVariants}
@@ -258,7 +286,6 @@ function CategoryPage() {
         </motion.div>
       )}
 
-      {/* KHU VỰC ĐẶC BIỆT: NHỮNG VẦN THƠ TUYỆT BÚT (Có Animation) */}
       {type === 'nhat-ky-trong-tu' && !loading && (
         <div className="mt-16 mb-6">
           <motion.div 
@@ -337,7 +364,6 @@ function CategoryPage() {
                       <div className="bg-red-700 text-white rounded-full p-2 shrink-0 animate-pulse">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" /></svg>
                       </div>
-                      {/* 🚀 TỐI ƯU AUDIO: Preload Metadata giúp load siêu nhanh, k tải ngầm tốn 4G */}
                       <audio controls preload="metadata" className="h-8 w-full outline-none" src={poem.audio}>
                         Trình duyệt không hỗ trợ audio
                       </audio>
@@ -351,60 +377,107 @@ function CategoryPage() {
         </div>
       )}
 
-      {/* DANH SÁCH CÁC TRANG CÒN LẠI */}
       {type !== 'nhat-ky-trong-tu' && (
-        <>
+        <div ref={listRef}>
           {loading ? (
             <div className="text-center py-20 italic text-gray-500">Đang tải dữ liệu...</div>
           ) : (
-            <motion.div 
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6"
-            >
-              {displayDocs.length > 0 ? (
-                displayDocs.map((doc) => (
-                  <motion.div 
-                    variants={itemVariants}
-                    key={doc.id} 
-                    onClick={() => navigate(`/book/${doc.id}`)} 
-                    className="group cursor-pointer flex flex-col h-full bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200 hover:shadow-xl hover:border-red-300 transition-shadow duration-300 relative"
+            <>
+              <motion.div 
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6"
+              >
+                {currentItems.length > 0 ? (
+                  currentItems.map((doc) => (
+                    <motion.div 
+                      variants={itemVariants}
+                      key={doc.id} 
+                      onClick={() => navigate(`/book/${doc.id}`)} 
+                      className="group cursor-pointer flex flex-col h-full bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200 hover:shadow-xl hover:border-red-300 transition-shadow duration-300 relative"
+                    >
+                      <div className="aspect-[2/3] overflow-hidden bg-gray-100">
+                        <motion.img 
+                          whileHover={{ scale: 1.05 }}
+                          transition={{ duration: 0.5 }}
+                          src={doc.coverImageUrl || 'https://via.placeholder.com/400x600?text=No+Cover'} 
+                          loading="lazy"
+                          className="w-full h-full object-cover" 
+                          alt={doc.title} 
+                        />
+                        {type === 'ho-chi-minh-toan-tap' && (
+                          <div className="absolute top-2 right-2 bg-red-700 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">
+                            2011
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-3 flex-1 flex flex-col">
+                        <h3 className="text-sm font-bold text-gray-800 line-clamp-2 leading-snug group-hover:text-red-700 transition-colors">
+                          {doc.title}
+                        </h3>
+                        <p className="mt-auto pt-2 text-[11px] text-gray-500 italic">
+                          {doc.author || 'Đang cập nhật'}
+                        </p>
+                      </div>
+                    </motion.div>
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-10 text-gray-500">
+                    Chưa có tài liệu nào trong mục này.
+                  </div>
+                )}
+              </motion.div>
+
+              {totalPages > 1 && (
+                <div className="flex flex-wrap justify-center items-center mt-12 gap-2">
+                  <button
+                    onClick={() => paginate(Math.max(currentPage - 1, 1))}
+                    disabled={currentPage === 1}
+                    className={`w-10 h-10 flex items-center justify-center rounded-lg border transition-all ${
+                      currentPage === 1 
+                        ? 'text-gray-300 border-gray-200 cursor-not-allowed' 
+                        : 'text-red-700 border-red-200 hover:bg-red-50 hover:border-red-400'
+                    }`}
+                    title="Trang trước"
                   >
-                    <div className="aspect-[2/3] overflow-hidden bg-gray-100">
-                      {/* 🚀 TỐI ƯU ẢNH: Lazy load - Chỉ tải khi cuộn chuột tới */}
-                      <motion.img 
-                        whileHover={{ scale: 1.05 }}
-                        transition={{ duration: 0.5 }}
-                        src={doc.coverImageUrl || 'https://via.placeholder.com/400x600?text=No+Cover'} 
-                        loading="lazy"
-                        className="w-full h-full object-cover" 
-                        alt={doc.title} 
-                      />
-                      {type === 'ho-chi-minh-toan-tap' && (
-                        <div className="absolute top-2 right-2 bg-red-700 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">
-                          2011
-                        </div>
-                      )}
-                    </div>
-                    <div className="p-3 flex-1 flex flex-col">
-                      <h3 className="text-sm font-bold text-gray-800 line-clamp-2 leading-snug group-hover:text-red-700 transition-colors">
-                        {doc.title}
-                      </h3>
-                      <p className="mt-auto pt-2 text-[11px] text-gray-500 italic">
-                        {doc.author || 'Đang cập nhật'}
-                      </p>
-                    </div>
-                  </motion.div>
-                ))
-              ) : (
-                <div className="col-span-full text-center py-10 text-gray-500">
-                  Chưa có tài liệu nào trong mục này.
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                  </button>
+
+                  {[...Array(totalPages)].map((_, index) => {
+                    const pageNumber = index + 1;
+                    return (
+                      <button
+                        key={pageNumber}
+                        onClick={() => paginate(pageNumber)}
+                        className={`w-10 h-10 flex items-center justify-center rounded-lg border text-sm font-bold transition-all ${
+                          currentPage === pageNumber 
+                          ? 'bg-red-700 text-white border-red-700 shadow-md transform scale-105' 
+                          : 'text-gray-600 border-gray-200 hover:border-red-300 hover:bg-red-50 hover:text-red-700'
+                        }`}
+                      >
+                        {pageNumber}
+                      </button>
+                    );
+                  })}
+
+                  <button
+                    onClick={() => paginate(Math.min(currentPage + 1, totalPages))}
+                    disabled={currentPage === totalPages}
+                    className={`w-10 h-10 flex items-center justify-center rounded-lg border transition-all ${
+                      currentPage === totalPages 
+                        ? 'text-gray-300 border-gray-200 cursor-not-allowed' 
+                        : 'text-red-700 border-red-200 hover:bg-red-50 hover:border-red-400'
+                    }`}
+                    title="Trang sau"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" /></svg>
+                  </button>
                 </div>
               )}
-            </motion.div>
+            </>
           )}
-        </>
+        </div>
       )}
 
     </div>

@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import api from '../services/api';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Vid1 from '../assets/bai-tho-ngam-trang.mp3';
 import Vid2 from '../assets/bai-tho-di-duong.mp3';
 import Vid3 from '../assets/bai-tho-nghe-tieng-gia-gao.mp3';
@@ -72,112 +72,68 @@ function CategoryPage() {
   
   // STATE CHO PHÂN TRANG VÀ SCROLL
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 15;
+  
   const listRef = useRef(null); 
   const titleRef = useRef(null); 
 
-  // Hàm cốt lõi để phân loại dữ liệu
-  const processAndSetData = (allDocs) => {
-    const articles = allDocs.filter(doc => doc.readType === 'HTML' || doc.read_type === 'HTML');
-    const toanTap = allDocs.filter(doc => doc.title.toLowerCase().includes('toàn tập'));
-    
-    // Lấy tất cả sách (không phải bài báo HTML và không phải Toàn tập)
-    const books = allDocs.filter(doc => 
-        (doc.readType !== 'HTML' && doc.read_type !== 'HTML') &&
-        !doc.title.toLowerCase().includes('toàn tập')
-    );
-    
-    // DANH SÁCH BÚT DANH CỦA BÁC
-    const butDanhBac = ["hồ chí minh", "nguyễn ái quốc", "x.y.z"];
-
-    // Tác phẩm CỦA Hồ Chí Minh (Tác giả chứa bút danh của Bác)
-    const booksByHoChiMinh = books.filter(doc => {
-      const author = (doc.author || "").toLowerCase();
-      return butDanhBac.some(ten => author.includes(ten));
-    });
-
-    // Tác phẩm VỀ Hồ Chí Minh (Không chứa bút danh của Bác)
-    const booksAboutHoChiMinh = books.filter(doc => {
-      const author = (doc.author || "").toLowerCase();
-      return !butDanhBac.some(ten => author.includes(ten));
-    });
-
-    if (type === 'ho-chi-minh-toan-tap') {
-      const sortedToanTap = [...toanTap].sort((a, b) => {
-         const numA = parseInt(a.title.match(/\d+/)) || 0;
-         const numB = parseInt(b.title.match(/\d+/)) || 0;
-         return numA - numB;
-      });
-      setDisplayDocs(sortedToanTap);
-      setPageTitle("Hồ Chí Minh Toàn Tập (15 Tập)");
-    }
-    else if (type === 'bai-bao') {
-      setDisplayDocs(articles);
-      setPageTitle("Những bài báo của Hồ Chí Minh");
-    } 
-    else if (type === 'cua-ho-chi-minh') {
-      setDisplayDocs(booksByHoChiMinh);
-      setPageTitle("Tác phẩm của Hồ Chí Minh");
-    } 
-    else if (type === 'nhat-ky-trong-tu') {
-      setDisplayDocs(allDocs.filter(doc => doc.title.toLowerCase().includes('nhật ký')));
-      setPageTitle('TÁC PHẨM "NHẬT KÝ TRONG TÙ"');
-    }
-    else if (type === 'tho-ho-chi-minh') {
-      const targetThoTitles = [
-        "Thơ Hồ Chí Minh - NXB Nghệ An", 
-        "Tuyển tập Thơ chúc Tết",
-        "Cảnh khuya",
-        "Báo tiệp",
-        "Tức cảnh Pác Bó",
-        "Mộ (Chiều tối)"
-      ];
-      setDisplayDocs(allDocs.filter(doc => 
-        targetThoTitles.some(t => (doc.title || "").toUpperCase().includes(t.toUpperCase()))
-      ));
-      setPageTitle("THƠ HỒ CHÍ MINH");
-    }
-    else {
-      setDisplayDocs(booksAboutHoChiMinh);
-      setPageTitle("Tác phẩm về Hồ Chí Minh");
-    }
-    
-    setCurrentPage(1); 
-    setLoading(false);
-  };
-
+  // =========================================================================
+  // 1. USE-EFFECT XỬ LÝ KHI ĐỔI CHUYÊN MỤC (Đổi type trên URL)
+  // =========================================================================
   useEffect(() => {
-    const cachedData = sessionStorage.getItem('allLibraryDocs');
-    if (cachedData) {
-        processAndSetData(JSON.parse(cachedData));
-    } else {
-        setLoading(true); 
-    }
+    setCurrentPage(1); // Reset về trang 1
+    
+    // Đặt lại Tiêu đề trang
+    const titleMap = {
+      'ho-chi-minh-toan-tap': "Hồ Chí Minh Toàn Tập (15 Tập)",
+      'bai-bao': "Những bài báo của Hồ Chí Minh",
+      'cua-ho-chi-minh': "Tác phẩm của Hồ Chí Minh",
+      'nhat-ky-trong-tu': 'TÁC PHẨM "NHẬT KÝ TRONG TÙ"',
+      'tho-ho-chi-minh': "THƠ HỒ CHÍ MINH",
+      'tac-pham-ve-ho-chi-minh': "Tác phẩm về Hồ Chí Minh"
+    };
+    setPageTitle(titleMap[type] || "Tác phẩm về Hồ Chí Minh");
 
-    api.get('/documents?page=0&size=150')
+    fetchData(1); // Gọi API lấy trang 1
+  }, [type]);
+
+  // =========================================================================
+  // 2. USE-EFFECT XỬ LÝ KHI BẤM CHUYỂN TRANG
+  // =========================================================================
+  useEffect(() => {
+    // Không gọi lại fetchData nếu đang ở trang 1 mà vừa đổi chuyên mục (tránh gọi API 2 lần)
+    if (currentPage === 1 && displayDocs.length > 0 && !loading) return; 
+    
+    fetchData(currentPage);
+  }, [currentPage]);
+
+  // =========================================================================
+  // 3. HÀM GỌI API CHUẨN MỚI
+  // =========================================================================
+  const fetchData = (page) => {
+    setLoading(true);
+    // API mới siêu nhẹ: Chỉ trả về 15 cuốn sách của trang hiện tại
+    api.get(`/documents/category/${type}?page=${page - 1}&size=${itemsPerPage}`)
       .then((res) => {
-        const allDocs = res.data.content || res.data;
-        if (JSON.stringify(allDocs) !== cachedData) {
-            sessionStorage.setItem('allLibraryDocs', JSON.stringify(allDocs));
-            processAndSetData(allDocs);
-        }
+        // Spring Boot Page trả về list sách nằm trong `content`
+        const data = res.data.content || res.data;
+        setDisplayDocs(data);
+        setTotalPages(res.data.totalPages || 1);
+        setLoading(false);
       })
       .catch((err) => {
          console.error("API Fetch Error:", err);
-         if (!cachedData) setLoading(false); 
+         setLoading(false);
       });
-      
-  }, [type]);
+  };
 
   const mainDiaryBook = displayDocs.find(doc => doc.slug === 'nhat-ky-trong-tu-full') || displayDocs[0];
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = displayDocs.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(displayDocs.length / itemsPerPage);
-
+  // Hàm xử lý bấm nút phân trang
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
+    // Cuộn lên vị trí của Tiêu đề
     if (titleRef.current) {
       const yOffset = titleRef.current.getBoundingClientRect().top + window.scrollY - 100;
       window.scrollTo({ top: yOffset, behavior: 'smooth' });
@@ -187,6 +143,7 @@ function CategoryPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-12 overflow-hidden">
       
+      {/* TIÊU ĐỀ TRANG CÓ ANIMATION - ĐÃ GẮN titleRef */}
       <motion.div 
         ref={titleRef} 
         initial={{ opacity: 0, y: -20 }}
@@ -210,6 +167,7 @@ function CategoryPage() {
         ></motion.div>
       </motion.div>
 
+      {/* BANNER ĐẶC BIỆT CHỈ HIỆN CHO NHẬT KÝ TRONG TÙ */}
       {type === 'nhat-ky-trong-tu' && !loading && (
         <motion.div 
           variants={bannerVariants}
@@ -286,6 +244,7 @@ function CategoryPage() {
         </motion.div>
       )}
 
+      {/* KHU VỰC ĐẶC BIỆT: NHỮNG VẦN THƠ TUYỆT BÚT */}
       {type === 'nhat-ky-trong-tu' && !loading && (
         <div className="mt-16 mb-6">
           <motion.div 
@@ -377,20 +336,25 @@ function CategoryPage() {
         </div>
       )}
 
+      {/* DANH SÁCH CÁC TRANG CÒN LẠI */}
       {type !== 'nhat-ky-trong-tu' && (
         <div ref={listRef}>
           {loading ? (
-            <div className="text-center py-20 italic text-gray-500">Đang tải dữ liệu...</div>
+            <div className="flex flex-col items-center justify-center py-32">
+              <div className="w-12 h-12 border-4 border-red-200 border-t-red-700 rounded-full animate-spin"></div>
+              <p className="mt-4 text-gray-500 italic">Đang tải dữ liệu...</p>
+            </div>
           ) : (
             <>
+              {/* LƯỚI SÁCH */}
               <motion.div 
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
                 className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6"
               >
-                {currentItems.length > 0 ? (
-                  currentItems.map((doc) => (
+                {displayDocs.length > 0 ? (
+                  displayDocs.map((doc) => (
                     <motion.div 
                       variants={itemVariants}
                       key={doc.id} 
@@ -416,19 +380,20 @@ function CategoryPage() {
                         <h3 className="text-sm font-bold text-gray-800 line-clamp-2 leading-snug group-hover:text-red-700 transition-colors">
                           {doc.title}
                         </h3>
-                        <p className="mt-auto pt-2 text-[11px] text-gray-500 italic">
+                        <p className="mt-auto pt-2 text-[11px] text-gray-500 italic line-clamp-1">
                           {doc.author || 'Đang cập nhật'}
                         </p>
                       </div>
                     </motion.div>
                   ))
                 ) : (
-                  <div className="col-span-full text-center py-10 text-gray-500">
-                    Chưa có tài liệu nào trong mục này.
+                  <div className="col-span-full text-center py-20 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+                    <p className="text-gray-500 font-medium">Chưa có tài liệu nào trong mục này.</p>
                   </div>
                 )}
               </motion.div>
 
+              {/* NÚT PHÂN TRANG CHUẨN BACKEND */}
               {totalPages > 1 && (
                 <div className="flex flex-wrap justify-center items-center mt-12 gap-2">
                   <button
@@ -439,7 +404,6 @@ function CategoryPage() {
                         ? 'text-gray-300 border-gray-200 cursor-not-allowed' 
                         : 'text-red-700 border-red-200 hover:bg-red-50 hover:border-red-400'
                     }`}
-                    title="Trang trước"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
                   </button>
@@ -469,7 +433,6 @@ function CategoryPage() {
                         ? 'text-gray-300 border-gray-200 cursor-not-allowed' 
                         : 'text-red-700 border-red-200 hover:bg-red-50 hover:border-red-400'
                     }`}
-                    title="Trang sau"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" /></svg>
                   </button>

@@ -40,7 +40,7 @@ const ArrowDownRed = () => (
 );
 
 function BioPage() {
-  const portraitUrl = "https://upload.wikimedia.org/wikipedia/commons/1/1c/Ho_Chi_Minh_1946.jpg";
+  const portraitUrl = "https://inkythuatso.com/uploads/thumbnails/800/2023/03/nhung-hinh-anh-ve-bac-ho-dep-nhat-4-04-11-50-04.jpg?w=1130";
   const contentRef = useRef(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
 

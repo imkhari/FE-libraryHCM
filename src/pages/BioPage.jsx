@@ -101,14 +101,14 @@ function BioPage() {
             Cuộc đời và Sự nghiệp
           </h1>
           <div className="h-1.5 w-24 bg-yellow-500 mx-auto rounded-full shadow-sm"></div>
-          <p className="mt-5 text-xl text-gray-700 font-serif italic">
+          <p className="mt-5 text-xl text-gray-700 font-['Lora',_serif] italic">
             Chủ tịch Hồ Chí Minh (1890 - 1969)
           </p>
         </motion.div>
 
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start relative w-full">
 
-          {/* CỘT TRÁI (Ảnh chân dung - STICKY) - Giữ nguyên hoàn toàn */}
+          {/* CỘT TRÁI (Ảnh chân dung - STICKY) */}
           <motion.div
             variants={leftColumnVariants}
             initial="hidden"
@@ -121,7 +121,8 @@ function BioPage() {
               <img src={portraitUrl} alt="Chân dung Bác Hồ" className="w-full max-w-sm h-auto object-cover grayscale-[15%] group-hover:grayscale-0 transition-all duration-700 shadow-inner" />
             </div>
             <div className="mt-8 bg-white/60 px-6 py-4 border-l-4 border-red-700 shadow-sm rounded-r-lg w-full max-w-sm">
-              <p className="text-sm text-gray-700 font-serif italic text-justify leading-relaxed">
+              {/* ĐÃ SỬA: Bỏ text-justify, thêm font Lora để chữ hiển thị mượt mà trên Windows */}
+              <p className="text-[15px] md:text-base text-gray-800 font-['Lora',_serif] italic text-left leading-relaxed">
                 "Tôi chỉ có một sự ham muốn, ham muốn tột bậc, là làm sao cho nước ta được hoàn toàn độc lập, dân ta được hoàn toàn tự do, đồng bào ai cũng có cơm ăn áo mặc, ai cũng được học hành."
               </p>
             </div>
@@ -130,7 +131,7 @@ function BioPage() {
           {/* CỘT PHẢI (Chứa Timeline và Sơ đồ tư duy) */}
           <div className="w-full lg:w-[68%] flex flex-col">
 
-            {/* TIMELINE SECTION - Đã nâng cấp UI thẻ Card 3D và Framer Motion */}
+            {/* TIMELINE SECTION */}
             <motion.div variants={rightColumnVariants} initial="hidden" animate="visible" className="bg-white p-6 md:p-10 rounded-2xl shadow-xl border border-red-50/50 relative overflow-hidden">
               <div className="absolute top-0 right-0 opacity-[0.03] pointer-events-none w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')]"></div>
               
@@ -143,7 +144,7 @@ function BioPage() {
                 {/* Dây cuộn Timeline */}
                 <div className="space-y-12 border-l-[3px] border-red-100 ml-3 md:ml-4 relative">
                   {timelineData.map((item, index) => {
-                    const yearWatermark = item.year.slice(-4); // Lấy 4 số cuối làm watermark bóng mờ
+                    const yearWatermark = item.year.slice(-4); 
                     return (
                       <motion.div 
                         initial={{ opacity: 0, x: 50 }}
@@ -158,13 +159,11 @@ function BioPage() {
                           <div className="w-1.5 h-1.5 bg-white rounded-full group-hover:hidden"></div>
                         </div>
 
-                        {/* Thẻ Card nội dung (Glassmorphism) */}
+                        {/* Thẻ Card nội dung */}
                         <div className="bg-white p-6 md:p-8 rounded-2xl shadow-[0_5px_20px_rgba(185,28,28,0.05)] border border-red-50 group-hover:shadow-[0_15px_30px_rgba(185,28,28,0.12)] transition-all duration-300 relative overflow-hidden">
                           
-                          {/* Hiệu ứng nền mờ khi Hover */}
                           <div className="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-red-100 transition-colors duration-500"></div>
 
-                          {/* Hiển thị năm watermark to bản, nhạt màu phía sau */}
                           <div className="absolute top-2 right-4 opacity-5 font-black text-6xl md:text-7xl text-red-900 pointer-events-none select-none">
                             {yearWatermark}
                           </div>
@@ -176,7 +175,8 @@ function BioPage() {
                             <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 leading-snug group-hover:text-red-700 transition-colors">
                               {item.title}
                             </h3>
-                            <p className="text-gray-700 leading-relaxed text-justify font-serif text-[15px] md:text-[16px]">
+                            {/* ĐÃ SỬA: Bỏ text-justify, thêm font Lora */}
+                            <p className="text-gray-700 leading-relaxed font-['Lora',_serif] text-[15px] md:text-[16px]">
                               {item.content}
                             </p>
                           </div>
@@ -188,7 +188,7 @@ function BioPage() {
               </div>
             </motion.div>
 
-            {/* SƠ ĐỒ TƯ DUY - Giữ nguyên hoàn toàn */}
+            {/* SƠ ĐỒ TƯ DUY */}
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -217,9 +217,10 @@ function BioPage() {
                 <motion.div variants={mapNodeVariants} className="bg-red-50 border-2 border-red-600 p-6 md:p-8 rounded-2xl w-full max-w-2xl shadow-[0_8px_20px_rgba(220,38,38,0.15)] relative overflow-hidden">
                   <div className="absolute top-0 left-0 w-full h-1.5 bg-red-600"></div>
                   <h3 className="text-xl md:text-2xl font-black text-red-800 mb-1 text-center">NGUYỄN TẤT THÀNH</h3>
-                  <p className="text-sm md:text-base text-red-600 mb-6 text-center font-serif italic">Khởi hành từ Bến cảng Nhà Rồng</p>
+                  <p className="text-sm md:text-base text-red-600 mb-6 text-center font-['Lora',_serif] italic">Khởi hành từ Bến cảng Nhà Rồng</p>
 
-                  <ul className="space-y-4 text-sm md:text-base text-gray-800 text-justify">
+                  {/* ĐÃ SỬA: Bỏ text-justify */}
+                  <ul className="space-y-4 text-sm md:text-base text-gray-800">
                     <li className="flex items-start gap-3">
                       <span className="text-red-600 font-bold mt-0.5 text-lg">✔</span>
                       <div><b>Tư duy độc lập:</b> Kiên quyết không đi theo lối mòn đã thất bại của các phong trào trước đó.</div>
@@ -229,7 +230,7 @@ function BioPage() {
                       <div><b>Tầm nhìn đột phá:</b> Hướng sang phương Tây để tìm hiểu tận gốc rễ sào huyệt của chủ nghĩa đế quốc.</div>
                     </li>
                   </ul>
-                  <div className="mt-6 p-4 bg-white border-l-4 border-red-600 italic text-[14px] md:text-base text-red-900 shadow-sm rounded-r">
+                  <div className="mt-6 p-4 bg-white border-l-4 border-red-600 font-['Lora',_serif] italic text-[14px] md:text-base text-red-900 shadow-sm rounded-r">
                     "Muốn đánh hổ phải vào hang hổ. Phải xem nước Pháp làm thế nào rồi về giúp đồng bào."
                   </div>
                 </motion.div>

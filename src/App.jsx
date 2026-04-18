@@ -584,7 +584,7 @@ const MainLayout = () => {
 
         <div className="max-w-7xl mx-auto px-4 relative z-10">
           <div className="mb-6 border-b border-red-100 pb-4 text-center md:text-left">
-            <h2 className="text-red-700 font-serif font-bold text-lg md:text-xl uppercase tracking-wider">
+            <h2 className="text-red-700 font-['Lora',serif] font-bold text-lg md:text-xl uppercase tracking-wider">
               Cơ quan chủ quản: <br className="md:hidden" /><span className="font-black">Trường THPT Thái Phiên - Thăng Bình</span>
             </h2>
           </div>
@@ -592,7 +592,7 @@ const MainLayout = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-gray-700 text-sm md:text-[15px]">
             <div className="flex items-start gap-3">
               <div className="bg-red-100 p-2 rounded-full shrink-0"><span className="text-red-700 font-bold">©</span></div>
-              <p className="font-sans">Bản quyền thuộc về <br /><span className="font-bold text-gray-900">Trường THPT Thái Phiên - Thăng Bình</span></p>
+              <p className="font-['Lora',serif]">Bản quyền thuộc về <br /><span className="font-bold text-gray-900">Trường THPT Thái Phiên - Thăng Bình</span></p>
             </div>
 
             <div className="flex items-start gap-3">
@@ -601,7 +601,7 @@ const MainLayout = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 </svg>
               </div>
-              <p className="font-sans"><span className="font-bold text-gray-900 uppercase text-[12px] block mb-1">Địa chỉ:</span>Thôn 8 - xã Thăng Bình - TP. Đà Nẵng</p>
+              <p className="font-['Lora',serif]"><span className="font-bold text-gray-900 uppercase text-[12px] block mb-1">Địa chỉ:</span>Thôn 8 - xã Thăng Bình - TP. Đà Nẵng</p>
             </div>
 
             <div className="flex items-start gap-3">
@@ -610,7 +610,7 @@ const MainLayout = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </div>
-              <div className="font-sans">
+              <div className="font-['Lora',serif]">
                 <p><span className="font-bold text-gray-900">Điện thoại:</span> 05103 675 346</p>
                 <p><span className="font-bold text-gray-900">Email:</span> thpttphien@gmail.com</p>
               </div>

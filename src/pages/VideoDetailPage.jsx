@@ -13,7 +13,7 @@ function VideoDetailPage() {
     // Lấy video hiện tại (nếu ai đó gõ sai ID thì lấy video 1)
     const currentVideo = videosList.find(v => v.id === parseInt(id)) || videosList[0];
     
-    // 🌟 Lấy TẤT CẢ các video khác (Lọc bỏ cái đang phát)
+    // Lấy TẤT CẢ các video khác (Lọc bỏ cái đang phát)
     const relatedVideos = videosList.filter(v => v.id !== currentVideo.id);
 
     return (
@@ -22,7 +22,7 @@ function VideoDetailPage() {
 
                 {/* Tiêu đề mục */}
                 <div className="border-b-[3px] border-red-700 pb-2 mb-6 inline-block">
-                    <h2 className="text-xl md:text-2xl font-bold text-red-700 uppercase">Tư liệu Video</h2>
+                    <h2 className="text-xl md:text-2xl font-['Lora',serif] font-bold text-red-700 uppercase">Tư liệu Video</h2>
                 </div>
 
                 {/* Khu vực phát Video chính (Chia cột 8 - 4) */}
@@ -41,7 +41,7 @@ function VideoDetailPage() {
                     </div>
 
                     <div className="lg:col-span-4 flex flex-col justify-start">
-                        <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 leading-snug">
+                        <h1 className="text-xl md:text-2xl font-['Lora',serif] font-bold text-gray-900 mb-4 leading-snug">
                             {currentVideo.title}
                         </h1>
                         <div className="text-gray-600 text-[15px] space-y-3 pb-6 border-b border-gray-100">
@@ -55,7 +55,7 @@ function VideoDetailPage() {
                 </div>
 
                 <div className="border-b-[3px] border-red-700 pb-2 mb-8 inline-block w-full">
-                    <h2 className="text-lg md:text-xl font-bold text-red-700 uppercase">Tư liệu Video Khác</h2>
+                    <h2 className="text-lg md:text-xl font-['Lora',serif] font-bold text-red-700 uppercase">Tư liệu Video Khác</h2>
                 </div>
 
                 {/* Lưới 4 cột (Trên máy tính) và 2 cột (Trên điện thoại/Tablet) */}
@@ -75,7 +75,7 @@ function VideoDetailPage() {
                                 </div>
                             </div>
                             <div className="p-4">
-                                <h3 className="font-bold text-[14px] text-gray-800 group-hover:text-red-700 transition-colors leading-snug line-clamp-2">
+                                <h3 className="font-['Lora',serif] font-bold text-[14px] text-gray-800 group-hover:text-red-700 transition-colors leading-snug line-clamp-2">
                                     {video.title}
                                 </h3>
                             </div>

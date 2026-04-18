@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// DỮ LIỆU ĐÃ ĐƯỢC CẬP NHẬT LINK ẢNH GỐC (SỐNG 100%)
 const galleryData = [
   {
     id: 1,
@@ -148,7 +147,7 @@ function GalleryPage() {
   }, []);
 
   return (
-    <div className="bg-[#fcf9f2] min-h-screen py-12 md:py-20 font-sans">
+    <div className="bg-[#fcf9f2] min-h-screen py-12 md:py-20 font-sans selection:bg-red-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* TIÊU ĐỀ TRANG */}
@@ -159,11 +158,13 @@ function GalleryPage() {
           className="text-center mb-12 md:mb-16"
         >
           <h3 className="text-red-700 font-bold uppercase text-sm tracking-[0.3em] mb-3">Tư liệu lịch sử</h3>
-          <h1 className="text-3xl md:text-5xl font-black text-red-800 uppercase tracking-tight mb-6">
+          {/* ĐÃ SỬA: Thêm font Lora */}
+          <h1 className="text-3xl md:text-5xl font-['Lora',_serif] font-black text-red-800 uppercase tracking-tight mb-6">
             Triển lãm Ảnh
           </h1>
           <div className="h-1.5 w-24 bg-red-700 mx-auto rounded-full"></div>
-          <p className="mt-6 text-gray-600 max-w-2xl mx-auto italic font-medium">
+          {/* ĐÃ SỬA: Thêm font Lora */}
+          <p className="mt-6 text-gray-600 max-w-2xl mx-auto italic font-medium font-['Lora',_serif]">
             "Không gian lưu giữ những khoảnh khắc lịch sử vô giá về cuộc đời và sự nghiệp cách mạng vĩ đại của Chủ tịch Hồ Chí Minh."
           </p>
         </motion.div>
@@ -186,10 +187,12 @@ function GalleryPage() {
                 className="w-full h-auto block object-cover transform group-hover:scale-105 transition-transform duration-700 bg-gray-200"
                 loading="lazy"
               />
-              {/* ĐÃ SỬA: opacity-100 md:opacity-0 để trên mobile luôn luôn hiện, máy tính thì rê chuột mới hiện */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 md:p-5">
-                <span className="text-yellow-400 text-xs font-bold mb-1">{item.date}</span>
-                <h3 className="text-white font-bold text-sm md:text-base leading-snug">{item.title}</h3>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 md:p-5 text-left">
+                <span className="text-yellow-400 text-xs font-bold mb-1 font-sans">{item.date}</span>
+                {/* ĐÃ SỬA: Ép text-left và thêm font Lora */}
+                <h3 className="text-white font-bold text-sm md:text-base leading-snug font-['Lora',_serif] text-left">
+                  {item.title}
+                </h3>
               </div>
             </motion.div>
           ))}
@@ -225,7 +228,7 @@ function GalleryPage() {
               src={selectedImg.url} 
               alt={selectedImg.title}
               className="max-w-full max-h-[80vh] object-contain rounded shadow-2xl bg-black/50"
-              onClick={(e) => e.stopPropagation()} // Chống click vào ảnh bị đóng
+              onClick={(e) => e.stopPropagation()} 
             />
 
             <motion.div 
@@ -235,7 +238,7 @@ function GalleryPage() {
               className="mt-6 text-center max-w-3xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <h2 className="text-xl md:text-2xl font-bold text-white mb-2">{selectedImg.title}</h2>
+              <h2 className="text-xl md:text-2xl font-bold text-white mb-2 font-['Lora',_serif]">{selectedImg.title}</h2>
               <p className="text-gray-400 font-medium tracking-widest text-sm uppercase">Năm: {selectedImg.date}</p>
             </motion.div>
 

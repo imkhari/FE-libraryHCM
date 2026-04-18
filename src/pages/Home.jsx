@@ -38,21 +38,21 @@ const BookCard = ({ doc, navigate }) => {
           />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-red-50 to-orange-100 p-3 text-center">
-            <span className="text-red-800 text-[9px] font-bold uppercase tracking-widest mb-1 opacity-80">{doc.author || "Tác giả"}</span>
-            <span className="text-red-900 font-serif font-bold text-sm md:text-base leading-tight line-clamp-4">{doc.title}</span>
+            <span className="text-red-800 text-[9px] font-bold uppercase tracking-widest mb-1 opacity-80 font-['Lora',_serif]">{doc.author || "Tác giả"}</span>
+            <span className="text-red-900 font-['Lora',_serif] font-bold text-sm md:text-base leading-tight line-clamp-4">{doc.title}</span>
           </div>
         )}
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center">
-          <span className="bg-red-700 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-lg">Đọc ngay</span>
+          <span className="bg-red-700 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-lg font-['Lora',_serif]">Đọc ngay</span>
         </div>
       </div>
 
       <div className="p-3 flex-1 flex flex-col bg-white">
-        <h3 className="text-[13px] md:text-[14px] font-bold text-gray-800 line-clamp-2 group-hover:text-red-600 transition-colors leading-snug">
+        <h3 className="text-[13px] md:text-[14px] font-bold text-gray-800 line-clamp-2 group-hover:text-red-600 transition-colors leading-snug font-['Lora',_serif]">
           {doc.title}
         </h3>
         <div className="mt-auto pt-2">
-          <p className="text-[11px] text-gray-500 font-medium line-clamp-1 italic">
+          <p className="text-[11px] text-gray-500 font-medium line-clamp-1 italic font-['Lora',_serif]">
             {doc.author || 'Đang cập nhật'}
           </p>
         </div>
@@ -241,8 +241,8 @@ function Home() {
                 className="mb-16 md:mb-20"
               >
                 <div className="flex flex-col items-center justify-center mb-8 md:mb-10">
-                  <h3 className="text-red-700 font-bold uppercase text-xs md:text-sm tracking-[0.3em] mb-2">Tác phẩm của</h3>
-                  <h2 className="text-2xl md:text-4xl font-black text-center text-red-800 uppercase tracking-tight">
+                  <h3 className="text-red-700 font-bold uppercase text-xs md:text-sm tracking-[0.3em] mb-2 font-['Lora',_serif]">Tác phẩm của</h3>
+                  <h2 className="text-2xl md:text-4xl font-black text-center text-red-800 uppercase tracking-tight font-['Lora',_serif]">
                     Hồ Chí Minh
                   </h2>
                   <div className="h-1 w-16 md:w-20 bg-red-600 mt-4 rounded-full"></div>
@@ -271,7 +271,7 @@ function Home() {
                 <div className="flex justify-center mt-4 md:mt-6">
                   <button
                     onClick={() => { window.scrollTo(0, 0); navigate('/category/cua-ho-chi-minh'); }}
-                    className="group flex items-center gap-2 border border-red-700 md:border-2 text-red-700 font-bold px-6 py-2 md:px-8 md:py-2.5 rounded-full hover:bg-red-700 hover:text-white transition-all duration-300 shadow-sm text-sm md:text-base"
+                    className="group flex items-center gap-2 border border-red-700 md:border-2 text-red-700 font-bold px-6 py-2 md:px-8 md:py-2.5 rounded-full hover:bg-red-700 hover:text-white transition-all duration-300 shadow-sm text-sm md:text-base font-['Lora',_serif]"
                   >
                     Xem tất cả
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 md:h-4 md:w-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
@@ -293,8 +293,8 @@ function Home() {
                 className="mb-16 md:mb-20"
               >
                 <div className="flex flex-col items-center justify-center mb-8 md:mb-10">
-                  <h3 className="text-red-700 font-bold uppercase text-xs md:text-sm tracking-[0.3em] mb-2">Tác phẩm về</h3>
-                  <h2 className="text-2xl md:text-4xl font-black text-center text-red-800 uppercase tracking-tight">
+                  <h3 className="text-red-700 font-bold uppercase text-xs md:text-sm tracking-[0.3em] mb-2 font-['Lora',_serif]">Tác phẩm về</h3>
+                  <h2 className="text-2xl md:text-4xl font-black text-center text-red-800 uppercase tracking-tight font-['Lora',_serif]">
                     Hồ Chí Minh
                   </h2>
                   <div className="h-1 w-16 md:w-20 bg-red-600 mt-4 rounded-full"></div>
@@ -323,7 +323,7 @@ function Home() {
                 <div className="flex justify-center mt-4 md:mt-6">
                   <button
                     onClick={() => { window.scrollTo(0, 0); navigate('/category/ve-ho-chi-minh'); }}
-                    className="group flex items-center gap-2 border border-red-700 md:border-2 text-red-700 font-bold px-6 py-2 md:px-8 md:py-2.5 rounded-full hover:bg-red-700 hover:text-white transition-all duration-300 shadow-sm text-sm md:text-base"
+                    className="group flex items-center gap-2 border border-red-700 md:border-2 text-red-700 font-bold px-6 py-2 md:px-8 md:py-2.5 rounded-full hover:bg-red-700 hover:text-white transition-all duration-300 shadow-sm text-sm md:text-base font-['Lora',_serif]"
                   >
                     Xem tất cả
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 md:h-4 md:w-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
@@ -345,8 +345,8 @@ function Home() {
                   transition={{ duration: 0.8 }}
                 >
                   <div className="flex flex-col items-center justify-center mb-8 md:mb-10">
-                    <h3 className="text-red-700 font-bold uppercase text-xs md:text-sm tracking-[0.3em] mb-2">Những bài báo của</h3>
-                    <h2 className="text-2xl md:text-4xl font-black text-center text-red-800 uppercase tracking-tight">
+                    <h3 className="text-red-700 font-bold uppercase text-xs md:text-sm tracking-[0.3em] mb-2 font-['Lora',_serif]">Những bài báo của</h3>
+                    <h2 className="text-2xl md:text-4xl font-black text-center text-red-800 uppercase tracking-tight font-['Lora',_serif]">
                       Hồ Chí Minh
                     </h2>
                     <div className="h-1 w-16 md:w-20 bg-red-600 mt-4 rounded-full"></div>
@@ -375,7 +375,7 @@ function Home() {
                   <div className="flex justify-center mt-4 md:mt-6">
                     <button
                       onClick={() => { window.scrollTo(0, 0); navigate('/category/bai-bao'); }}
-                      className="group flex items-center gap-2 border border-red-700 md:border-2 text-red-700 font-bold px-6 py-2 md:px-8 md:py-2.5 rounded-full hover:bg-red-700 hover:text-white transition-all duration-300 shadow-sm text-sm md:text-base"
+                      className="group flex items-center gap-2 border border-red-700 md:border-2 text-red-700 font-bold px-6 py-2 md:px-8 md:py-2.5 rounded-full hover:bg-red-700 hover:text-white transition-all duration-300 shadow-sm text-sm md:text-base font-['Lora',_serif]"
                     >
                       Xem tất cả
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 md:h-4 md:w-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>

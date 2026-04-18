@@ -11,7 +11,7 @@ function IdeologyPage() {
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
-    
+
     // Dùng useRef để kiểm soát cờ render, tránh loop không cần thiết
     const isInitialMount = useRef(true);
 
@@ -40,13 +40,13 @@ function IdeologyPage() {
     useEffect(() => {
         window.scrollTo({
             top: 0,
-            behavior: 'smooth' 
+            behavior: 'smooth'
         });
     }, [currentPage]);
 
     const videosList = [
         { id: 1, youtubeId: "58HGVK6j-80", title: "Hành trình tìm đường cứu nước của Chủ tịch Hồ Chí Minh" },
-        { id: 2, youtubeId: "RR0p5Aqrhto", title: "TOÀN CẢNH HÀNH TRÌM TÌM ĐƯỜNG CỨU NƯỚC" },
+        { id: 2, youtubeId: "RR0p5Aqrhto", title: "TOÀN CẢNH HÀNH TRÌNH TÌM ĐƯỜNG CỨU NƯỚC" },
         { id: 3, youtubeId: "d5MYTDacTZ4", title: "Hồ Chí Minh - Chân dung một con người" },
         { id: 4, youtubeId: "H5_Hu1ju1QM", title: "Hồ Chí Minh - Một hành trình" },
         { id: 5, youtubeId: "e0CEWmWG79U", title: "Hồ Chí Minh – Dấu chân đầu tiên" },
@@ -114,7 +114,7 @@ function IdeologyPage() {
         "Tình cảm của nhân dân thế giới với Chủ tịch Hồ Chí Minh"
     ];
 
-    // 🚀 TỐI ƯU HÓA: Hàm xử lý Data dùng chung cho cả Cache và API
+    // Hàm xử lý Data dùng chung cho cả Cache và API
     const processData = (allDocs) => {
         let filteredBooks = [];
 
@@ -175,13 +175,13 @@ function IdeologyPage() {
 
         // STALE-WHILE-REVALIDATE CHO TRANG TÀI LIỆU
         const cachedData = sessionStorage.getItem('ideologyDocsCache');
-        
+
         if (cachedData) {
             // 1. Nếu có Cache -> Render ngay lập tức, không đợi Loading
             processData(JSON.parse(cachedData));
         } else {
             // Nếu chưa có Cache -> Bật Loading chờ API
-            setLoading(true); 
+            setLoading(true);
         }
 
         // 2. Luôn gọi ngầm API để cập nhật dữ liệu mới nếu có (Revalidate)
@@ -207,7 +207,7 @@ function IdeologyPage() {
 
     const renderImage = (item) => {
         const imgSrc = item.coverImageUrl || item.image || item.cover_image_url;
-        
+
         if (imgSrc && imgSrc.trim() !== '' && !imgSrc.includes('placeholder.com') && !imgSrc.includes('googleusercontent') && !imgSrc.includes('camau.gov')) {
             return (
                 <img
@@ -217,17 +217,18 @@ function IdeologyPage() {
                     loading="lazy"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     onError={(e) => {
-                        e.target.onerror = null; 
+                        e.target.onerror = null;
                         e.target.src = "https://upload.wikimedia.org/wikipedia/commons/e/e0/Ho_Chi_Minh_1946.jpg";
                     }}
                 />
             );
         }
-        
+
         return (
             <div className="w-full h-full flex flex-col items-center justify-center bg-[#fdf5e6] border-2 border-red-800 p-2 text-center group-hover:bg-[#faeed6] transition-colors relative overflow-hidden">
                 <div className="absolute top-1 left-1 right-1 bottom-1 border border-red-800/30"></div>
-                <h4 className="text-red-800 font-bold text-xs uppercase leading-tight line-clamp-4 relative z-10 px-1">
+                {/* ĐÃ SỬA: Thêm font Lora */}
+                <h4 className="text-red-800 font-bold text-xs uppercase leading-tight line-clamp-4 relative z-10 px-1 font-['Lora',_serif]">
                     {item.title}
                 </h4>
                 <div className="mt-3 bg-red-800 w-8 h-0.5 relative z-10"></div>
@@ -238,7 +239,7 @@ function IdeologyPage() {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = contentData.slice(indexOfFirstItem, indexOfLastItem);
-    
+
     const totalPages = Math.ceil(contentData.length / itemsPerPage);
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -249,9 +250,10 @@ function IdeologyPage() {
         <div className="min-h-screen bg-[#fcf9f2] py-8 px-4 font-sans selection:bg-red-200">
             <div className="max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    
+
                     <div className="lg:col-span-8">
-                        <h2 className="text-xl md:text-2xl font-bold text-red-800 uppercase mb-6 border-b-2 border-red-700 pb-2 font-serif">
+                        {/* ĐÃ SỬA: Thay đổi sang font Lora cho tiêu đề chuyên mục */}
+                        <h2 className="text-xl md:text-2xl font-bold text-red-800 uppercase mb-6 border-b-2 border-red-700 pb-2 font-['Lora',_serif]">
                             {pageTitle}
                         </h2>
 
@@ -272,62 +274,62 @@ function IdeologyPage() {
                                                 {renderImage(book)}
                                             </div>
                                             <div className="flex flex-col flex-1 py-1">
-                                                <h3 className="text-lg font-bold text-gray-800 mb-2 group-hover:text-red-700 transition-colors leading-snug">
+                                                {/* ĐÃ SỬA: Đổi font Lora cho tiêu đề sách */}
+                                                <h3 className="text-lg font-bold text-gray-800 mb-2 group-hover:text-red-700 transition-colors leading-snug font-['Lora',_serif]">
                                                     {book.title}
                                                 </h3>
-                                                <p className="text-sm text-gray-600 mb-4 line-clamp-3 text-justify leading-relaxed">
+                                                <p className="text-sm text-gray-600 mb-4 line-clamp-3 text-left leading-relaxed font-['Lora',_serif]">
                                                     {book.description || 'Tuyển tập đặc sắc về tư tưởng của Bác...'}
                                                 </p>
                                                 <div className="mt-auto flex items-center justify-between">
                                                     <div className="flex items-center gap-4">
-                                                        <span className="px-3 py-1 bg-red-50 text-red-700 text-[10px] font-bold uppercase rounded border border-red-100 flex items-center gap-1">
+                                                        <span className="px-3 py-1 bg-red-50 text-red-700 text-[10px] font-bold uppercase rounded border border-red-100 flex items-center gap-1 font-['Lora',_serif]">
                                                             Đọc {book.readType === 'DOCX' ? 'DOCX' : 'PDF'}
                                                         </span>
                                                         {book.author && (
-                                                            <span className="text-[11px] text-gray-500 font-medium italic">
+                                                            <span className="text-[11px] text-gray-500 font-medium italic font-['Lora',_serif]">
                                                                 Tác giả: {book.author}
                                                             </span>
                                                         )}
                                                     </div>
-                                                    <span className="text-[11px] text-gray-400">
+                                                    <span className="text-[11px] text-gray-400 font-['Lora',_serif]">
                                                         {book.viewCount ? `Lượt xem: ${book.viewCount}` : ''}
                                                     </span>
                                                 </div>
                                             </div>
                                         </div>
                                     ))}
-                                    
+
                                     {/* THANH PHÂN TRANG */}
                                     {totalPages > 1 && (
                                         <div className="flex justify-center items-center gap-2 mt-8 pt-6 border-t border-gray-200">
-                                            <button 
-                                                onClick={prevPage} 
+                                            <button
+                                                onClick={prevPage}
                                                 disabled={currentPage === 1}
-                                                className={`px-3 py-1.5 rounded-md text-sm font-medium border transition-colors ${currentPage === 1 ? 'border-gray-200 text-gray-400 cursor-not-allowed bg-gray-50' : 'border-gray-300 text-gray-700 hover:bg-red-50 hover:text-red-700 hover:border-red-200'}`}
+                                                className={`px-3 py-1.5 rounded-md text-sm font-medium border transition-colors font-['Lora',_serif] ${currentPage === 1 ? 'border-gray-200 text-gray-400 cursor-not-allowed bg-gray-50' : 'border-gray-300 text-gray-700 hover:bg-red-50 hover:text-red-700 hover:border-red-200'}`}
                                             >
                                                 « Trước
                                             </button>
-                                            
+
                                             <div className="flex gap-1">
                                                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
                                                     <button
                                                         key={number}
                                                         onClick={() => paginate(number)}
-                                                        className={`w-8 h-8 rounded-md flex items-center justify-center text-sm font-bold transition-colors ${
-                                                            currentPage === number 
-                                                            ? 'bg-red-700 text-white shadow-sm' 
-                                                            : 'bg-white text-gray-600 border border-gray-300 hover:bg-red-50 hover:text-red-700 hover:border-red-200'
-                                                        }`}
+                                                        className={`w-8 h-8 rounded-md flex items-center justify-center text-sm font-bold transition-colors font-['Lora',_serif] ${currentPage === number
+                                                                ? 'bg-red-700 text-white shadow-sm'
+                                                                : 'bg-white text-gray-600 border border-gray-300 hover:bg-red-50 hover:text-red-700 hover:border-red-200'
+                                                            }`}
                                                     >
                                                         {number}
                                                     </button>
                                                 ))}
                                             </div>
 
-                                            <button 
-                                                onClick={nextPage} 
+                                            <button
+                                                onClick={nextPage}
                                                 disabled={currentPage === totalPages}
-                                                className={`px-3 py-1.5 rounded-md text-sm font-medium border transition-colors ${currentPage === totalPages ? 'border-gray-200 text-gray-400 cursor-not-allowed bg-gray-50' : 'border-gray-300 text-gray-700 hover:bg-red-50 hover:text-red-700 hover:border-red-200'}`}
+                                                className={`px-3 py-1.5 rounded-md text-sm font-medium border transition-colors font-['Lora',_serif] ${currentPage === totalPages ? 'border-gray-200 text-gray-400 cursor-not-allowed bg-gray-50' : 'border-gray-300 text-gray-700 hover:bg-red-50 hover:text-red-700 hover:border-red-200'}`}
                                             >
                                                 Sau »
                                             </button>
@@ -336,7 +338,7 @@ function IdeologyPage() {
                                 </div>
                             ) : (
                                 <div className="text-center py-20 bg-white/50 rounded-2xl border-2 border-dashed border-gray-200">
-                                    <p className="text-gray-500 italic">Danh mục này hiện chưa có tài liệu nào.</p>
+                                    <p className="text-gray-500 italic font-['Lora',_serif]">Danh mục này hiện chưa có tài liệu nào.</p>
                                 </div>
                             )}
                         </div>
@@ -344,25 +346,27 @@ function IdeologyPage() {
 
                     {/* CỘT PHẢI: VIDEO */}
                     <div className="lg:col-span-4 lg:sticky lg:top-20 h-fit">
-                        <h2 className="text-lg font-bold text-red-700 uppercase mb-6 border-b-2 border-red-700 pb-2 font-serif">
+                        {/* ĐÃ SỬA: Đổi sang font Lora */}
+                        <h2 className="text-lg font-bold text-red-700 uppercase mb-6 border-b-2 border-red-700 pb-2 font-['Lora',_serif]">
                             Tư liệu Video
                         </h2>
                         <div className="space-y-4 h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                             {videosList.map((v) => (
-                                <div 
-                                    key={v.id} 
-                                    onClick={() => navigate(`/video/${v.id}`)} 
+                                <div
+                                    key={v.id}
+                                    onClick={() => navigate(`/video/${v.id}`)}
                                     className="flex gap-3 group cursor-pointer items-start border-b border-gray-100 pb-3 hover:bg-red-50 p-1.5 rounded transition-all"
                                 >
                                     <div className="relative w-28 shrink-0 aspect-video bg-stone-200 rounded overflow-hidden shadow-sm">
-                                        <img 
-                                            src={`https://img.youtube.com/vi/${v.youtubeId}/mqdefault.jpg`} 
+                                        <img
+                                            src={`https://img.youtube.com/vi/${v.youtubeId}/mqdefault.jpg`}
                                             loading="lazy"
-                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" 
-                                            alt="Video thumbnail" 
+                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                            alt="Video thumbnail"
                                         />
                                     </div>
-                                    <h4 className="font-bold text-[13px] text-gray-800 group-hover:text-red-700 line-clamp-2 leading-snug">
+                                    {/* ĐÃ SỬA: Thêm font Lora */}
+                                    <h4 className="font-bold text-[13px] text-gray-800 group-hover:text-red-700 line-clamp-2 leading-snug font-['Lora',_serif]">
                                         {v.title}
                                     </h4>
                                 </div>

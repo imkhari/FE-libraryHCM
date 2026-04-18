@@ -135,7 +135,7 @@ function CategoryPage() {
             ★ Bảo vật Quốc gia ★
           </h3>
         )}
-        <h2 className="text-3xl md:text-4xl font-serif font-black text-center text-red-800 uppercase tracking-tight">
+        <h2 className="text-3xl md:text-4xl font-['Lora',serif] font-black text-center text-red-800 uppercase tracking-tight">
           {pageTitle}
         </h2>
         <motion.div 
@@ -153,7 +153,7 @@ function CategoryPage() {
           animate="visible"
           className="mb-12 bg-gradient-to-br from-stone-100 to-[#fdfbf2] rounded-2xl p-6 md:p-10 border border-stone-200 flex flex-col md:flex-row gap-8 items-center shadow-[0_8px_30px_rgba(0,0,0,0.04)] relative overflow-hidden"
         >
-          <div className="absolute -right-10 -bottom-10 text-9xl font-serif text-stone-200 opacity-50 select-none pointer-events-none">
+          <div className="absolute -right-10 -bottom-10 text-9xl font-['Lora',serif] text-stone-200 opacity-50 select-none pointer-events-none">
             獄中日記
           </div>
 
@@ -174,12 +174,12 @@ function CategoryPage() {
           </div>
 
           <div className="md:w-2/3 relative z-10 flex flex-col h-full">
-             <h3 className="text-2xl md:text-3xl font-serif font-bold text-red-800 mb-4 tracking-tight">
+             <h3 className="text-2xl md:text-3xl font-['Lora',serif] font-bold text-red-800 mb-4 tracking-tight">
                 Ngục trung nhật ký <span className="text-xl md:text-2xl text-stone-500 font-normal ml-2">(Nhật ký trong tù)</span>
              </h3>
              
              <div className="border-l-4 border-red-700 pl-4 mb-5 bg-red-50/50 py-2 rounded-r-lg">
-                <p className="text-stone-700 font-serif text-[17px] italic leading-relaxed">
+                <p className="text-stone-700 font-['Lora',serif] text-[17px] italic leading-relaxed text-left">
                   "Thân thể ở trong lao<br/>
                   Tinh thần ở ngoài lao<br/>
                   Muốn nên sự nghiệp lớn<br/>
@@ -187,7 +187,8 @@ function CategoryPage() {
                 </p>
              </div>
              
-             <div className="text-sm md:text-[15px] text-stone-600 leading-relaxed text-justify mb-8 space-y-3">
+             {/* ĐÃ SỬA: Đổi text-justify thành text-left, thêm font Lora */}
+             <div className="text-sm md:text-[15px] text-stone-600 leading-relaxed text-left mb-8 space-y-3 font-['Lora',serif]">
                <p>
                  Bảo vật quốc gia <b>"Nhật ký trong tù"</b> là tập thơ chữ Hán gồm 133 bài, được Chủ tịch Hồ Chí Minh sáng tác trong thời gian bị chính quyền Tưởng Giới Thạch bắt giam trái phép ở Quảng Tây, Trung Quốc (từ tháng 8/1942 đến tháng 9/1943). 
                </p>
@@ -231,7 +232,7 @@ function CategoryPage() {
             className="flex flex-col items-center justify-center mb-10"
           >
             <h3 className="text-red-700 font-bold uppercase text-xs md:text-sm tracking-[0.3em] mb-2">Giá trị tư tưởng & nghệ thuật</h3>
-            <h2 className="text-2xl md:text-3xl font-serif font-black text-center text-red-800 uppercase tracking-tight">
+            <h2 className="text-2xl md:text-3xl font-['Lora',serif] font-black text-center text-red-800 uppercase tracking-tight">
               Những Vần Thơ Tuyệt Bút
             </h2>
             <div className="h-1 w-20 bg-red-600 mt-4 rounded-full"></div>
@@ -247,7 +248,7 @@ function CategoryPage() {
             {featuredPoems.map((poem) => (
               <motion.div key={poem.id} variants={itemVariants} className="bg-[#fdfbf2] rounded-xl flex flex-col border border-red-100 shadow-[0_4px_20px_rgba(185,28,28,0.05)] hover:shadow-[0_4px_20px_rgba(185,28,28,0.15)] transition-shadow duration-300 relative overflow-hidden group">
                 <div className="absolute top-0 left-0 w-1 h-full bg-red-700"></div>
-                <div className="absolute right-[-20px] bottom-[50px] opacity-5 text-8xl text-red-900 font-serif select-none pointer-events-none group-hover:scale-110 transition-transform duration-500">
+                <div className="absolute right-[-20px] bottom-[50px] opacity-5 text-8xl text-red-900 font-['Lora',serif] select-none pointer-events-none group-hover:scale-110 transition-transform duration-500">
                   {poem.kanji}
                 </div>
                 
@@ -275,16 +276,16 @@ function CategoryPage() {
                       <motion.p 
                         key="dich"
                         initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                        className="text-stone-700 font-serif text-[15px] leading-relaxed whitespace-pre-line italic"
+                        className="text-stone-700 font-['Lora',serif] text-[15px] leading-relaxed whitespace-pre-line italic text-left"
                       >
                         {poem.dich}
                       </motion.p>
                     ) : (
                       <motion.div key="goc" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-4">
-                        <p className="text-stone-700 font-serif text-[14px] leading-relaxed whitespace-pre-line border-l-2 border-red-200 pl-3">
+                        <p className="text-stone-700 font-['Lora',serif] text-[14px] leading-relaxed whitespace-pre-line border-l-2 border-red-200 pl-3 text-left">
                           {poem.goc}
                         </p>
-                        <p className="text-stone-500 font-serif text-[14px] leading-relaxed whitespace-pre-line">
+                        <p className="text-stone-500 font-['Lora',serif] text-[14px] leading-relaxed whitespace-pre-line text-left">
                           {poem.phienAm}
                         </p>
                       </motion.div>
@@ -292,7 +293,8 @@ function CategoryPage() {
                   </div>
 
                   <div className="mt-auto pt-4 border-t border-dashed border-red-200">
-                    <p className="text-[13px] text-stone-600 text-justify mb-4">
+                    {/* ĐÃ SỬA: Đổi text-justify thành text-left, thêm font Lora */}
+                    <p className="text-[13px] text-stone-600 text-left mb-4 font-['Lora',serif]">
                       {poem.desc}
                     </p>
                     
@@ -318,7 +320,7 @@ function CategoryPage() {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-32">
               <div className="w-12 h-12 border-4 border-red-200 border-t-red-700 rounded-full animate-spin"></div>
-              <p className="mt-4 text-gray-500 italic">Đang tải dữ liệu...</p>
+              <p className="mt-4 text-gray-500 italic font-['Lora',serif]">Đang tải dữ liệu...</p>
             </div>
           ) : (
             <>
@@ -355,7 +357,7 @@ function CategoryPage() {
                         <h3 className="text-sm font-bold text-gray-800 line-clamp-2 leading-snug group-hover:text-red-700 transition-colors">
                           {doc.title}
                         </h3>
-                        <p className="mt-auto pt-2 text-[11px] text-gray-500 italic line-clamp-1">
+                        <p className="mt-auto pt-2 text-[11px] text-gray-500 italic line-clamp-1 font-['Lora',serif]">
                           {doc.author || 'Đang cập nhật'}
                         </p>
                       </div>
@@ -363,7 +365,7 @@ function CategoryPage() {
                   ))
                 ) : (
                   <div className="col-span-full text-center py-20 bg-gray-50 rounded-xl border border-dashed border-gray-300">
-                    <p className="text-gray-500 font-medium">Chưa có tài liệu nào trong mục này.</p>
+                    <p className="text-gray-500 font-medium font-['Lora',serif]">Chưa có tài liệu nào trong mục này.</p>
                   </div>
                 )}
               </motion.div>

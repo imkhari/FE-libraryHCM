@@ -159,12 +159,12 @@ function GalleryPage() {
         >
           <h3 className="text-red-700 font-bold uppercase text-sm tracking-[0.3em] mb-3">Tư liệu lịch sử</h3>
           {/* ĐÃ SỬA: Thêm font Lora */}
-          <h1 className="text-3xl md:text-5xl font-['Lora',_serif] font-black text-red-800 uppercase tracking-tight mb-6">
+          <h1 className="text-3xl md:text-5xl font-['Lora',serif] font-black text-red-800 uppercase tracking-tight mb-6">
             Triển lãm Ảnh
           </h1>
           <div className="h-1.5 w-24 bg-red-700 mx-auto rounded-full"></div>
           {/* ĐÃ SỬA: Thêm font Lora */}
-          <p className="mt-6 text-gray-600 max-w-2xl mx-auto italic font-medium font-['Lora',_serif]">
+          <p className="mt-6 text-gray-600 max-w-2xl mx-auto italic font-medium font-['Lora',serif]">
             "Không gian lưu giữ những khoảnh khắc lịch sử vô giá về cuộc đời và sự nghiệp cách mạng vĩ đại của Chủ tịch Hồ Chí Minh."
           </p>
         </motion.div>
@@ -190,7 +190,7 @@ function GalleryPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 md:p-5 text-left">
                 <span className="text-yellow-400 text-xs font-bold mb-1 font-sans">{item.date}</span>
                 {/* ĐÃ SỬA: Ép text-left và thêm font Lora */}
-                <h3 className="text-white font-bold text-sm md:text-base leading-snug font-['Lora',_serif] text-left">
+                <h3 className="text-white font-bold text-sm md:text-base leading-snug font-['Lora',serif] text-left">
                   {item.title}
                 </h3>
               </div>
@@ -238,7 +238,7 @@ function GalleryPage() {
               className="mt-6 text-center max-w-3xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <h2 className="text-xl md:text-2xl font-bold text-white mb-2 font-['Lora',_serif]">{selectedImg.title}</h2>
+              <h2 className="text-xl md:text-2xl font-bold text-white mb-2 font-['Lora',serif]">{selectedImg.title}</h2>
               <p className="text-gray-400 font-medium tracking-widest text-sm uppercase">Năm: {selectedImg.date}</p>
             </motion.div>
 

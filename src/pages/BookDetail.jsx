@@ -51,24 +51,43 @@ function BookDetail() {
       .finally(() => setLoading(false));
   }, [id]);
 
+  // Tạo link tải xuống trực tiếp từ Google Drive
+  const getDirectDownloadUrl = (url) => {
+    if (!url) return "#";
+    
+    // Tìm ID file nếu link có dạng /file/d/ID_FILE/...
+    const matchFileD = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (matchFileD && matchFileD[1]) {
+      return `https://drive.google.com/uc?export=download&id=${matchFileD[1]}`;
+    }
+    
+    // Tìm ID file nếu link có dạng ?id=ID_FILE
+    const matchId = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (matchId && matchId[1]) {
+      return `https://drive.google.com/uc?export=download&id=${matchId[1]}`;
+    }
+    
+    // Nếu không phải link Google Drive hoặc không nhận diện được, trả về link gốc
+    return url;
+  };
+
   if (loading) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center bg-[#fcf9f2]">
         <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-red-700 mb-3"></div>
-        <div className="text-red-800 font-serif italic">Đang tải thông tin tài liệu...</div>
+        <div className="text-red-800 font-['Lora',serif] italic">Đang tải thông tin tài liệu...</div>
       </div>
     );
   }
 
   if (!book) {
-    return <div className="min-h-[60vh] flex items-center justify-center text-xl font-bold text-gray-500">Không tìm thấy tài liệu!</div>;
+    return <div className="min-h-[60vh] flex items-center justify-center text-xl font-bold text-gray-500 font-['Lora',serif]">Không tìm thấy tài liệu!</div>;
   }
 
   return (
     <div className="min-h-screen bg-[#fcf9f2] py-8 px-4 font-sans selection:bg-red-200">
       <div className="max-w-6xl mx-auto">
         
-        {/* === NÚT QUAY LẠI === */}
         <button 
           onClick={() => navigate(-1)}
           className="inline-flex items-center text-red-700 hover:text-red-900 font-bold mb-6 transition-colors group"
@@ -96,7 +115,8 @@ function BookDetail() {
           {/* CỘT PHẢI: CHI TIẾT */}
           <div className="w-full md:w-2/3 flex flex-col">
             <h4 className="text-red-700 font-bold text-xs uppercase tracking-widest mb-2">Thông tin tài liệu</h4>
-            <h1 className="text-3xl md:text-4xl font-black text-gray-900 mb-6 leading-tight">{book.title}</h1>
+            {/* ĐÃ SỬA: Thêm font Lora */}
+            <h1 className="text-3xl md:text-4xl font-['Lora',serif] font-black text-gray-900 mb-6 leading-tight">{book.title}</h1>
             
             <div className="w-full h-px bg-gray-200 mb-6"></div>
 
@@ -104,7 +124,8 @@ function BookDetail() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
               <div className="bg-red-50/50 p-4 rounded-lg border border-red-100">
                 <p className="text-[11px] text-gray-500 uppercase font-bold tracking-wider mb-1">Tác giả</p>
-                <p className="font-bold text-gray-900">{book.author || "Đang cập nhật"}</p>
+                {/* ĐÃ SỬA: Thêm font Lora */}
+                <p className="font-['Lora',serif] font-bold text-gray-900">{book.author || "Đang cập nhật"}</p>
               </div>
               <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
                 <p className="text-[11px] text-gray-500 uppercase font-bold tracking-wider mb-1">Năm xuất bản</p>
@@ -119,7 +140,8 @@ function BookDetail() {
             {/* Giới thiệu nội dung */}
             <div className="mb-10 flex-1">
               <h3 className="font-bold text-gray-900 mb-2">Giới thiệu nội dung:</h3>
-              <p className="text-gray-600 italic leading-relaxed text-justify">
+              {/* ĐÃ SỬA: Đổi text-justify thành text-left và thêm font Lora */}
+              <p className="text-gray-600 font-['Lora',serif] italic leading-relaxed text-left">
                 {book.description || "Tài liệu này hiện chưa có bài tóm tắt nội dung."}
               </p>
             </div>
@@ -137,7 +159,7 @@ function BookDetail() {
               </button>
               
               <a 
-                href={book.pdfUrl} 
+                href={getDirectDownloadUrl(book.pdfUrl || book.pdf_url)} 
                 target="_blank" 
                 rel="noreferrer"
                 download
@@ -152,11 +174,10 @@ function BookDetail() {
           </div>
         </div>
 
-        {/* === PHẦN TÁC PHẨM LIÊN QUAN === */}
         {relatedBooks.length > 0 && (
           <div className="mt-16 mb-8">
             <div className="flex items-center justify-between mb-8 border-b-2 border-red-100 pb-3">
-              <h2 className="text-2xl font-black text-gray-800 uppercase tracking-wide flex items-center gap-3">
+              <h2 className="text-2xl font-black text-gray-800 uppercase tracking-wide flex items-center gap-3 font-['Lora',serif]">
                 <span className="w-2 h-8 bg-red-700 rounded-full"></span>
                 Tác phẩm liên quan
               </h2>
@@ -177,13 +198,13 @@ function BookDetail() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <span className="bg-red-700 text-white text-xs font-bold px-3 py-1.5 rounded-full">Xem chi tiết</span>
+                      <span className="bg-red-700 text-white text-xs font-bold px-3 py-1.5 rounded-full font-['Lora',serif]">Xem chi tiết</span>
                     </div>
                   </div>
-                  <h3 className="font-bold text-gray-900 text-sm md:text-base line-clamp-2 mb-1 group-hover:text-red-700 transition-colors">
+                  <h3 className="font-['Lora',serif] font-bold text-gray-900 text-sm md:text-base line-clamp-2 mb-1 group-hover:text-red-700 transition-colors">
                     {relatedBook.title}
                   </h3>
-                  <p className="text-gray-500 text-xs truncate">
+                  <p className="font-['Lora',serif] text-gray-500 text-xs truncate">
                     {relatedBook.author}
                   </p>
                 </div>

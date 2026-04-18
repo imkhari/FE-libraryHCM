@@ -228,7 +228,7 @@ function IdeologyPage() {
             <div className="w-full h-full flex flex-col items-center justify-center bg-[#fdf5e6] border-2 border-red-800 p-2 text-center group-hover:bg-[#faeed6] transition-colors relative overflow-hidden">
                 <div className="absolute top-1 left-1 right-1 bottom-1 border border-red-800/30"></div>
                 {/* ĐÃ SỬA: Thêm font Lora */}
-                <h4 className="text-red-800 font-bold text-xs uppercase leading-tight line-clamp-4 relative z-10 px-1 font-['Lora',_serif]">
+                <h4 className="text-red-800 font-bold text-xs uppercase leading-tight line-clamp-4 relative z-10 px-1 font-['Lora',serif]">
                     {item.title}
                 </h4>
                 <div className="mt-3 bg-red-800 w-8 h-0.5 relative z-10"></div>
@@ -253,7 +253,7 @@ function IdeologyPage() {
 
                     <div className="lg:col-span-8">
                         {/* ĐÃ SỬA: Thay đổi sang font Lora cho tiêu đề chuyên mục */}
-                        <h2 className="text-xl md:text-2xl font-bold text-red-800 uppercase mb-6 border-b-2 border-red-700 pb-2 font-['Lora',_serif]">
+                        <h2 className="text-xl md:text-2xl font-bold text-red-800 uppercase mb-6 border-b-2 border-red-700 pb-2 font-['Lora',serif]">
                             {pageTitle}
                         </h2>
 
@@ -274,11 +274,11 @@ function IdeologyPage() {
                                                 {renderImage(book)}
                                             </div>
                                             <div className="flex flex-col flex-1 py-1">
-                                                {/* ĐÃ SỬA: Đổi font Lora cho tiêu đề sách */}
-                                                <h3 className="text-lg font-bold text-gray-800 mb-2 group-hover:text-red-700 transition-colors leading-snug font-['Lora',_serif]">
+                                                            {/* ĐÃ SỬA: Đổi font Lora cho tiêu đề sách */}
+                                                            <h3 className="text-lg font-bold text-gray-800 mb-2 group-hover:text-red-700 transition-colors leading-snug font-['Lora',serif]">
                                                     {book.title}
                                                 </h3>
-                                                <p className="text-sm text-gray-600 mb-4 line-clamp-3 text-left leading-relaxed font-['Lora',_serif]">
+                                                <p className="text-sm text-gray-600 mb-4 line-clamp-3 text-left leading-relaxed font-['Lora',serif]">
                                                     {book.description || 'Tuyển tập đặc sắc về tư tưởng của Bác...'}
                                                 </p>
                                                 <div className="mt-auto flex items-center justify-between">
@@ -287,12 +287,12 @@ function IdeologyPage() {
                                                             Đọc {book.readType === 'DOCX' ? 'DOCX' : 'PDF'}
                                                         </span>
                                                         {book.author && (
-                                                            <span className="text-[11px] text-gray-500 font-medium italic font-['Lora',_serif]">
+                                                            <span className="text-[11px] text-gray-500 font-medium italic font-['Lora',serif]">
                                                                 Tác giả: {book.author}
                                                             </span>
                                                         )}
                                                     </div>
-                                                    <span className="text-[11px] text-gray-400 font-['Lora',_serif]">
+                                                    <span className="text-[11px] text-gray-400 font-['Lora',serif]">
                                                         {book.viewCount ? `Lượt xem: ${book.viewCount}` : ''}
                                                     </span>
                                                 </div>
@@ -306,7 +306,7 @@ function IdeologyPage() {
                                             <button
                                                 onClick={prevPage}
                                                 disabled={currentPage === 1}
-                                                className={`px-3 py-1.5 rounded-md text-sm font-medium border transition-colors font-['Lora',_serif] ${currentPage === 1 ? 'border-gray-200 text-gray-400 cursor-not-allowed bg-gray-50' : 'border-gray-300 text-gray-700 hover:bg-red-50 hover:text-red-700 hover:border-red-200'}`}
+                                                className={`px-3 py-1.5 rounded-md text-sm font-medium border transition-colors font-['Lora',serif] ${currentPage === 1 ? 'border-gray-200 text-gray-400 cursor-not-allowed bg-gray-50' : 'border-gray-300 text-gray-700 hover:bg-red-50 hover:text-red-700 hover:border-red-200'}`}
                                             >
                                                 « Trước
                                             </button>
@@ -316,7 +316,7 @@ function IdeologyPage() {
                                                     <button
                                                         key={number}
                                                         onClick={() => paginate(number)}
-                                                        className={`w-8 h-8 rounded-md flex items-center justify-center text-sm font-bold transition-colors font-['Lora',_serif] ${currentPage === number
+                                                        className={`w-8 h-8 rounded-md flex items-center justify-center text-sm font-bold transition-colors font-['Lora',serif] ${currentPage === number
                                                                 ? 'bg-red-700 text-white shadow-sm'
                                                                 : 'bg-white text-gray-600 border border-gray-300 hover:bg-red-50 hover:text-red-700 hover:border-red-200'
                                                             }`}
@@ -329,7 +329,7 @@ function IdeologyPage() {
                                             <button
                                                 onClick={nextPage}
                                                 disabled={currentPage === totalPages}
-                                                className={`px-3 py-1.5 rounded-md text-sm font-medium border transition-colors font-['Lora',_serif] ${currentPage === totalPages ? 'border-gray-200 text-gray-400 cursor-not-allowed bg-gray-50' : 'border-gray-300 text-gray-700 hover:bg-red-50 hover:text-red-700 hover:border-red-200'}`}
+                                                className={`px-3 py-1.5 rounded-md text-sm font-medium border transition-colors font-['Lora',serif] ${currentPage === totalPages ? 'border-gray-200 text-gray-400 cursor-not-allowed bg-gray-50' : 'border-gray-300 text-gray-700 hover:bg-red-50 hover:text-red-700 hover:border-red-200'}`}
                                             >
                                                 Sau »
                                             </button>
@@ -338,7 +338,7 @@ function IdeologyPage() {
                                 </div>
                             ) : (
                                 <div className="text-center py-20 bg-white/50 rounded-2xl border-2 border-dashed border-gray-200">
-                                    <p className="text-gray-500 italic font-['Lora',_serif]">Danh mục này hiện chưa có tài liệu nào.</p>
+                                    <p className="text-gray-500 italic font-['Lora',serif]">Danh mục này hiện chưa có tài liệu nào.</p>
                                 </div>
                             )}
                         </div>
@@ -347,7 +347,7 @@ function IdeologyPage() {
                     {/* CỘT PHẢI: VIDEO */}
                     <div className="lg:col-span-4 lg:sticky lg:top-20 h-fit">
                         {/* ĐÃ SỬA: Đổi sang font Lora */}
-                        <h2 className="text-lg font-bold text-red-700 uppercase mb-6 border-b-2 border-red-700 pb-2 font-['Lora',_serif]">
+                        <h2 className="text-lg font-bold text-red-700 uppercase mb-6 border-b-2 border-red-700 pb-2 font-['Lora',serif]">
                             Tư liệu Video
                         </h2>
                         <div className="space-y-4 h-[600px] overflow-y-auto pr-2 custom-scrollbar">
@@ -366,7 +366,7 @@ function IdeologyPage() {
                                         />
                                     </div>
                                     {/* ĐÃ SỬA: Thêm font Lora */}
-                                    <h4 className="font-bold text-[13px] text-gray-800 group-hover:text-red-700 line-clamp-2 leading-snug font-['Lora',_serif]">
+                                    <h4 className="font-bold text-[13px] text-gray-800 group-hover:text-red-700 line-clamp-2 leading-snug font-['Lora',serif]">
                                         {v.title}
                                     </h4>
                                 </div>

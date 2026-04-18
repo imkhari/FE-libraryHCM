@@ -310,7 +310,7 @@ const MainLayout = () => {
         <img
           src={BG2}
           alt="Banner THPT Thái Phiên"
-          className="w-full h-auto object-contain md:h-[135px] lg:h-[185px] md:object-cover md:object-center"
+          className="w-full h-auto object-contain md:h-[135px] lg:h-[180px] md:object-cover md:object-center"
         />
       </div>
 

@@ -113,7 +113,7 @@ function BioPage() {
             variants={leftColumnVariants}
             initial="hidden"
             animate="visible"
-            className="w-full lg:w-[32%] lg:sticky lg:top-28 flex flex-col items-center z-20"
+            className="w-full lg:w-[26%] lg:sticky lg:top-28 flex flex-col items-center z-20"
           >
             <div className="p-3 bg-white shadow-2xl rounded border-2 border-red-800/10 relative group">
               <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-red-800"></div>

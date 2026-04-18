@@ -113,7 +113,7 @@ function BioPage() {
             variants={leftColumnVariants}
             initial="hidden"
             animate="visible"
-            className="w-full lg:w-[26%] lg:sticky lg:top-28 flex flex-col items-center z-20"
+            className="w-full lg:w-[25%] lg:sticky lg:top-28 flex flex-col items-center z-20"
           >
             <div className="p-3 bg-white shadow-2xl rounded border-2 border-red-800/10 relative group">
               <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-red-800"></div>
@@ -121,7 +121,6 @@ function BioPage() {
               <img src={portraitUrl} alt="Chân dung Bác Hồ" className="w-full max-w-sm h-auto object-cover grayscale-[15%] group-hover:grayscale-0 transition-all duration-700 shadow-inner" />
             </div>
             <div className="mt-8 bg-white/60 px-6 py-4 border-l-4 border-red-700 shadow-sm rounded-r-lg w-full max-w-sm">
-              {/* ĐÃ SỬA: Bỏ text-justify, thêm font Lora để chữ hiển thị mượt mà trên Windows */}
               <p className="text-[15px] md:text-base text-gray-800 font-['Lora',serif] italic text-left leading-relaxed">
                 "Tôi chỉ có một sự ham muốn, ham muốn tột bậc, là làm sao cho nước ta được hoàn toàn độc lập, dân ta được hoàn toàn tự do, đồng bào ai cũng có cơm ăn áo mặc, ai cũng được học hành."
               </p>
@@ -219,7 +218,6 @@ function BioPage() {
                   <h3 className="text-xl md:text-2xl font-black text-red-800 mb-1 text-center">NGUYỄN TẤT THÀNH</h3>
                   <p className="text-sm md:text-base text-red-600 mb-6 text-center font-['Lora',serif] italic">Khởi hành từ Bến cảng Nhà Rồng</p>
 
-                  {/* ĐÃ SỬA: Bỏ text-justify */}
                   <ul className="space-y-4 text-sm md:text-base text-gray-800">
                     <li className="flex items-start gap-3">
                       <span className="text-red-600 font-bold mt-0.5 text-lg">✔</span>

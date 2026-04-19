@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, Outlet, useLocation } from 'react-router-dom';
-import React, { useState, useEffect, useRef } from 'react'; // Đã thêm useRef
-import api from './services/api'; // Đã thêm import API
+import React, { useState, useEffect, useRef } from 'react'; 
+import api from './services/api'; 
 import Home from './pages/Home';
 import BookDetail from './pages/BookDetail';
 import CategoryPage from './pages/CategoryPage';
@@ -12,6 +12,7 @@ import ArticleDetail from './pages/ArticleDetail';
 import VideoDetailPage from './pages/VideoDetailPage';
 import GalleryPage from './pages/GalleryPage';
 // import JourneyMapPage from './pages/JourneyMapPage';
+import LaunchOverlay from './pages/LaunchOverlay';
 import BG2 from './assets/bg2.jpeg';
 import FooterImg from './assets/bg1.jpg';
 
@@ -26,7 +27,6 @@ const MainLayout = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  // STATE CHO DROP DOWN TÌM KIẾM
   const [suggestions, setSuggestions] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -38,7 +38,6 @@ const MainLayout = () => {
     setIsMobileMenuOpen(false);
   }, [location]);
 
-  // LOGIC 1: Đóng dropdown khi click ra ngoài
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (searchRef.current && !searchRef.current.contains(e.target)) {
@@ -49,7 +48,6 @@ const MainLayout = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // LOGIC 2: Gọi API tìm kiếm Live (Debounce)
   useEffect(() => {
     if (keyword.trim().length < 2) {
       setSuggestions([]);
@@ -61,7 +59,6 @@ const MainLayout = () => {
       setIsSearching(true);
       api.get('/documents?page=0&size=200')
         .then(res => {
-          // Xử lý an toàn cấu trúc mảng từ API
           let allDocs = [];
           if (Array.isArray(res.data)) allDocs = res.data;
           else if (res.data && Array.isArray(res.data.content)) allDocs = res.data.content;
@@ -71,7 +68,7 @@ const MainLayout = () => {
             doc.author?.toLowerCase().includes(keyword.toLowerCase())
           );
 
-          setSuggestions(filtered.slice(0, 5)); // Lấy 5 kết quả đầu tiên
+          setSuggestions(filtered.slice(0, 5)); 
           setShowDropdown(true);
           setIsSearching(false);
         })
@@ -79,11 +76,10 @@ const MainLayout = () => {
           console.error(err);
           setIsSearching(false);
         });
-    }, 400); // Đợi 0.4s sau khi ngừng gõ
+    }, 400); 
 
     return () => clearTimeout(timeoutId);
   }, [keyword]);
-
 
   const handleVoiceSearch = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -120,7 +116,7 @@ const MainLayout = () => {
     if (e.key === 'Enter' && keyword.trim() !== "") {
       navigate(`/search?q=${encodeURIComponent(keyword)}`);
       setIsSearchOpen(false);
-      setShowDropdown(false); // Đóng dropdown khi đã search
+      setShowDropdown(false); 
       setKeyword("");
     }
   };
@@ -184,8 +180,6 @@ const MainLayout = () => {
       {/* SEARCH OVERLAY */}
       {isSearchOpen && (
         <div className="fixed inset-0 z-[1000] bg-red-900/95 backdrop-blur-md flex flex-col items-center justify-start pt-20 md:pt-40 px-4 transition-all duration-500">
-
-          {/* Nút Đóng (Dấu X) */}
           <button
             onClick={() => setIsSearchOpen(false)}
             className="absolute top-6 right-6 md:top-8 md:right-8 text-white/60 hover:text-white hover:rotate-90 transition-all duration-300"
@@ -196,8 +190,6 @@ const MainLayout = () => {
           </button>
 
           <div className="w-full max-w-3xl flex flex-col items-center">
-
-            {/* Khung nhập liệu Search */}
             <div className="relative w-full group">
               <div className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-gray-400">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -233,7 +225,6 @@ const MainLayout = () => {
               </button>
             </div>
 
-            {/* KHUNG GỢI Ý KẾT QUẢ CHO MOBILE (Giống hệt Desktop) */}
             {keyword.trim().length >= 2 && (
               <div className="w-full mt-3 bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[50vh] md:max-h-[400px] animate-fade-in">
                 {isSearching ? (
@@ -247,9 +238,9 @@ const MainLayout = () => {
                       <div
                         key={`mob-sugg-${doc.id}`}
                         onClick={() => {
-                          setIsSearchOpen(false); // Đóng nền đỏ
-                          setKeyword(""); // Xóa chữ
-                          navigate(`/book/${doc.id}`); // Mở ngay sách
+                          setIsSearchOpen(false); 
+                          setKeyword(""); 
+                          navigate(`/book/${doc.id}`); 
                         }}
                         className="flex items-center px-4 py-3 hover:bg-red-50 cursor-pointer transition-colors border-b border-gray-100 last:border-0"
                       >
@@ -305,7 +296,6 @@ const MainLayout = () => {
         </div>
       </div>
 
-      {/* BANNER - Tối ưu hiển thị không bị méo trên Mobile và chuẩn form trên Desktop */}
       <div className="relative w-full bg-white border-b border-red-200 overflow-hidden flex justify-center">
         <img
           src={BG2}
@@ -318,7 +308,6 @@ const MainLayout = () => {
       <header className="bg-[#da251d] text-white shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-2 lg:px-4 h-11 md:h-12 flex justify-between items-center">
 
-          {/* NÚT MENU MOBILE */}
           <button
             className="md:hidden p-1.5 hover:bg-red-800 rounded text-white"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -328,10 +317,7 @@ const MainLayout = () => {
             </svg>
           </button>
 
-          {/* GIAO DIỆN DESKTOP MENU MỚI */}
           <nav className="hidden md:flex items-center h-full overflow-visible whitespace-nowrap">
-
-            {/* Nút Home */}
             <Link to="/" className="h-full px-3 md:px-4 gap-2 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
@@ -339,12 +325,10 @@ const MainLayout = () => {
               Trang chủ
             </Link>
 
-            {/* 1. Cuộc đời, sự nghiệp */}
             <Link to="/bio" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors">
               Cuộc đời, sự nghiệp
             </Link>
 
-            {/* 2. Tác phẩm của Hồ Chí Minh */}
             <div className="relative group h-full">
               <Link to="/category/cua-ho-chi-minh" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors cursor-pointer">
                 Tác phẩm của Hồ Chí Minh
@@ -360,7 +344,6 @@ const MainLayout = () => {
               </div>
             </div>
 
-            {/* 3. Sáng mãi niềm tin theo Bác */}
             <div className="relative group h-full">
               <Link to="/ideology/sang-mai-niem-tin" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors cursor-pointer">
                 Sáng mãi niềm tin theo Bác
@@ -383,18 +366,13 @@ const MainLayout = () => {
           </nav>
 
           <div className="ml-auto flex items-center shrink-0 z-[1000]">
-
-            {/* Nút Search Mobile */}
             <button onClick={() => setIsSearchOpen(true)} className="md:hidden bg-white/20 hover:bg-white/30 p-1.5 rounded-full transition-all">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button>
 
-            {/* THANH SEARCH DESKTOP CÓ DROPDOWN LIVE SEARCH */}
             <div className="hidden md:block relative group z-[9999]" ref={searchRef}>
-
-              {/* Input field */}
               <input
                 type="text"
                 placeholder="Tìm kiếm tài liệu..."
@@ -429,7 +407,6 @@ const MainLayout = () => {
                 )}
               </button>
 
-              {/* KHUNG GỢI Ý DROP-DOWN */}
               {showDropdown && keyword.trim().length >= 2 && (
                 <div className="absolute top-[calc(100%+10px)] right-0 w-[340px] xl:w-[400px] bg-white rounded-xl shadow-[0_15px_50px_rgba(0,0,0,0.2)] border border-gray-100 overflow-hidden transform transition-all">
                   {isSearching ? (
@@ -481,13 +458,11 @@ const MainLayout = () => {
           </div>
         </div>
 
-        {/* DROPDOWN MENU CHO MOBILE */}
         {isMobileMenuOpen && (
           <div className="md:hidden bg-[#b71a14] w-full border-t border-red-800 shadow-xl flex flex-col absolute top-full left-0 z-50 max-h-[80vh] overflow-y-auto">
             <Link to="/" className="px-4 py-3 text-sm font-bold uppercase border-b border-red-800/50 text-white">Trang chủ</Link>
             <Link to="/bio" className="px-4 py-3 text-sm font-bold uppercase border-b border-red-800/50 text-white">Cuộc đời, sự nghiệp</Link>
 
-            {/* Tác phẩm của Bác */}
             <div className="flex flex-col border-b border-red-800/50">
               <Link to="/category/cua-ho-chi-minh" className="px-4 py-3 text-sm font-bold uppercase text-white bg-red-800/30">Tác phẩm của Hồ Chí Minh</Link>
               <Link to="/category/ho-chi-minh-toan-tap" className="px-8 py-2 text-sm text-red-100 border-t border-red-800/30">- Hồ Chí Minh Toàn tập</Link>
@@ -496,7 +471,6 @@ const MainLayout = () => {
               <Link to="/category/bai-bao" className="px-8 py-2 text-sm text-red-100 border-t border-red-800/30">- Những bài báo của Hồ Chí Minh</Link>
             </div>
 
-            {/* Sáng mãi niềm tin theo Bác */}
             <div className="flex flex-col border-b border-red-800/50">
               <div className="px-4 py-3 text-sm font-bold uppercase text-white bg-red-800/30">Sáng mãi niềm tin theo Bác</div>
               <Link to="/ideology/vang-vong-loi-non-nuoc" className="px-8 py-2 text-sm text-red-100 border-t border-red-800/30">- Vang vọng lời non nước</Link>
@@ -512,11 +486,9 @@ const MainLayout = () => {
         )}
       </header>
 
-      {/* THANH THỜI GIAN & TICKER TIN TỨC */}
       {location.pathname !== "/" && (
         <div className="bg-[#f2f2f2] border-b border-gray-200 text-[11px] md:text-[13px] text-gray-700 font-medium overflow-hidden">
           <div className="max-w-7xl mx-auto flex items-center h-8 md:h-10 px-2 lg:px-4">
-            {/* Ẩn đồng hồ trên mobile cho đỡ chật */}
             <div className="hidden md:flex items-center shrink-0 pr-4 border-r border-gray-300 h-full relative z-10 bg-[#f2f2f2]">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -526,13 +498,11 @@ const MainLayout = () => {
 
             <div className="flex-1 overflow-hidden ml-1 md:ml-4 relative h-full">
               <div className="absolute top-0 bottom-0 left-0 flex items-center animate-marquee whitespace-nowrap">
-                {/* SET 1 */}
                 <div className="flex items-center">
                   {tickerEvents.map((event, index) => (
                     <React.Fragment key={`set1-${index}`}>
                       <span className="flex items-center text-red-700 hover:text-red-900 transition-colors cursor-pointer">
                         {event}
-                        {/* Gắn badge NEW/HOT cho sự kiện đầu tiên */}
                         {index === 0 && (
                           <span className="bg-red-600 text-white text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded ml-2 shadow-sm animate-pulse">
                             HOT
@@ -544,7 +514,6 @@ const MainLayout = () => {
                   ))}
                 </div>
 
-                {/* SET 2 (Copy y hệt SET 1 để chữ chạy liên tục không bị đứt quãng) */}
                 <div className="flex items-center">
                   {tickerEvents.map((event, index) => (
                     <React.Fragment key={`set2-${index}`}>
@@ -566,14 +535,11 @@ const MainLayout = () => {
         </div>
       )}
 
-      {/* NƠI RENDER NỘI DUNG CÁC TRANG */}
       <div className="flex-1">
         <Outlet />
       </div>
 
-      {/* FOOTER */}
       <footer className="relative bg-white border-t-4 border-red-700 pt-8 pb-6 overflow-hidden">
-
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex justify-center items-center">
           <img
             src={FooterImg}
@@ -619,7 +585,6 @@ const MainLayout = () => {
         </div>
       </footer>
 
-      {/* NÚT CUỘN TRANG */}
       <button
         onClick={scrollToTop}
         className={`fixed bottom-6 right-6 md:bottom-15 md:right-15 z-[1000] p-3 md:p-4 rounded-full bg-red-800 text-white shadow-2xl transition-all duration-500 hover:bg-red-700 hover:-translate-y-2 active:scale-90 ${showScrollTop ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0 pointer-events-none'}`}
@@ -634,9 +599,21 @@ const MainLayout = () => {
   );
 };
 
+// === ĐÃ SỬA HÀM APP Ở DƯỚI NÀY ===
 function App() {
+  // Thêm State để kiểm soát việc hiện/ẩn bức màn Kích hoạt
+  const [showLaunchOverlay, setShowLaunchOverlay] = useState(true);
+
   return (
     <Router>
+      {/* Chèn LaunchOverlay vào đây để nó phủ lên toàn bộ ứng dụng. 
+        Khi pháo hoa nổ xong, nó sẽ gọi hàm onComplete để tự ẩn đi.
+      */}
+      {showLaunchOverlay && (
+        <LaunchOverlay onComplete={() => setShowLaunchOverlay(false)} />
+      )}
+
+      {/* Đống Router và Layout của bạn được giữ NGUYÊN VẸN 100% */}
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
@@ -648,7 +625,6 @@ function App() {
           <Route path="/article/:id" element={<ArticleDetail />} />
           <Route path="/video/:id" element={<VideoDetailPage />} />
           <Route path="/gallery" element={<GalleryPage />} />
-
           {/* <Route path="/map" element={<JourneyMapPage />} /> */}
         </Route>
 

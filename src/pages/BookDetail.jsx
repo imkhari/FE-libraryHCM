@@ -232,7 +232,6 @@ function BookDetail() {
               Sử dụng camera điện thoại để quét mã và tiếp tục đọc tài liệu này trên thiết bị di động của bạn.
             </p>
             
-            {/* ĐÃ SỬA: Dùng QRCodeSVG của thư viện qrcode.react */}
             <div className="bg-white p-4 rounded-xl shadow-inner border border-gray-200">
               <QRCodeSVG 
                 value={currentUrl} 

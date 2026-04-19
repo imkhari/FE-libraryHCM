@@ -1,11 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
+
+// Nhớ đổi tên file nhạc trong thư mục assets thành nhac-demo.mp3 hoặc sửa link dưới đây
 import BackgroundImage from '../assets/bg4.jpeg'; 
 import LaunchMusic from '../assets/music-demo.mp3'; 
 
 export default function LaunchOverlay({ onComplete }) {
   const [isActivated, setIsActivated] = useState(false);
   const [isHiding, setIsHiding] = useState(false);
+  
+  // ĐÃ THÊM: Biến trạng thái để khóa hệ thống, chờ click chuột (Lên cò)
+  const [isSystemReady, setIsSystemReady] = useState(false);
   
   // đếm 20 nhịp trạng thái (10 lần Sáng + 10 lần Tối = 10 lần nháy)
   const [step, setStep] = useState(0);
@@ -26,6 +31,9 @@ export default function LaunchOverlay({ onComplete }) {
   };
 
   useEffect(() => {
+    // ĐÃ THÊM: Nếu chưa click chuột thì không làm gì cả
+    if (!isSystemReady) return;
+
     // Khởi tạo và phát nhạc ngay lập tức
     audioRef.current = new Audio(LaunchMusic);
     audioRef.current.volume = 1.0;
@@ -49,7 +57,7 @@ export default function LaunchOverlay({ onComplete }) {
       clearInterval(interval);
       if (audioRef.current) audioRef.current.pause();
     };
-  }, []);
+  }, [isSystemReady]); // ĐÃ SỬA: Lắng nghe sự thay đổi của isSystemReady
 
   // Tự động kích hoạt khi nháy đủ 10 lần
   useEffect(() => {
@@ -89,6 +97,24 @@ export default function LaunchOverlay({ onComplete }) {
     >
       <div className="absolute inset-0 bg-black/60 z-0"></div>
 
+      {/* === ĐÃ THÊM: MÀN HÌNH "LÊN CÒ" CHẶN TƯƠNG TÁC BẮT ĐẦU === */}
+      {!isSystemReady && (
+        <div 
+          onClick={() => setIsSystemReady(true)}
+          className="absolute inset-0 z-[10000] bg-black/80 flex flex-col items-center justify-center cursor-pointer backdrop-blur-sm"
+        >
+          <div className="animate-pulse flex flex-col items-center text-yellow-400">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+            </svg>
+            <h1 className="text-3xl font-bold font-['Lora',serif] uppercase tracking-widest text-center px-4">
+              Click vào màn hình để bắt đầu sự kiện
+            </h1>
+          </div>
+        </div>
+      )}
+
+      {/* TOÀN BỘ GIAO DIỆN CŨ CỦA BẠN ĐƯỢC GIỮ NGUYÊN BÊN DƯỚI */}
       <div className="relative z-10 flex flex-col items-center text-center px-4 w-full">
         <h2 className="text-yellow-400 font-bold uppercase tracking-[0.3em] mb-4 text-xs md:text-base">
           Lễ ra mắt nền tảng

@@ -9,7 +9,7 @@ export default function LaunchOverlay({ onComplete }) {
   const [isActivated, setIsActivated] = useState(false);
   const [isHiding, setIsHiding] = useState(false);
   
-  // ĐÃ THÊM: Biến trạng thái để khóa hệ thống, chờ click chuột (Lên cò)
+  // Biến trạng thái để khóa hệ thống, chờ click chuột (Lên cò)
   const [isSystemReady, setIsSystemReady] = useState(false);
   
   // đếm 20 nhịp trạng thái (10 lần Sáng + 10 lần Tối = 10 lần nháy)
@@ -18,9 +18,9 @@ export default function LaunchOverlay({ onComplete }) {
   
   const audioRef = useRef(null);
 
-  // HÀM BẮN PHÁO HOA
+  // HÀM BẮN PHÁO HOA - ĐÃ SỬA: KÉO DÀI 7 GIÂY
   const fireConfetti = () => {
-    const duration = 4000; 
+    const duration = 7000; // Tăng từ 4000 lên 7000 (7 giây)
     const end = Date.now() + duration;
     const colors = ['#da251d', '#ffff00']; 
     (function frame() {
@@ -31,7 +31,7 @@ export default function LaunchOverlay({ onComplete }) {
   };
 
   useEffect(() => {
-    // ĐÃ THÊM: Nếu chưa click chuột thì không làm gì cả
+    // Nếu chưa click chuột thì không làm gì cả
     if (!isSystemReady) return;
 
     // Khởi tạo và phát nhạc ngay lập tức
@@ -57,7 +57,7 @@ export default function LaunchOverlay({ onComplete }) {
       clearInterval(interval);
       if (audioRef.current) audioRef.current.pause();
     };
-  }, [isSystemReady]); // ĐÃ SỬA: Lắng nghe sự thay đổi của isSystemReady
+  }, [isSystemReady]); 
 
   // Tự động kích hoạt khi nháy đủ 10 lần
   useEffect(() => {
@@ -66,7 +66,7 @@ export default function LaunchOverlay({ onComplete }) {
     }
   }, [step]);
 
-  const handleTrigger = () => {
+const handleTrigger = () => {
     setIsActivated(true);
     fireConfetti();
 
@@ -74,19 +74,28 @@ export default function LaunchOverlay({ onComplete }) {
     setTimeout(() => {
       setIsHiding(true);
       
-      // Hiệu ứng tắt nhạc dần
-      const fadeAudio = setInterval(() => {
-        if (audioRef.current && audioRef.current.volume > 0.1) {
-          audioRef.current.volume -= 0.1;
-        } else {
-          if (audioRef.current) audioRef.current.pause();
-          clearInterval(fadeAudio);
-        }
-      }, 150);
+      // ĐÃ SỬA CỰC KỲ MƯỢT: Fade Out theo đường cong mượt mà trong 3 giây
+      if (audioRef.current) {
+        let fadeVolume = audioRef.current.volume;
+        const fadeInterval = setInterval(() => {
+          // Giảm dần 5% âm lượng HIỆN TẠI mỗi 100ms (Đường cong Exponential)
+          fadeVolume = fadeVolume * 0.90; 
+          
+          if (fadeVolume > 0.01) {
+            audioRef.current.volume = fadeVolume;
+          } else {
+            // Khi âm lượng cực nhỏ (< 1%) thì mới tắt hẳn
+            audioRef.current.volume = 0;
+            audioRef.current.pause();
+            clearInterval(fadeInterval);
+          }
+        }, 100); 
+      }
 
+      // Giãn thời gian hoàn thành lên 3.5 giây để chờ nhạc tắt lịm hẳn
       setTimeout(() => {
         if (onComplete) onComplete();
-      }, 1500);
+      }, 3500); 
     }, 4000); 
   };
 
@@ -97,7 +106,7 @@ export default function LaunchOverlay({ onComplete }) {
     >
       <div className="absolute inset-0 bg-black/60 z-0"></div>
 
-      {/* === ĐÃ THÊM: MÀN HÌNH "LÊN CÒ" CHẶN TƯƠNG TÁC BẮT ĐẦU === */}
+      {/* === MÀN HÌNH "LÊN CÒ" CHẶN TƯƠNG TÁC BẮT ĐẦU === */}
       {!isSystemReady && (
         <div 
           onClick={() => setIsSystemReady(true)}
@@ -114,7 +123,7 @@ export default function LaunchOverlay({ onComplete }) {
         </div>
       )}
 
-      {/* TOÀN BỘ GIAO DIỆN CŨ CỦA BẠN ĐƯỢC GIỮ NGUYÊN BÊN DƯỚI */}
+      {/* NỘI DUNG CHÍNH */}
       <div className="relative z-10 flex flex-col items-center text-center px-4 w-full">
         <h2 className="text-yellow-400 font-bold uppercase tracking-[0.3em] mb-4 text-xs md:text-base">
           Lễ ra mắt nền tảng
@@ -127,11 +136,10 @@ export default function LaunchOverlay({ onComplete }) {
         <div className={`transition-all duration-700 w-full max-w-[95vw] ${isActivated ? 'scale-150 opacity-0' : 'scale-100 opacity-100'}`}>
           <div className="flex flex-col items-center w-full">
             
-            {/* NÚT VÂN TAY PHÓNG TO CHO TIVI */}
+            {/* NÚT VÂN TAY */}
             <div className="flex justify-center gap-4 sm:gap-8 md:gap-12 lg:gap-24 xl:gap-32 mb-12 md:mb-20 w-full">
               {[1, 2, 3, 4, 5].map((num) => (
                 <div key={num} className="relative flex flex-col items-center">
-                  {/* Hiệu ứng nháy dứt khoát */}
                   <div className={`transition-all duration-1000 ${isButtonVisible ? 'opacity-100 scale-110' : 'opacity-80 scale-100'}`}>
                     <div className="absolute inset-[-15px] md:inset-[-25px] rounded-full bg-yellow-400/30 animate-[ping_3s_infinite]"></div>
                     <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-28 md:h-28 lg:w-36 lg:h-36 xl:w-44 xl:h-44 rounded-full border-[3px] md:border-4 border-yellow-400 bg-black/40 flex items-center justify-center shadow-[0_0_40px_rgba(255,255,0,0.5)] z-10 backdrop-blur-sm">

@@ -1,13 +1,27 @@
 import axios from 'axios';
 
-// Tạo một instance của axios trỏ về Backend Spring Boot của bạn
 const api = axios.create({
-  // Nhớ kiểm tra lại xem Backend của bạn đang chạy port 8080 hay cổng khác nhé
   baseURL: 'https://api-khong-gian-van-hoa.onrender.com/api/v1', 
   headers: {
     'Content-Type': 'application/json',
   }
 });
 
-// Đây chính là dòng export default mà Home.jsx đang "đòi"
+// Interceptor tự động lấy Token từ ổ khóa gắn vào mọi Request
+api.interceptors.request.use(
+  (config) => {
+    // Tìm thẻ adminToken trong bộ nhớ trình duyệt
+    const token = localStorage.getItem('adminToken');
+    
+    // Nếu có thẻ, tự động kẹp vào dòng Authorization của Header
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 export default api;

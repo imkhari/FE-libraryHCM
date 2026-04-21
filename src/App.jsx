@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, Outlet, useLocation } from 'react-router-dom';
-import React, { useState, useEffect, useRef } from 'react'; 
-import api from './services/api'; 
+import React, { useState, useEffect, useRef } from 'react';
+import api from './services/api';
 import Home from './pages/Home';
 import BookDetail from './pages/BookDetail';
 import CategoryPage from './pages/CategoryPage';
@@ -13,6 +13,11 @@ import VideoDetailPage from './pages/VideoDetailPage';
 import GalleryPage from './pages/GalleryPage';
 // import JourneyMapPage from './pages/JourneyMapPage';
 import LaunchOverlay from './pages/LaunchOverlay';
+import NewsPage from './pages/NewsPage';
+import VisitorTracker from './components/VisitorTracker';
+import AdminLogin from './components/AdminLogin';
+import AdminDashboard from './components/AdminDashboard';
+import AdminCreatePost from './components/AdminCreatePost';
 import BG2 from './assets/bg2.jpeg';
 import FooterImg from './assets/bg1.jpg';
 
@@ -68,7 +73,7 @@ const MainLayout = () => {
             doc.author?.toLowerCase().includes(keyword.toLowerCase())
           );
 
-          setSuggestions(filtered.slice(0, 5)); 
+          setSuggestions(filtered.slice(0, 5));
           setShowDropdown(true);
           setIsSearching(false);
         })
@@ -76,7 +81,7 @@ const MainLayout = () => {
           console.error(err);
           setIsSearching(false);
         });
-    }, 400); 
+    }, 400);
 
     return () => clearTimeout(timeoutId);
   }, [keyword]);
@@ -116,7 +121,7 @@ const MainLayout = () => {
     if (e.key === 'Enter' && keyword.trim() !== "") {
       navigate(`/search?q=${encodeURIComponent(keyword)}`);
       setIsSearchOpen(false);
-      setShowDropdown(false); 
+      setShowDropdown(false);
       setKeyword("");
     }
   };
@@ -238,9 +243,9 @@ const MainLayout = () => {
                       <div
                         key={`mob-sugg-${doc.id}`}
                         onClick={() => {
-                          setIsSearchOpen(false); 
-                          setKeyword(""); 
-                          navigate(`/book/${doc.id}`); 
+                          setIsSearchOpen(false);
+                          setKeyword("");
+                          navigate(`/book/${doc.id}`);
                         }}
                         className="flex items-center px-4 py-3 hover:bg-red-50 cursor-pointer transition-colors border-b border-gray-100 last:border-0"
                       >
@@ -325,6 +330,10 @@ const MainLayout = () => {
               Trang chủ
             </Link>
 
+            <Link to="/news" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors">
+              Tin tức - Sự kiện
+            </Link>
+
             <Link to="/bio" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors">
               Cuộc đời, sự nghiệp
             </Link>
@@ -356,12 +365,13 @@ const MainLayout = () => {
                 <Link to="/category/ve-ho-chi-minh" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Những tác phẩm viết về Hồ Chí Minh</Link>
                 <Link to="/ideology/tai-lieu-hoc-tap" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 transition-colors">Tài liệu học tập làm theo Bác</Link>
                 <Link to="/ideology/trong-long-dan-toc" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Hồ Chí Minh trong lòng dân tộc và thế giới</Link>
+                <Link to="/gallery" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Triển lãm Ảnh</Link>
               </div>
             </div>
 
-            <Link to="/gallery" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors">
+            {/* <Link to="/gallery" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors">
               Triển lãm Ảnh
-            </Link>
+            </Link> */}
 
           </nav>
 
@@ -461,6 +471,7 @@ const MainLayout = () => {
         {isMobileMenuOpen && (
           <div className="md:hidden bg-[#b71a14] w-full border-t border-red-800 shadow-xl flex flex-col absolute top-full left-0 z-50 max-h-[80vh] overflow-y-auto">
             <Link to="/" className="px-4 py-3 text-sm font-bold uppercase border-b border-red-800/50 text-white">Trang chủ</Link>
+            <Link to="/news" className="px-4 py-3 text-sm font-bold uppercase border-b border-red-800/50 text-white">Tin tức - Sự kiện</Link>
             <Link to="/bio" className="px-4 py-3 text-sm font-bold uppercase border-b border-red-800/50 text-white">Cuộc đời, sự nghiệp</Link>
 
             <div className="flex flex-col border-b border-red-800/50">
@@ -477,11 +488,12 @@ const MainLayout = () => {
               <Link to="/category/ve-ho-chi-minh" className="px-8 py-2 text-sm text-red-100 border-t border-red-800/30">- Những tác phẩm viết về Bác</Link>
               <Link to="/ideology/tai-lieu-hoc-tap" className="px-8 py-2 text-sm text-red-100 border-t border-red-800/30">- Tài liệu học tập</Link>
               <Link to="/ideology/trong-long-dan-toc" className="px-8 py-3 text-sm text-red-100 border-t border-red-800/30 pb-4">- Bác trong lòng dân tộc và thế giới</Link>
+              <Link to="/gallery" className="px-8 py-3 text-sm text-red-100 border-t border-red-800/30 pb-4">- Triển lãm Ảnh</Link>
             </div>
 
-            <Link to="/gallery" className="px-4 py-3 text-sm font-bold uppercase border-b border-red-800/50 text-white">
-               Triển lãm Ảnh
-            </Link>
+            {/* <Link to="/gallery" className="px-4 py-3 text-sm font-bold uppercase border-b border-red-800/50 text-white">
+              Triển lãm Ảnh
+            </Link> */}
           </div>
         )}
       </header>
@@ -551,7 +563,12 @@ const MainLayout = () => {
         <div className="max-w-7xl mx-auto px-4 relative z-10">
           <div className="mb-6 border-b border-red-100 pb-4 text-center md:text-left">
             <h2 className="text-red-700 font-['Lora',serif] font-bold text-lg md:text-xl uppercase tracking-wider">
-              Cơ quan chủ quản: <br className="md:hidden" /><span className="font-black">Trường THPT Thái Phiên - Thăng Bình</span>
+              Cơ quan chủ quản: <br className="md:hidden" /><Link
+                to="/admin/login"
+                className="font-black hover:text-red-500 transition-colors cursor-pointer"
+              >
+                Trường THPT Thái Phiên - Thăng Bình
+              </Link>
             </h2>
           </div>
 
@@ -599,24 +616,57 @@ const MainLayout = () => {
   );
 };
 
-// === ĐÃ SỬA HÀM APP Ở DƯỚI NÀY ===
 function App() {
   // Thêm State để kiểm soát việc hiện/ẩn bức màn Kích hoạt
   const [showLaunchOverlay, setShowLaunchOverlay] = useState(true);
 
+  // ------- KHU VỰC QUẢN TRỊ ADMIN-------
+  // Chặn người lạ không có Token
+  const ProtectedRoute = ({ children }) => {
+    const token = localStorage.getItem('adminToken');
+    if (!token) {
+      return <Navigate to="/admin/login" replace />;
+    }
+    return children;
+  };
+
+  // KHUNG GIAO DIỆN ADMIN: Có menu ngang màu đỏ để thầy cô dễ thao tác
+  const AdminLayout = ({ children }) => {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <nav className="bg-red-700 text-white p-4 shadow-md sticky top-0 z-50">
+          <div className="max-w-6xl mx-auto flex justify-between items-center">
+            <div className="font-bold text-xl uppercase tracking-wider">Trang Quản Trị</div>
+            <div className="flex gap-4 md:gap-6 items-center text-sm md:text-base">
+              <Link to="/" className="font-semibold text-red-200 hover:text-white transition-colors">
+                ← Về trang chủ
+              </Link>
+              <span className="text-red-400">|</span>
+              <Link to="/admin/dashboard" className="font-semibold hover:text-red-200 transition-colors">📊 Thống Kê</Link>
+              <Link to="/admin/create-post" className="font-semibold hover:text-red-200 transition-colors">✍️ Đăng Bài</Link>
+            </div>
+          </div>
+        </nav>
+        {children}
+      </div>
+    );
+  };
+
   return (
     <Router>
+      <VisitorTracker />
       {/* Chèn LaunchOverlay vào đây để nó phủ lên toàn bộ ứng dụng. 
         Khi pháo hoa nổ xong, nó sẽ gọi hàm onComplete để tự ẩn đi.
       */}
-      {showLaunchOverlay && (
+      {/* {showLaunchOverlay && (
         <LaunchOverlay onComplete={() => setShowLaunchOverlay(false)} />
-      )}
+      )} */}
 
       {/* Đống Router và Layout của bạn được giữ NGUYÊN VẸN 100% */}
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/news" element={<NewsPage />} />
           <Route path="/book/:id" element={<BookDetail />} />
           <Route path="/category/:type" element={<CategoryPage />} />
           <Route path="/search" element={<SearchPage />} />
@@ -629,6 +679,33 @@ function App() {
         </Route>
 
         <Route path="/reader/:id" element={<ReaderPage />} />
+
+        {/* 1. Trang đăng nhập (Mở tự do) */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+
+        {/* 2. Trang Thống kê (Bị khóa bởi ProtectedRoute) */}
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute>
+              <AdminLayout>
+                <AdminDashboard />
+              </AdminLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* 3. Trang Đăng bài mới (Bị khóa bởi ProtectedRoute) */}
+        <Route
+          path="/admin/create-post"
+          element={
+            <ProtectedRoute>
+              <AdminLayout>
+                <AdminCreatePost />
+              </AdminLayout>
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );

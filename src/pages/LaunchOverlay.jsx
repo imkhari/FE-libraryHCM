@@ -74,7 +74,6 @@ const handleTrigger = () => {
     setTimeout(() => {
       setIsHiding(true);
       
-      // ĐÃ SỬA CỰC KỲ MƯỢT: Fade Out theo đường cong mượt mà trong 3 giây
       if (audioRef.current) {
         let fadeVolume = audioRef.current.volume;
         const fadeInterval = setInterval(() => {

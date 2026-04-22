@@ -39,8 +39,13 @@ function NewsPage() {
   };
 
   const formatDate = (dateString) => {
-    const d = new Date(dateString);
-    return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`;
+    if (!dateString) return "";
+    const safeDate = dateString.endsWith('Z') || dateString.includes('+') ? dateString : `${dateString}Z`;
+    const d = new Date(safeDate);
+    
+    const time = d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const date = d.toLocaleDateString('vi-VN');
+    return `${time} - ${date}`;
   };
 
   return (

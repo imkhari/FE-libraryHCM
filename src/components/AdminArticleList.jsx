@@ -19,6 +19,16 @@ export default function AdminArticleList() {
         }
     };
 
+    const formatDateTime = (dateString) => {
+        if (!dateString) return { time: "", date: "" };
+        const safeDate = dateString.endsWith('Z') || dateString.includes('+') ? dateString : `${dateString}Z`;
+        const d = new Date(safeDate);
+        return {
+            time: d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+            date: d.toLocaleDateString('vi-VN')
+        };
+    };
+
     useEffect(() => {
         fetchArticles();
     }, []);
@@ -78,11 +88,11 @@ export default function AdminArticleList() {
                                             </span>
                                         </td>
                                         <td className="p-4 text-sm text-gray-600">
-                                            <div className="font-medium">
-                                                {new Date(article.createdAt).toLocaleTimeString('vi-VN')}
+                                            <div className="font-bold text-gray-800">
+                                                {formatDateTime(article.createdAt).time}
                                             </div>
-                                            <div className="text-xs text-gray-400 mt-0.5">
-                                                {new Date(article.createdAt).toLocaleDateString('vi-VN')}
+                                            <div className="text-xs text-gray-500 mt-0.5">
+                                                {formatDateTime(article.createdAt).date}
                                             </div>
                                         </td>
                                         <td className="p-4 flex items-center justify-center gap-3">

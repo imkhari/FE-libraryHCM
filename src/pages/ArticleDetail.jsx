@@ -35,12 +35,18 @@ function ArticleDetail() {
     return match ? match[1] : "https://upload.wikimedia.org/wikipedia/commons/e/e0/Ho_Chi_Minh_1946.jpg";
   };
 
-  const formatDate = (dateString) => {
+  // ĐÃ SỬA: Hàm xử lý thời gian chống lệch 7 tiếng và thêm Giờ Phút Giây
+  const formatDateTime = (dateString) => {
     if (!dateString) return "";
-    return new Date(dateString).toLocaleDateString('vi-VN');
+    // Thêm 'Z' để trình duyệt hiểu đây là giờ UTC và tự động cộng 7 tiếng cho Việt Nam
+    const safeDate = dateString.endsWith('Z') || dateString.includes('+') ? dateString : `${dateString}Z`;
+    const d = new Date(safeDate);
+    
+    const time = d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const date = d.toLocaleDateString('vi-VN');
+    return `${time} | ${date}`;
   };
 
-  // Đã đồng bộ font Lora cho cả màn hình chờ và lỗi
   if (loading) return <div className="min-h-screen flex justify-center items-center text-gray-500 font-['Lora',serif] font-bold">Đang tải nội dung...</div>;
   if (!article) return <div className="min-h-screen flex justify-center items-center text-red-600 font-['Lora',serif] font-bold">Không tìm thấy bài viết!</div>;
 
@@ -63,7 +69,8 @@ function ArticleDetail() {
           </h1>
           
           <div className="flex items-center text-sm text-gray-500 mb-8 pb-4 border-b border-gray-200">
-            <span>Đăng lúc: {formatDate(article.createdAt || article.publishDate)}</span>
+            {/* ĐÃ SỬA: Gọi hàm hiển thị ngày giờ mới */}
+            <span>Đăng lúc: <strong className="text-gray-700">{formatDateTime(article.createdAt || article.publishDate)}</strong></span>
             <span className="mx-3">|</span>
             <span>Tác giả: <strong className="text-gray-800">{article.author?.fullName || article.author || "Ban Quản Trị"}</strong></span>
           </div>
@@ -94,7 +101,8 @@ function ArticleDetail() {
                       <h4 className="text-[14px] font-bold text-gray-800 group-hover:text-red-700 leading-snug line-clamp-2 transition-colors">
                         {item.title}
                       </h4>
-                      <p className="text-[11px] text-gray-400 mt-1">{formatDate(item.createdAt)}</p>
+                      {/* ĐÃ SỬA: Cập nhật luôn cho các bài viết nhỏ ở Sidebar */}
+                      <p className="text-[11px] text-gray-400 mt-1">{formatDateTime(item.createdAt)}</p>
                     </div>
                   </Link>
                 ))

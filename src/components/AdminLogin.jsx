@@ -32,7 +32,7 @@ export default function AdminLogin() {
       if (err.response && err.response.status === 401) {
         setError('Sai tên đăng nhập hoặc mật khẩu. Vui lòng thử lại!');
       } else {
-        setError('Lỗi kết nối máy chủ. Có thể server đang thức dậy, đợi xí nhé!');
+        setError('Lỗi kết nối máy chủ !');
       }
     } finally {
       setIsLoading(false);

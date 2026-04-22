@@ -18,6 +18,8 @@ import VisitorTracker from './components/VisitorTracker';
 import AdminLogin from './components/AdminLogin';
 import AdminDashboard from './components/AdminDashboard';
 import AdminCreatePost from './components/AdminCreatePost';
+import AdminArticleList from './components/AdminArticleList';
+import AdminEditPost from './components/AdminEditPost';
 import BG2 from './assets/bg2.jpeg';
 import FooterImg from './assets/bg1.jpg';
 
@@ -630,24 +632,55 @@ function App() {
     return children;
   };
 
-  // KHUNG GIAO DIỆN ADMIN: Có menu ngang màu đỏ để thầy cô dễ thao tác
   const AdminLayout = ({ children }) => {
+    const adminName = localStorage.getItem('adminName') || 'Quản trị viên';
+
     return (
-      <div className="min-h-screen bg-gray-50">
-        <nav className="bg-red-700 text-white p-4 shadow-md sticky top-0 z-50">
-          <div className="max-w-6xl mx-auto flex justify-between items-center">
-            <div className="font-bold text-xl uppercase tracking-wider">Trang Quản Trị</div>
-            <div className="flex gap-4 md:gap-6 items-center text-sm md:text-base">
-              <Link to="/" className="font-semibold text-red-200 hover:text-white transition-colors">
-                ← Về trang chủ
-              </Link>
-              <span className="text-red-400">|</span>
-              <Link to="/admin/dashboard" className="font-semibold hover:text-red-200 transition-colors">📊 Thống Kê</Link>
-              <Link to="/admin/create-post" className="font-semibold hover:text-red-200 transition-colors">✍️ Đăng Bài</Link>
+      <div className="flex h-screen bg-gray-50 font-['Lora',serif]">
+        <aside className="w-64 bg-red-900 text-white flex flex-col shadow-xl z-20">
+          <div className="p-6 text-center border-b border-red-800/50">
+            <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-3">
+              <span className="text-3xl">🏛️</span>
             </div>
+            <h2 className="text-lg font-black uppercase tracking-wider">Trang Quản Trị</h2>
+            <p className="text-red-200 text-xs mt-1">Không gian văn hóa HCM</p>
           </div>
-        </nav>
-        {children}
+
+          <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+            <p className="text-[10px] uppercase text-red-300 font-bold tracking-widest mb-2 ml-2 mt-4">Menu chính</p>
+            <Link to="/admin/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-800 transition-colors font-semibold text-sm">
+              <span>📊</span> Thống Kê
+            </Link>
+            <Link to="/admin/articles" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-800 transition-colors font-semibold text-sm">
+              <span>📚</span> Quản lý bài viết
+            </Link>
+            <Link to="/admin/create-post" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-800 transition-colors font-semibold text-sm">
+              <span>✍️</span> Đăng bài mới
+            </Link>
+          </nav>
+
+          <div className="p-4 border-t border-red-800/50">
+            <Link to="/" className="flex items-center justify-center gap-2 text-sm text-red-200 hover:text-white transition-colors bg-red-950/50 py-2.5 rounded-lg">
+              <span>←</span> Về trang chủ web
+            </Link>
+          </div>
+        </aside>
+
+        <main className="flex-1 flex flex-col overflow-hidden">
+          {/* Thanh Header nhỏ ở trên */}
+          <header className="bg-white h-16 shadow-sm flex items-center justify-end px-8 z-10">
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-bold text-gray-700">Xin chào, {adminName}</span>
+              <div className="w-8 h-8 bg-red-100 text-red-700 rounded-full flex items-center justify-center font-black">
+                {adminName.charAt(0)}
+              </div>
+            </div>
+          </header>
+          {/* Khu vực cuộn nội dung */}
+          <div className="flex-1 overflow-y-auto p-6 md:p-8">
+            {children}
+          </div>
+        </main>
       </div>
     );
   };
@@ -705,6 +738,27 @@ function App() {
               </AdminLayout>
             </ProtectedRoute>
           }
+        />
+        {/* Trang Quản lý danh sách bài viết (CRUD) */}
+        <Route 
+          path="/admin/articles" 
+          element={
+            <ProtectedRoute>
+              <AdminLayout>
+                <AdminArticleList />
+              </AdminLayout>
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/admin/edit-post/:id" 
+          element={
+            <ProtectedRoute>
+              <AdminLayout>
+                <AdminEditPost />
+              </AdminLayout>
+            </ProtectedRoute>
+          } 
         />
       </Routes>
     </Router>

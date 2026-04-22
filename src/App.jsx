@@ -16,6 +16,7 @@ import LaunchOverlay from './pages/LaunchOverlay';
 import NewsPage from './pages/NewsPage';
 import VisitorTracker from './components/VisitorTracker';
 import AdminLogin from './components/AdminLogin';
+import AdminRegister from './components/AdminRegister';
 import AdminDashboard from './components/AdminDashboard';
 import AdminCreatePost from './components/AdminCreatePost';
 import AdminArticleList from './components/AdminArticleList';
@@ -713,8 +714,8 @@ function App() {
 
         <Route path="/reader/:id" element={<ReaderPage />} />
 
-        {/* 1. Trang đăng nhập (Mở tự do) */}
         <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/register" element={<AdminRegister />} />
 
         {/* 2. Trang Thống kê (Bị khóa bởi ProtectedRoute) */}
         <Route

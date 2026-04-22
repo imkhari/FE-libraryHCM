@@ -21,6 +21,7 @@ import AdminDashboard from './components/AdminDashboard';
 import AdminCreatePost from './components/AdminCreatePost';
 import AdminArticleList from './components/AdminArticleList';
 import AdminEditPost from './components/AdminEditPost';
+import AdminUserList from './components/AdminUserList';
 import BG2 from './assets/bg2.jpeg';
 import FooterImg from './assets/bg1.jpg';
 
@@ -635,6 +636,7 @@ function App() {
 
   const AdminLayout = ({ children }) => {
     const adminName = localStorage.getItem('adminName') || 'Quản trị viên';
+    const userRole = localStorage.getItem('userRole'); // <--- Móc Role ra
 
     return (
       <div className="flex h-screen bg-gray-50 font-['Lora',serif]">
@@ -658,6 +660,15 @@ function App() {
             <Link to="/admin/create-post" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-800 transition-colors font-semibold text-sm">
               <span>✍️</span> Đăng bài mới
             </Link>
+
+            {userRole === 'SUPER_ADMIN' && (
+              <>
+                <p className="text-[10px] uppercase text-red-300 font-bold tracking-widest mb-2 ml-2 mt-6">Dành cho Quản trị tối cao</p>
+                <Link to="/admin/users" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-800 transition-colors font-semibold text-sm">
+                  <span>👥</span> Quản lý Nhân sự
+                </Link>
+              </>
+            )}
           </nav>
 
           <div className="p-4 border-t border-red-800/50">
@@ -741,25 +752,34 @@ function App() {
           }
         />
         {/* Trang Quản lý danh sách bài viết (CRUD) */}
-        <Route 
-          path="/admin/articles" 
+        <Route
+          path="/admin/articles"
           element={
             <ProtectedRoute>
               <AdminLayout>
                 <AdminArticleList />
               </AdminLayout>
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/admin/edit-post/:id" 
+        <Route
+          path="/admin/edit-post/:id"
           element={
             <ProtectedRoute>
               <AdminLayout>
                 <AdminEditPost />
               </AdminLayout>
             </ProtectedRoute>
-          } 
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute>
+              <AdminLayout>
+                <AdminUserList />
+              </AdminLayout>
+            </ProtectedRoute>}
         />
       </Routes>
     </Router>

@@ -25,6 +25,7 @@ export default function AdminLogin() {
       const { token, fullName } = response.data;
       localStorage.setItem('adminToken', token);
       localStorage.setItem('adminName', fullName);
+      localStorage.setItem('userRole', role);
       window.location.href = '/admin/dashboard';
       
     } catch (err) {
@@ -40,7 +41,6 @@ export default function AdminLogin() {
 
   return (
     <div 
-      // ĐÃ SỬA: Thêm font-['Lora',serif] vào thẻ bọc ngoài cùng để đồng bộ toàn bộ chữ
       className="min-h-screen flex items-center justify-center p-4 relative font-['Lora',serif]"
       style={{
         backgroundImage: `url(${backgroundImageUrl})`,

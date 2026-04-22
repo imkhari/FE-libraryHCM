@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // IMPORT THÊM THẺ LINK
+import { Link } from 'react-router-dom';
 import api from '../services/api'; 
 import BackgroundADMIN from '../assets/bg4.jpeg';
 
@@ -22,10 +22,13 @@ export default function AdminLogin() {
         password: password 
       });
 
-      const { token, fullName } = response.data;
+      // ĐÃ SỬA: Lấy thêm thuộc tính 'role' từ API trả về
+      const { token, fullName, role } = response.data;
+      
       localStorage.setItem('adminToken', token);
       localStorage.setItem('adminName', fullName);
-      localStorage.setItem('userRole', role);
+      localStorage.setItem('userRole', role); // Lúc này biến role đã có dữ liệu hợp lệ
+      
       window.location.href = '/admin/dashboard';
       
     } catch (err) {
@@ -48,8 +51,6 @@ export default function AdminLogin() {
         backgroundPosition: 'center'
       }}
     >
-      {/* <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-0"></div> */}
-
       <div className="bg-white p-8 md:p-10 rounded-3xl shadow-2xl w-full max-w-md relative z-10 animate-fade-in border-t-4 border-red-700">
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-red-50 text-red-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
@@ -58,7 +59,6 @@ export default function AdminLogin() {
             </svg>
           </div>
           <h1 className="text-2xl font-black text-gray-800 uppercase tracking-wide">Cổng Quản Trị</h1>
-          {/* ĐÃ SỬA: Xóa font-['Lora',serif] rải rác ở đây vì thẻ cha đã có */}
           <p className="text-gray-500 mt-2 text-sm">Không gian văn hóa Hồ Chí Minh</p>
         </div>
 
@@ -78,7 +78,6 @@ export default function AdminLogin() {
           </button>
         </form>
 
-        {/* ĐÃ SỬA: Thêm khu vực link Đăng ký */}
         <div className="mt-8 text-center text-sm text-gray-600 border-t border-gray-100 pt-6">
           Chưa có tài khoản?{' '}
           <Link to="/admin/register" className="text-red-700 font-bold hover:text-red-800 hover:underline transition-all">

@@ -6,7 +6,7 @@ function NewsPage() {
   const navigate = useNavigate();
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('ALL'); // ALL, TIN_TUC, HOC_TAP_BAC
+  const [activeTab, setActiveTab] = useState('ALL');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -16,26 +16,54 @@ function NewsPage() {
   const fetchArticles = async (category) => {
     setLoading(true);
     try {
-      // Gọi API lấy bài viết, truyền category nếu cần
+      const cacheKey = `newsCache_${category}`;
+      const cachedData = sessionStorage.getItem(cacheKey);
+
+      if (cachedData) {
+        setArticles(JSON.parse(cachedData));
+        setLoading(false);
+      }
+
       const res = await api.get(`/articles${category !== 'ALL' ? `?category=${category}` : ''}`);
-      setArticles(res.data);
+      
+      // 🌟 ÉP CÂN DỮ LIỆU: Chỉ lấy những thứ cần thiết, NÉM BỎ cột 'content' khổng lồ
+      const processedArticles = res.data.map(article => {
+        let snippet = '';
+        let thumbnail = "https://upload.wikimedia.org/wikipedia/commons/e/e0/Ho_Chi_Minh_1946.jpg";
+        
+        if (article.content) {
+          const match = article.content.match(/<img[^>]+src="([^">]+)"/);
+          if (match) thumbnail = match[1];
+
+          const doc = new DOMParser().parseFromString(article.content, 'text/html');
+          snippet = doc.body.textContent.substring(0, 150) + '...';
+        }
+
+        // Tuyệt đối KHÔNG dùng ...article ở đây nữa
+        return {
+          id: article.id,
+          title: article.title,
+          category: article.category,
+          author: article.author,
+          createdAt: article.createdAt,
+          thumbnail: thumbnail,
+          snippet: snippet
+        };
+      });
+
+      // 🌟 Lưu an toàn với try..catch để tránh sập web nếu trình duyệt hết dung lượng
+      try {
+        sessionStorage.setItem(cacheKey, JSON.stringify(processedArticles));
+      } catch (e) {
+        console.warn("Bộ nhớ đệm đầy, bỏ qua lưu cache.");
+      }
+      
+      setArticles(processedArticles);
     } catch (error) {
-      console.error("Lỗi khi tải tin tức:", error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
-  };
-
-  // Hàm "móc" ảnh đầu tiên trong bài viết HTML ra làm ảnh bìa
-  const extractFirstImage = (htmlContent) => {
-    const match = htmlContent.match(/<img[^>]+src="([^">]+)"/);
-    return match ? match[1] : "https://upload.wikimedia.org/wikipedia/commons/e/e0/Ho_Chi_Minh_1946.jpg"; // Ảnh mặc định nếu bài không có ảnh
-  };
-
-  // Hàm lọc bỏ thẻ HTML để lấy chữ làm mô tả ngắn
-  const extractTextSnippet = (htmlContent) => {
-    const doc = new DOMParser().parseFromString(htmlContent, 'text/html');
-    return doc.body.textContent.substring(0, 150) + '...';
   };
 
   const formatDate = (dateString) => {
@@ -43,9 +71,7 @@ function NewsPage() {
     const safeDate = dateString.endsWith('Z') || dateString.includes('+') ? dateString : `${dateString}Z`;
     const d = new Date(safeDate);
     
-    const time = d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    const date = d.toLocaleDateString('vi-VN');
-    return `${time} - ${date}`;
+    return `${d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })} - ${d.toLocaleDateString('vi-VN')}`;
   };
 
   return (
@@ -55,7 +81,6 @@ function NewsPage() {
           Tin tức - Sự kiện
         </h1>
 
-        {/* NÚT ĐIỀU HƯỚNG TAB */}
         <div className="flex justify-center mb-10 gap-4 flex-wrap">
           <button 
             onClick={() => setActiveTab('ALL')}
@@ -67,18 +92,17 @@ function NewsPage() {
             onClick={() => setActiveTab('TIN_TUC')}
             className={`px-6 py-2.5 rounded-full font-bold font-['Lora',serif] text-sm md:text-base border-2 transition-all ${activeTab === 'TIN_TUC' ? 'bg-red-700 text-white border-red-700 shadow-md' : 'bg-white text-gray-600 border-gray-200 hover:border-red-300'}`}
           >
-            📢 Hoạt động Nhà trường
+            Hoạt động Nhà trường
           </button>
           <button 
             onClick={() => setActiveTab('HOC_TAP_BAC')}
             className={`px-6 py-2.5 rounded-full font-bold font-['Lora',serif] text-sm md:text-base border-2 transition-all ${activeTab === 'HOC_TAP_BAC' ? 'bg-red-700 text-white border-red-700 shadow-md' : 'bg-white text-gray-600 border-gray-200 hover:border-red-300'}`}
           >
-            🌟 Học tập & Làm theo Bác
+            Học tập & Làm theo Bác
           </button>
         </div>
 
-        {/* DANH SÁCH BÀI VIẾT */}
-        {loading ? (
+        {loading && articles.length === 0 ? (
           <div className="flex justify-center items-center py-20"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-red-700"></div></div>
         ) : articles.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -88,25 +112,24 @@ function NewsPage() {
                 onClick={() => navigate(`/article/${article.id}`)}
                 className="bg-white rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-gray-100 overflow-hidden flex flex-col"
               >
-                {/* Ảnh bìa */}
                 <div className="h-48 overflow-hidden relative">
                   <div className="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm z-10">
                     {article.category === 'TIN_TUC' ? 'TIN TỨC' : 'HỌC TẬP BÁC'}
                   </div>
                   <img 
-                    src={extractFirstImage(article.content)} 
+                    src={article.thumbnail} 
                     alt={article.title} 
+                    loading="lazy"
                     className="w-full h-full object-cover"
                   />
                 </div>
                 
-                {/* Nội dung */}
                 <div className="p-5 flex flex-col flex-1">
                   <h2 className="text-lg font-bold font-['Lora',serif] text-gray-800 leading-snug mb-2 line-clamp-2 hover:text-red-700">
                     {article.title}
                   </h2>
                   <p className="text-sm text-gray-600 line-clamp-3 mb-4 font-['Lora',serif]">
-                    {extractTextSnippet(article.content)}
+                    {article.snippet}
                   </p>
                   
                   <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between text-[12px] text-gray-500 font-medium">

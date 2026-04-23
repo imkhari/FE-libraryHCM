@@ -4,3 +4,21 @@
 @theme {
   --color-primary: #cc0000;
 }
+
+.prose *, .ql-editor *, [class*="prose"] * {
+    /* 1. Tuyệt đối cấm bẻ chữ giữa chừng (Giải quyết vụ d-ân, ti-ên) */
+    word-break: normal !important;
+    
+    /* 2. Chỉ rớt dòng nguyên một từ hoặc link dài */
+    overflow-wrap: break-word !important;
+    
+    /* 3. Dọn sạch các khoảng trắng lỗi từ PDF */
+    white-space: normal !important;
+    
+    /* 4. Tắt căn đều 2 bên (Justify) - Thủ phạm số 1 gây giãn chữ tiếng Việt */
+    text-align: left !important;
+    
+    /* 5. Khóa tính năng tự đoán ngắt từ của Trình duyệt (Chrome/Safari) */
+    -webkit-hyphens: none !important;
+    hyphens: none !important;
+}

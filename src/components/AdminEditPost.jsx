@@ -38,10 +38,10 @@ export default function AdminEditPost() {
     const cleanWordGarbageBeforeSave = (rawHtml) => {
         if (!rawHtml) return "";
         return rawHtml
-            .replace(/word-break\s*:\s*[^;"]+;?/gi, '') 
-            .replace(/text-align\s*:\s*justify;?/gi, 'text-align: left;') 
-            .replace(/[\u200B-\u200D\uFEFF\u00AD]/g, '') 
-            .replace(/class="Mso[^"]*"/gi, ''); 
+            .replace(/word-break\s*:\s*[^;"]+;?/gi, '')
+            .replace(/text-align\s*:\s*justify;?/gi, 'text-align: left;')
+            .replace(/[\u200B-\u200D\uFEFF\u00AD]/g, '')
+            .replace(/class="Mso[^"]*"/gi, '');
     };
 
     const handleSubmit = async (e) => {
@@ -57,7 +57,7 @@ export default function AdminEditPost() {
             await api.put(`/articles/${id}`, {
                 title,
                 category,
-                content: cleanContent 
+                content: cleanContent
             });
             toast.success("Cập nhật bài viết thành công!");
             navigate('/admin/articles');
@@ -95,16 +95,21 @@ export default function AdminEditPost() {
     ];
 
     if (loading) return (
-      <div className="flex h-[50vh] items-center justify-center">
-          <div className="animate-pulse text-lg font-bold font-['Lora',serif] text-slate-400 tracking-widest uppercase">Đang tải dữ liệu bài viết...</div>
-      </div>
+        <div className="flex h-[50vh] items-center justify-center">
+            <div className="animate-pulse text-lg font-bold font-['Lora',serif] text-slate-400 tracking-widest uppercase">Đang tải dữ liệu bài viết...</div>
+        </div>
     );
 
     return (
         <div className="w-full max-w-5xl mx-auto pb-10 font-['Lora',serif] animate-fade-in">
-            <div className="mb-6 md:mb-8">
-                <h1 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">✏️ Chỉnh sửa bài viết</h1>
-                <p className="text-slate-500 mt-1 text-sm">Đang cập nhật nội dung cho bài viết #{id}</p>
+            <div className="mb-6 md:mb-8 flex items-center gap-3">
+                <div className="w-12 h-12 bg-red-100 text-red-600 rounded-xl flex items-center justify-center shadow-inner">
+                    <HiPencilAlt className="w-7 h-7" />
+                </div>
+                <div>
+                    <h1 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">Chỉnh sửa bài viết</h1>
+                    <p className="text-slate-500 mt-1 text-sm">Đang cập nhật nội dung cho bài viết #{id}</p>
+                </div>
             </div>
 
             <div className="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-200">
@@ -123,7 +128,6 @@ export default function AdminEditPost() {
                         </div>
 
                         <div className="w-full md:w-72">
-                            <label className="block text-[11px] font-black font-['Lora',serif] text-slate-400 uppercase tracking-widest mb-2 ml-1">Chuyên mục</label>
                             <select
                                 value={category}
                                 onChange={(e) => setCategory(e.target.value)}
@@ -136,7 +140,7 @@ export default function AdminEditPost() {
                     </div>
 
                     <div className="mt-4">
-                        <label className="block text-[11px] font-black font-['Lora',serif] text-slate-400 uppercase tracking-widest mb-2 ml-1">Nội dung chi tiết</label>
+                        <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Nội dung chi tiết</label>
                         <div className="h-[400px] sm:h-[500px] md:h-[600px] mb-12">
                             <ReactQuill
                                 theme="snow"
@@ -153,14 +157,14 @@ export default function AdminEditPost() {
                         <button
                             type="button"
                             onClick={() => navigate('/admin/articles')}
-                            className="px-8 py-3.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 text-sm font-bold font-['Lora',serif] uppercase tracking-wider rounded-xl transition-all shadow-sm"
+                            className="px-8 py-3.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 text-sm font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm"
                         >
                             Hủy bỏ
                         </button>
                         <button
                             type="submit"
                             disabled={saving}
-                            className={`flex-1 px-6 py-3.5 text-white text-sm font-bold font-['Lora',serif] uppercase tracking-wider rounded-xl transition-all shadow-md ${saving ? 'bg-red-400 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700 hover:shadow-lg hover:-translate-y-0.5'}`}
+                            className={`flex-1 px-6 py-3.5 text-white text-sm font-bold uppercase tracking-wider rounded-xl transition-all shadow-md ${saving ? 'bg-red-400 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700 hover:shadow-lg hover:-translate-y-0.5'}`}
                         >
                             {saving ? 'ĐANG LƯU THAY ĐỔI...' : 'CẬP NHẬT BÀI VIẾT'}
                         </button>

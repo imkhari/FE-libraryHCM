@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
+import toast from 'react-hot-toast';
 
 export default function AdminArticleList() {
     const [articles, setArticles] = useState([]);
@@ -37,16 +38,16 @@ export default function AdminArticleList() {
             try {
                 await api.delete(`/articles/${id}`);
                 fetchArticles();
-                alert("Đã xóa bài viết thành công!");
+                toast.success("Đã xóa bài viết thành công!");
             } catch (error) {
-                alert("Lỗi khi xóa bài viết. Có thể bạn không có quyền hoặc lỗi server.");
+                toast.error("Lỗi khi xóa bài viết. Có thể bạn không có quyền hoặc lỗi server.");
                 console.error(error);
             }
         }
     };
 
     return (
-        <div className="w-full max-w-full animate-fade-in font-sans">
+        <div className="w-full max-w-full animate-fade-in font-['Lora',serif]">
             
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 md:mb-8">

@@ -20,7 +20,7 @@ export default function AdminLayout({ children }) {
     ];
 
     return (
-        <div className="min-h-screen bg-[#f4f7f6] flex font-sans text-slate-800">
+        <div className="min-h-screen bg-[#f4f7f6] flex font-['Lora',serif] text-slate-800">
 
             <Toaster position="top-right" reverseOrder={false} />
 

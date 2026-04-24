@@ -35,12 +35,12 @@ export default function AdminDashboard() {
 
   if (loading) return (
     <div className="flex h-[50vh] items-center justify-center">
-      <div className="animate-pulse text-lg font-bold text-slate-400 tracking-widest uppercase">Đang tải dữ liệu...</div>
+      <div className="animate-pulse text-lg font-bold font-['Lora',serif] text-slate-400 tracking-widest uppercase">Đang tải dữ liệu...</div>
     </div>
   );
 
   return (
-    <div className="w-full max-w-full space-y-8 animate-fade-in font-sans">
+    <div className="w-full max-w-full space-y-8 animate-fade-in font-['Lora',serif]">
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
@@ -67,7 +67,7 @@ export default function AdminDashboard() {
         {/* Card Học Sinh (Màu Xanh dương) */}
         <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm flex items-center justify-between group hover:shadow-md hover:border-blue-200 transition-all">
           <div>
-            <p className="text-slate-400 font-bold text-[10px] md:text-xs uppercase tracking-widest mb-1">Lượt truy cập</p>
+            <p className="text-slate-400 font-bold  text-[10px] md:text-xs uppercase tracking-widest mb-1">Lượt truy cập</p>
             <p className="text-blue-600 font-bold text-sm mb-1">HỌC SINH</p>
             <h2 className="text-4xl md:text-5xl font-black text-slate-800 tracking-tighter">{stats.STUDENT || 0}</h2>
           </div>

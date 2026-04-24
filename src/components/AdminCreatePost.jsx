@@ -133,7 +133,6 @@ export default function AdminCreatePost() {
               modules={modules}
               formats={formats}
               className="h-full rounded-xl bg-white overflow-hidden"
-              placeholder="Thầy/cô soạn thảo nội dung chi tiết tại đây..."
             />
           </div>
         </div>

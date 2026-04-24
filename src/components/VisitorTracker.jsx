@@ -12,20 +12,20 @@ function VisitorTracker() {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    // Lấy role từ localStorage (sống vĩnh viễn)
     const savedRole = localStorage.getItem('visitor_role');
     
-    // Kiểm tra xem Tab này đã đếm view chưa (chỉ sống trong 1 phiên, F5 không bị mất)
+    // Cờ đánh dấu phiên này đã cộng view chưa (F5 không mất, tắt Tab mới mất)
     const alreadyLoggedThisSession = sessionStorage.getItem('has_logged_visit');
     
     if (!savedRole) {
-      // Nếu chưa từng chọn Role -> Đợi 3s rồi mở Popup
+      // Khách mới toanh -> Đợi 3s rồi mở Popup
       const timer = setTimeout(() => setShowModal(true), 3000);
       return () => clearTimeout(timer);
     } else {
-      // Đã có Role, nhưng tab này chưa đếm view -> Ghi nhận view và khóa lại
+      // Đã có Role -> Kiểm tra xem phiên này đã cộng view chưa
       if (!alreadyLoggedThisSession) {
-        sessionStorage.setItem('has_logged_visit', 'true'); // Khóa ngay lập tức
+        // CHƯA cộng -> Khóa ngay lập tức và bắn API (+1 view)
+        sessionStorage.setItem('has_logged_visit', 'true'); 
         logVisitToBackend(savedRole);
       }
     }
@@ -40,8 +40,13 @@ function VisitorTracker() {
   };
 
   const handleSelectRole = (role) => {
+    // Lưu role vĩnh viễn
     localStorage.setItem('visitor_role', role);
-    sessionStorage.setItem('has_logged_visit', 'true'); // Khóa luôn khi vừa chọn xong
+    
+    // Đánh dấu phiên này ĐÃ CỘNG VIEW
+    sessionStorage.setItem('has_logged_visit', 'true'); 
+    
+    // Gọi API cộng view thực tế
     logVisitToBackend(role);
     setShowModal(false);
   };

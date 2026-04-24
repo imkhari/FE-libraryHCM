@@ -8,24 +8,24 @@ import {
   HiSparkles 
 } from 'react-icons/hi';
 
-// Đưa biến này ra ngoài phạm vi quản lý của React Component.
-// Dù component có bị unmount/remount bao nhiêu lần, biến này vẫn giữ nguyên giá trị.
-let hasLoggedThisSession = false;
-
 function VisitorTracker() {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
+    // Lấy role từ localStorage (sống vĩnh viễn)
     const savedRole = localStorage.getItem('visitor_role');
     
+    // Kiểm tra xem Tab này đã đếm view chưa (chỉ sống trong 1 phiên, F5 không bị mất)
+    const alreadyLoggedThisSession = sessionStorage.getItem('has_logged_visit');
+    
     if (!savedRole) {
-      // Đợi 5s rồi mở Popup
-      const timer = setTimeout(() => setShowModal(true), 5000);
+      // Nếu chưa từng chọn Role -> Đợi 3s rồi mở Popup
+      const timer = setTimeout(() => setShowModal(true), 3000);
       return () => clearTimeout(timer);
     } else {
-      // Chỉ gọi API nếu biến global chưa được bật
-      if (!hasLoggedThisSession) {
-        hasLoggedThisSession = true;
+      // Đã có Role, nhưng tab này chưa đếm view -> Ghi nhận view và khóa lại
+      if (!alreadyLoggedThisSession) {
+        sessionStorage.setItem('has_logged_visit', 'true'); // Khóa ngay lập tức
         logVisitToBackend(savedRole);
       }
     }
@@ -41,11 +41,8 @@ function VisitorTracker() {
 
   const handleSelectRole = (role) => {
     localStorage.setItem('visitor_role', role);
-    // Bật cờ và gọi API cho lần đầu chọn Role
-    if (!hasLoggedThisSession) {
-       hasLoggedThisSession = true;
-       logVisitToBackend(role);
-    }
+    sessionStorage.setItem('has_logged_visit', 'true'); // Khóa luôn khi vừa chọn xong
+    logVisitToBackend(role);
     setShowModal(false);
   };
 
@@ -67,7 +64,6 @@ function VisitorTracker() {
         {/* CÁC NÚT CHỌN ROLE */}
         <div className="flex flex-col gap-3">
           
-          {/* Nút Đảng viên (Màu Đỏ) */}
           <button 
             onClick={() => handleSelectRole('PARTY_MEMBER')} 
             className="w-full py-3.5 px-4 bg-red-50 hover:bg-red-600 hover:text-white text-red-700 font-bold tracking-wide rounded-xl border border-red-100 hover:border-red-600 transition-all flex items-center gap-3 shadow-sm group"
@@ -76,7 +72,6 @@ function VisitorTracker() {
              Đảng viên
           </button>
 
-          {/* Nút Giáo viên / Cán bộ (Màu Xanh Ngọc) */}
           <button 
             onClick={() => handleSelectRole('TEACHER')} 
             className="w-full py-3.5 px-4 bg-emerald-50 hover:bg-emerald-600 hover:text-white text-emerald-700 font-bold tracking-wide rounded-xl border border-emerald-100 hover:border-emerald-600 transition-all flex items-center gap-3 shadow-sm group"
@@ -85,7 +80,6 @@ function VisitorTracker() {
              Giáo viên / Cán bộ
           </button>
 
-          {/* Nút Học sinh / Sinh viên (Màu Xanh Dương) */}
           <button 
             onClick={() => handleSelectRole('STUDENT')} 
             className="w-full py-3.5 px-4 bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-700 font-bold tracking-wide rounded-xl border border-blue-100 hover:border-blue-600 transition-all flex items-center gap-3 shadow-sm group"
@@ -94,7 +88,6 @@ function VisitorTracker() {
              Học sinh / Sinh viên
           </button>
 
-          {/* Nút Khách tham quan (Màu Xám Slate) */}
           <button 
             onClick={() => handleSelectRole('GUEST')} 
             className="w-full py-3.5 px-4 bg-slate-50 hover:bg-slate-600 hover:text-white text-slate-700 font-bold tracking-wide rounded-xl border border-slate-200 hover:border-slate-600 transition-all flex items-center gap-3 shadow-sm group"

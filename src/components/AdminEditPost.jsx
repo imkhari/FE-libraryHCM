@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import api from '../services/api';
+import toast from 'react-hot-toast';
 
 export default function AdminEditPost() {
     const { id } = useParams();
@@ -24,7 +25,7 @@ export default function AdminEditPost() {
                 setCategory(article.category);
                 setContent(article.content);
             } catch (error) {
-                alert("Lỗi không tìm thấy bài viết!");
+                toast.error("Lỗi không tìm thấy bài viết!");
                 navigate('/admin/articles');
             } finally {
                 setLoading(false);
@@ -45,7 +46,7 @@ export default function AdminEditPost() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!title || !content || content === '<p><br></p>') {
-            alert("Vui lòng nhập đầy đủ Tiêu đề và Nội dung!");
+            toast.error("Vui lòng nhập đầy đủ Tiêu đề và Nội dung!");
             return;
         }
 
@@ -57,10 +58,10 @@ export default function AdminEditPost() {
                 category,
                 content: cleanContent 
             });
-            alert("Cập nhật bài viết thành công!");
+            toast.success("Cập nhật bài viết thành công!");
             navigate('/admin/articles');
         } catch (error) {
-            alert("Lỗi khi cập nhật bài viết!");
+            toast.error("Lỗi khi cập nhật bài viết!");
             console.error(error);
         } finally {
             setSaving(false);

@@ -3,6 +3,7 @@ import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import api from '../services/api';
 import { HiPencilAlt, HiSpeakerphone, HiSparkles } from 'react-icons/hi';
+import toast from 'react-hot-toast';
 
 export default function AdminCreatePost() {
   const [title, setTitle] = useState('');
@@ -46,8 +47,8 @@ export default function AdminCreatePost() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title) return alert("Thầy/Cô quên chưa nhập Tiêu đề bài viết ạ!");
-    if (!content || content === '<p><br></p>') return alert("Thầy/Cô chưa nhập Nội dung bài viết ạ!");
+    if (!title) return toast.error("Thầy/Cô quên chưa nhập Tiêu đề bài viết ạ!");
+    if (!content || content === '<p><br></p>') return toast.error("Thầy/Cô chưa nhập Nội dung bài viết ạ!");
 
     setIsLoading(true);
     try {
@@ -58,15 +59,15 @@ export default function AdminCreatePost() {
         category: category
       });
 
-      alert("ĐĂNG BÀI THÀNH CÔNG! Bài viết đã được lưu vào hệ thống.");
+      toast.success("ĐĂNG BÀI THÀNH CÔNG! Bài viết đã được lưu vào hệ thống.");
       setTitle('');
       setContent('');
     } catch (error) {
       console.error(error);
       if (error.response && error.response.status === 403) {
-        alert("Lỗi phân quyền: Thầy/cô vui lòng đăng xuất và đăng nhập lại!");
+        toast.error("Lỗi phân quyền: Thầy/cô vui lòng đăng xuất và đăng nhập lại!");
       } else {
-        alert("Có lỗi xảy ra khi lưu bài viết.");
+        toast.error("Có lỗi xảy ra khi lưu bài viết.");
       }
     } finally {
       setIsLoading(false);
@@ -76,7 +77,6 @@ export default function AdminCreatePost() {
   return (
     <div className="w-full max-w-5xl mx-auto pb-10 font-['Lora',serif] animate-fade-in">
       <div className="mb-6 md:mb-8 flex items-center gap-3">
-         {/* 🌟 THAY ICON CÂY BÚT */}
          <div className="w-12 h-12 bg-red-100 text-red-600 rounded-xl flex items-center justify-center shadow-inner">
             <HiPencilAlt className="w-7 h-7" />
          </div>

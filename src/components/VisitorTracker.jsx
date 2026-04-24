@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../services/api'; 
 import { 
   HiAcademicCap, 
@@ -8,9 +8,12 @@ import {
   HiSparkles 
 } from 'react-icons/hi';
 
+// Đưa biến này ra ngoài phạm vi quản lý của React Component.
+// Dù component có bị unmount/remount bao nhiêu lần, biến này vẫn giữ nguyên giá trị.
+let hasLoggedThisSession = false;
+
 function VisitorTracker() {
   const [showModal, setShowModal] = useState(false);
-  const hasLogged = useRef(false);
 
   useEffect(() => {
     const savedRole = localStorage.getItem('visitor_role');
@@ -20,10 +23,10 @@ function VisitorTracker() {
       const timer = setTimeout(() => setShowModal(true), 5000);
       return () => clearTimeout(timer);
     } else {
-      // Chặn Strict Mode gọi API 2 lần
-      if (!hasLogged.current) {
+      // Chỉ gọi API nếu biến global chưa được bật
+      if (!hasLoggedThisSession) {
+        hasLoggedThisSession = true;
         logVisitToBackend(savedRole);
-        hasLogged.current = true;
       }
     }
   }, []);
@@ -38,7 +41,11 @@ function VisitorTracker() {
 
   const handleSelectRole = (role) => {
     localStorage.setItem('visitor_role', role);
-    logVisitToBackend(role);
+    // Bật cờ và gọi API cho lần đầu chọn Role
+    if (!hasLoggedThisSession) {
+       hasLoggedThisSession = true;
+       logVisitToBackend(role);
+    }
     setShowModal(false);
   };
 
@@ -57,7 +64,7 @@ function VisitorTracker() {
           <p className="text-slate-500 text-sm mt-2 font-medium">Để trải nghiệm tốt nhất, xin vui lòng cho biết bạn là:</p>
         </div>
 
-        {/* CÁC NÚT CHỌN ROLE (Đã thêm Đảng viên và đổi Icon) */}
+        {/* CÁC NÚT CHỌN ROLE */}
         <div className="flex flex-col gap-3">
           
           {/* Nút Đảng viên (Màu Đỏ) */}

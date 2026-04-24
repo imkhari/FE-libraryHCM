@@ -201,50 +201,44 @@ function Home() {
         <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/70 to-transparent z-10 pointer-events-none"></div>
       </motion.div>
 
-      {/* =========================================================
-            🌟 KHU VỰC MỚI: VIDEO GIỚI THIỆU TRƯỜNG TỪ YOUTUBE
-            ========================================================= */}
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          /* Đẩy khoảng cách trên xuống để không bị dính sát vào Banner */
-          className="mt-12 md:mt-16 mb-8 md:mb-12" 
-        >
-          {/* Tiêu đề được đồng bộ kích thước chuẩn với các mục bên dưới */}
-          <div className="flex flex-col items-center justify-center mb-8 md:mb-10">
-            <h3 className="text-red-700 font-bold uppercase text-xs md:text-sm tracking-[0.3em] mb-2 font-['Lora',serif]">
-              Về chúng tôi
-            </h3>
-            <h2 className="text-2xl md:text-4xl font-black text-center text-red-800 uppercase tracking-tight font-['Lora',serif]">
-              Ngôi trường Thái Phiên
-            </h2>
-            <div className="h-1 w-16 md:w-20 bg-red-600 mt-4 rounded-full"></div>
-          </div>
+      <motion.section
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="mt-12 md:mt-16 mb-8 md:mb-12"
+      >
+        <div className="flex flex-col items-center justify-center mb-8 md:mb-10">
+          <h3 className="text-red-700 font-bold uppercase text-xs md:text-sm tracking-[0.3em] mb-2 font-['Lora',serif]">
+            Về chúng tôi
+          </h3>
+          <h2 className="text-2xl md:text-4xl font-black text-center text-red-800 uppercase tracking-tight font-['Lora',serif]">
+            Ngôi trường Thái Phiên
+          </h2>
+          <div className="h-1 w-16 md:w-20 bg-red-600 mt-4 rounded-full"></div>
+        </div>
 
-          {/* Mở rộng max-w-5xl để video hiển thị to, rộng và ấn tượng hơn */}
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 relative">
-            {(() => {
-              const youtubeId = "mRMwuVy7rKg"; 
-              
-              return (
-                /* Bỏ viền, chỉ giữ lại bo góc và bóng đổ để video tràn viền hiện đại */
-                <div className="relative w-full pt-[56.25%] rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl bg-black">
-                  <iframe
-                    className="absolute top-0 left-0 w-full h-full"
-                    /* Thêm autoplay=1 và mute=1 để tự động chạy không tiếng, thêm loop=1 để lặp lại */
-                    src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&rel=0&showinfo=0&modestbranding=1&loop=1&playlist=${youtubeId}`}
-                    title="Giới thiệu trường THPT Thái Phiên"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                  ></iframe>
-                </div>
-              );
-            })()}
-          </div>
-        </motion.section>
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 relative">
+          {(() => {
+            const youtubeId = "mRMwuVy7rKg";
+
+            return (
+              /* Bỏ viền, chỉ giữ lại bo góc và bóng đổ để video tràn viền hiện đại */
+              <div className="relative w-full pt-[56.25%] rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl bg-black">
+                <iframe
+                  className="absolute top-0 left-0 w-full h-full"
+                  /* Thêm autoplay=1 và mute=1 để tự động chạy không tiếng, thêm loop=1 để lặp lại */
+                  src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&rel=0&showinfo=0&modestbranding=1&loop=1&playlist=${youtubeId}`}
+                  title="Giới thiệu trường THPT Thái Phiên"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                ></iframe>
+              </div>
+            );
+          })()}
+        </div>
+      </motion.section>
 
       {/* NỘI DUNG CHÍNH */}
       <main className="flex-grow max-w-7xl mx-auto px-4 py-16 overflow-hidden w-full">

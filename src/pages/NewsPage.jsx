@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { motion } from 'framer-motion'; 
 
 function NewsPage() {
   const navigate = useNavigate();
@@ -26,32 +27,35 @@ function NewsPage() {
 
       const res = await api.get(`/articles${category !== 'ALL' ? `?category=${category}` : ''}`);
       
-      // 🌟 ÉP CÂN DỮ LIỆU: Chỉ lấy những thứ cần thiết, NÉM BỎ cột 'content' khổng lồ
       const processedArticles = res.data.map(article => {
         let snippet = '';
         let thumbnail = "https://upload.wikimedia.org/wikipedia/commons/e/e0/Ho_Chi_Minh_1946.jpg";
         
         if (article.content) {
-          const match = article.content.match(/<img[^>]+src="([^">]+)"/);
+          let cleanString = article.content
+            .replace(/&nbsp;/gi, ' ')
+            .replace(/\u00A0/g, ' ')
+            .replace(/[\u200B-\u200D\uFEFF\u00AD]/g, '');
+
+          const match = cleanString.match(/<img[^>]+src="([^">]+)"/);
           if (match) thumbnail = match[1];
 
-          const doc = new DOMParser().parseFromString(article.content, 'text/html');
-          snippet = doc.body.textContent.substring(0, 150) + '...';
+          const doc = new DOMParser().parseFromString(cleanString, 'text/html');
+          let rawText = doc.body.textContent || "";
+          snippet = rawText.length > 150 ? rawText.substring(0, 150) + '...' : rawText;
         }
 
-        // Tuyệt đối KHÔNG dùng ...article ở đây nữa
         return {
           id: article.id,
           title: article.title,
           category: article.category,
-          author: article.author,
+          authorName: article.author?.fullName,
           createdAt: article.createdAt,
           thumbnail: thumbnail,
           snippet: snippet
         };
       });
 
-      // 🌟 Lưu an toàn với try..catch để tránh sập web nếu trình duyệt hết dung lượng
       try {
         sessionStorage.setItem(cacheKey, JSON.stringify(processedArticles));
       } catch (e) {
@@ -74,78 +78,90 @@ function NewsPage() {
     return `${d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })} - ${d.toLocaleDateString('vi-VN')}`;
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+  };
+
   return (
     <div className="min-h-screen bg-[#fcf9f2] py-8 px-4 font-sans selection:bg-red-200">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-['Lora',serif] font-black text-red-800 uppercase text-center mb-8">
-          Tin tức - Sự kiện
-        </h1>
+        
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col items-center justify-center mb-12 pt-4 group cursor-pointer" 
+        >
+          <h1 className="text-3xl md:text-4xl font-['Lora',serif] font-black text-center text-red-800 uppercase tracking-tight group-hover:text-[#cc0000] transition-colors duration-300">
+            Tin tức - Sự kiện
+          </h1>
+          
+          <motion.div 
+            initial={{ width: 0 }}
+            animate={{ width: 96 }} // Chạy ra 96px lúc load trang
+            whileHover={{ width: 150 }} // Tỏa rộng ra 150px khi rê chuột vào
+            transition={{ delay: 0.5, duration: 0.8, type: "spring", stiffness: 120 }}
+            className="h-1 bg-red-600 mt-5 rounded-full shadow-[0_0_10px_rgba(220,38,38,0.5)] origin-center"
+          ></motion.div>
+        </motion.div>
 
-        <div className="flex justify-center mb-10 gap-4 flex-wrap">
-          <button 
-            onClick={() => setActiveTab('ALL')}
-            className={`px-6 py-2.5 rounded-full font-bold font-['Lora',serif] text-sm md:text-base border-2 transition-all ${activeTab === 'ALL' ? 'bg-red-700 text-white border-red-700 shadow-md' : 'bg-white text-gray-600 border-gray-200 hover:border-red-300'}`}
-          >
-            Tất cả bài viết
-          </button>
-          <button 
-            onClick={() => setActiveTab('TIN_TUC')}
-            className={`px-6 py-2.5 rounded-full font-bold font-['Lora',serif] text-sm md:text-base border-2 transition-all ${activeTab === 'TIN_TUC' ? 'bg-red-700 text-white border-red-700 shadow-md' : 'bg-white text-gray-600 border-gray-200 hover:border-red-300'}`}
-          >
-            Hoạt động Nhà trường
-          </button>
-          <button 
-            onClick={() => setActiveTab('HOC_TAP_BAC')}
-            className={`px-6 py-2.5 rounded-full font-bold font-['Lora',serif] text-sm md:text-base border-2 transition-all ${activeTab === 'HOC_TAP_BAC' ? 'bg-red-700 text-white border-red-700 shadow-md' : 'bg-white text-gray-600 border-gray-200 hover:border-red-300'}`}
-          >
-            Học tập & Làm theo Bác
-          </button>
+        {/* NÚT ĐIỀU HƯỚNG TAB */}
+        <div className="flex justify-center mb-12 gap-4 flex-wrap">
+          <button onClick={() => setActiveTab('ALL')} className={`px-6 py-2.5 rounded-full font-bold font-['Lora',serif] text-sm md:text-base border-2 transition-all ${activeTab === 'ALL' ? 'bg-[#cc0000] text-white border-[#cc0000] shadow-md' : 'bg-white text-gray-600 border-gray-200 hover:border-red-300'}`}>Tất cả bài viết</button>
+          <button onClick={() => setActiveTab('TIN_TUC')} className={`px-6 py-2.5 rounded-full font-bold font-['Lora',serif] text-sm md:text-base border-2 transition-all ${activeTab === 'TIN_TUC' ? 'bg-[#cc0000] text-white border-[#cc0000] shadow-md' : 'bg-white text-gray-600 border-gray-200 hover:border-red-300'}`}>Hoạt động Nhà trường</button>
+          <button onClick={() => setActiveTab('HOC_TAP_BAC')} className={`px-6 py-2.5 rounded-full font-bold font-['Lora',serif] text-sm md:text-base border-2 transition-all ${activeTab === 'HOC_TAP_BAC' ? 'bg-[#cc0000] text-white border-[#cc0000] shadow-md' : 'bg-white text-gray-600 border-gray-200 hover:border-red-300'}`}>Học tập & Làm theo Bác</button>
         </div>
 
+        {/* DANH SÁCH BÀI VIẾT */}
         {loading && articles.length === 0 ? (
           <div className="flex justify-center items-center py-20"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-red-700"></div></div>
         ) : articles.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
             {articles.map(article => (
-              <div 
+              <motion.div 
                 key={article.id} 
+                variants={itemVariants}
+                whileHover={{ y: -8 }} 
                 onClick={() => navigate(`/article/${article.id}`)}
-                className="bg-white rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-gray-100 overflow-hidden flex flex-col"
+                className="bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_10px_30px_rgba(204,0,0,0.15)] transition-all duration-300 cursor-pointer border border-gray-100 overflow-hidden flex flex-col group"
               >
-                <div className="h-48 overflow-hidden relative">
-                  <div className="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm z-10">
-                    {article.category === 'TIN_TUC' ? 'TIN TỨC' : 'HỌC TẬP BÁC'}
+                <div className="h-52 overflow-hidden relative border-b border-gray-100">
+                  <div className="absolute top-3 left-3 bg-[#cc0000] text-white text-[10px] font-bold px-3 py-1.5 rounded shadow-md z-10 uppercase tracking-wider">
+                    {article.category === 'TIN_TUC' ? 'Tin tức' : 'Học tập Bác'}
                   </div>
-                  <img 
-                    src={article.thumbnail} 
-                    alt={article.title} 
-                    loading="lazy"
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={article.thumbnail} alt={article.title} loading="lazy" className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"/>
                 </div>
                 
-                <div className="p-5 flex flex-col flex-1">
-                  <h2 className="text-lg font-bold font-['Lora',serif] text-gray-800 leading-snug mb-2 line-clamp-2 hover:text-red-700">
-                    {article.title}
-                  </h2>
-                  <p className="text-sm text-gray-600 line-clamp-3 mb-4 font-['Lora',serif]">
-                    {article.snippet}
-                  </p>
-                  
-                  <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between text-[12px] text-gray-500 font-medium">
-                    <span>Đăng bởi: {article.author?.fullName || "Admin"}</span>
+                <div className="p-6 flex flex-col flex-1">
+                  <h2 className="text-[17px] font-bold font-['Lora',serif] text-gray-800 leading-[1.4] mb-3 line-clamp-2 group-hover:text-[#cc0000] transition-colors">{article.title}</h2>
+                  <p className="text-[14px] text-gray-600 line-clamp-3 mb-5 font-sans leading-relaxed">{article.snippet}</p>
+                  <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-500 font-medium uppercase tracking-wide">
+                    <span>Đăng bởi: <strong className="text-gray-700">{article.authorName}</strong></span>
                     <span>{formatDate(article.createdAt)}</span>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         ) : (
-          <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-300">
-            <p className="text-gray-500 italic text-lg">Chưa có bài viết nào trong chuyên mục này.</p>
+          <div className="text-center py-24 bg-white rounded-2xl border border-dashed border-gray-300 shadow-sm">
+            <p className="text-gray-500 italic text-lg font-['Lora',serif]">Chưa có bài viết nào trong chuyên mục này.</p>
           </div>
         )}
-
       </div>
     </div>
   );

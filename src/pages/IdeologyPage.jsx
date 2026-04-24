@@ -252,7 +252,6 @@ function IdeologyPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
                     <div className="lg:col-span-8">
-                        {/* ĐÃ SỬA: Thay đổi sang font Lora cho tiêu đề chuyên mục */}
                         <h2 className="text-xl md:text-2xl font-bold text-red-800 uppercase mb-6 border-b-2 border-red-700 pb-2 font-['Lora',serif]">
                             {pageTitle}
                         </h2>

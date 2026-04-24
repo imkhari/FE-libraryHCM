@@ -22,6 +22,7 @@ import AdminCreatePost from './components/AdminCreatePost';
 import AdminArticleList from './components/AdminArticleList';
 import AdminEditPost from './components/AdminEditPost';
 import AdminUserList from './components/AdminUserList';
+import AdminLayout from './components/AdminLayout';
 import BG2 from './assets/bg2.jpeg';
 import FooterImg from './assets/bg1.jpg';
 
@@ -634,68 +635,68 @@ function App() {
     return children;
   };
 
-  const AdminLayout = ({ children }) => {
-    const adminName = localStorage.getItem('adminName') || 'Quản trị viên';
-    const userRole = localStorage.getItem('userRole'); // <--- Móc Role ra
+  // const AdminLayout = ({ children }) => {
+  //   const adminName = localStorage.getItem('adminName') || 'Quản trị viên';
+  //   const userRole = localStorage.getItem('userRole'); // <--- Móc Role ra
 
-    return (
-      <div className="flex h-screen bg-gray-50 font-['Lora',serif]">
-        <aside className="w-64 bg-red-900 text-white flex flex-col shadow-xl z-20">
-          <div className="p-6 text-center border-b border-red-800/50">
-            <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-3">
-              <span className="text-3xl">🏛️</span>
-            </div>
-            <h2 className="text-lg font-black uppercase tracking-wider">Trang Quản Trị</h2>
-            <p className="text-red-200 text-xs mt-1">Không gian văn hóa HCM</p>
-          </div>
+  //   return (
+  //     <div className="flex h-screen bg-gray-50 font-['Lora',serif]">
+  //       <aside className="w-64 bg-red-900 text-white flex flex-col shadow-xl z-20">
+  //         <div className="p-6 text-center border-b border-red-800/50">
+  //           <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-3">
+  //             <span className="text-3xl">🏛️</span>
+  //           </div>
+  //           <h2 className="text-lg font-black uppercase tracking-wider">Trang Quản Trị</h2>
+  //           <p className="text-red-200 text-xs mt-1">Không gian văn hóa HCM</p>
+  //         </div>
 
-          <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-            <p className="text-[10px] uppercase text-red-300 font-bold tracking-widest mb-2 ml-2 mt-4">Menu chính</p>
-            <Link to="/admin/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-800 transition-colors font-semibold text-sm">
-              <span>📊</span> Thống Kê
-            </Link>
-            <Link to="/admin/articles" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-800 transition-colors font-semibold text-sm">
-              <span>📚</span> Quản lý bài viết
-            </Link>
-            <Link to="/admin/create-post" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-800 transition-colors font-semibold text-sm">
-              <span>✍️</span> Đăng bài mới
-            </Link>
+  //         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+  //           <p className="text-[10px] uppercase text-red-300 font-bold tracking-widest mb-2 ml-2 mt-4">Menu chính</p>
+  //           <Link to="/admin/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-800 transition-colors font-semibold text-sm">
+  //             <span>📊</span> Thống Kê
+  //           </Link>
+  //           <Link to="/admin/articles" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-800 transition-colors font-semibold text-sm">
+  //             <span>📚</span> Quản lý bài viết
+  //           </Link>
+  //           <Link to="/admin/create-post" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-800 transition-colors font-semibold text-sm">
+  //             <span>✍️</span> Đăng bài mới
+  //           </Link>
 
-            {userRole === 'SUPER_ADMIN' && (
-              <>
-                <p className="text-[10px] uppercase text-red-300 font-bold tracking-widest mb-2 ml-2 mt-6">Dành cho Quản trị tối cao</p>
-                <Link to="/admin/users" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-800 transition-colors font-semibold text-sm">
-                  <span>👥</span> Quản lý Nhân sự
-                </Link>
-              </>
-            )}
-          </nav>
+  //           {userRole === 'SUPER_ADMIN' && (
+  //             <>
+  //               <p className="text-[10px] uppercase text-red-300 font-bold tracking-widest mb-2 ml-2 mt-6">Dành cho Quản trị tối cao</p>
+  //               <Link to="/admin/users" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-800 transition-colors font-semibold text-sm">
+  //                 <span>👥</span> Quản lý Nhân sự
+  //               </Link>
+  //             </>
+  //           )}
+  //         </nav>
 
-          <div className="p-4 border-t border-red-800/50">
-            <Link to="/" className="flex items-center justify-center gap-2 text-sm text-red-200 hover:text-white transition-colors bg-red-950/50 py-2.5 rounded-lg">
-              <span>←</span> Về trang chủ web
-            </Link>
-          </div>
-        </aside>
+  //         <div className="p-4 border-t border-red-800/50">
+  //           <Link to="/" className="flex items-center justify-center gap-2 text-sm text-red-200 hover:text-white transition-colors bg-red-950/50 py-2.5 rounded-lg">
+  //             <span>←</span> Về trang chủ web
+  //           </Link>
+  //         </div>
+  //       </aside>
 
-        <main className="flex-1 flex flex-col overflow-hidden">
-          {/* Thanh Header nhỏ ở trên */}
-          <header className="bg-white h-16 shadow-sm flex items-center justify-end px-8 z-10">
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-bold text-gray-700">Xin chào, {adminName}</span>
-              <div className="w-8 h-8 bg-red-100 text-red-700 rounded-full flex items-center justify-center font-black">
-                {adminName.charAt(0)}
-              </div>
-            </div>
-          </header>
-          {/* Khu vực cuộn nội dung */}
-          <div className="flex-1 overflow-y-auto p-6 md:p-8">
-            {children}
-          </div>
-        </main>
-      </div>
-    );
-  };
+  //       <main className="flex-1 flex flex-col overflow-hidden">
+  //         {/* Thanh Header nhỏ ở trên */}
+  //         <header className="bg-white h-16 shadow-sm flex items-center justify-end px-8 z-10">
+  //           <div className="flex items-center gap-3">
+  //             <span className="text-sm font-bold text-gray-700">Xin chào, {adminName}</span>
+  //             <div className="w-8 h-8 bg-red-100 text-red-700 rounded-full flex items-center justify-center font-black">
+  //               {adminName.charAt(0)}
+  //             </div>
+  //           </div>
+  //         </header>
+  //         {/* Khu vực cuộn nội dung */}
+  //         <div className="flex-1 overflow-y-auto p-6 md:p-8">
+  //           {children}
+  //         </div>
+  //       </main>
+  //     </div>
+  //   );
+  // };
 
   return (
     <Router>

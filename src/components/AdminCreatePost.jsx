@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import api from '../services/api';
+import { HiPencilAlt, HiSpeakerphone, HiSparkles } from 'react-icons/hi';
 
 export default function AdminCreatePost() {
   const [title, setTitle] = useState('');
@@ -11,22 +12,21 @@ export default function AdminCreatePost() {
 
   const modules = {
     toolbar: [
-      [{ 'header': [1, 2, 3, 4, 5, 6, false] }], // Tiêu đề
-      [{ 'font': [] }], // Phông chữ
-      [{ 'size': ['small', false, 'large', 'huge'] }], // Cỡ chữ
-      ['bold', 'italic', 'underline', 'strike'], // In đậm, nghiêng, gạch dưới, gạch ngang
-      [{ 'color': [] }, { 'background': [] }], // Màu chữ, màu nền
-      [{ 'script': 'sub' }, { 'script': 'super' }], // Chỉ số trên/dưới
-      [{ 'list': 'ordered' }, { 'list': 'bullet' }], // Danh sách
-      [{ 'indent': '-1' }, { 'indent': '+1' }], // Thụt lề
-      [{ 'align': [] }], // Căn lề
-      ['blockquote', 'code-block'], // Trích dẫn, Code
-      ['link', 'image', 'video'], // Chèn Link, Ảnh, Video
-      ['clean'] // Xóa định dạng
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      [{ 'font': [] }],
+      [{ 'size': ['small', false, 'large', 'huge'] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'script': 'sub' }, { 'script': 'super' }],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      [{ 'indent': '-1' }, { 'indent': '+1' }],
+      [{ 'align': [] }],
+      ['blockquote', 'code-block'],
+      ['link', 'image', 'video'],
+      ['clean']
     ],
   };
 
-  // ĐÃ SỬA: Xóa chữ 'bullet' đi để không bị lỗi Console
   const formats = [
     'header', 'font', 'size',
     'bold', 'italic', 'underline', 'strike', 'blockquote',
@@ -38,10 +38,10 @@ export default function AdminCreatePost() {
   const cleanWordGarbageBeforeSave = (rawHtml) => {
     if (!rawHtml) return "";
     return rawHtml
-      .replace(/word-break\s*:\s*[^;"]+;?/gi, '') // Xóa lệnh bẻ chữ của Word
-      .replace(/text-align\s*:\s*justify;?/gi, 'text-align: left;') // Xóa lệnh căn đều gây giãn chữ
-      .replace(/[\u200B-\u200D\uFEFF\u00AD]/g, '') // Xóa các ký tự tàng hình gây rớt dòng
-      .replace(/class="Mso[^"]*"/gi, ''); // Xóa các class rác đặc trưng của MS Word
+      .replace(/word-break\s*:\s*[^;"]+;?/gi, '')
+      .replace(/text-align\s*:\s*justify;?/gi, 'text-align: left;')
+      .replace(/[\u200B-\u200D\uFEFF\u00AD]/g, '')
+      .replace(/class="Mso[^"]*"/gi, '');
   };
 
   const handleSubmit = async (e) => {
@@ -52,10 +52,9 @@ export default function AdminCreatePost() {
     setIsLoading(true);
     try {
       const cleanContent = cleanWordGarbageBeforeSave(content);
-
       await api.post('/articles', {
         title: title,
-        content: cleanContent, // Gửi nội dung đã dọn rác
+        content: cleanContent,
         category: category
       });
 
@@ -75,49 +74,76 @@ export default function AdminCreatePost() {
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto pb-20 font-['Lora',serif]">
-      <h1 className="text-3xl font-bold text-gray-800 border-b-4 border-red-600 inline-block pb-2 mb-8 uppercase">✍️ Viết bài mới</h1>
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 flex flex-col gap-10">
+    <div className="w-full max-w-5xl mx-auto pb-10 font-['Lora',serif] animate-fade-in">
+      <div className="mb-6 md:mb-8 flex items-center gap-3">
+         {/* 🌟 THAY ICON CÂY BÚT */}
+         <div className="w-12 h-12 bg-red-100 text-red-600 rounded-xl flex items-center justify-center shadow-inner">
+            <HiPencilAlt className="w-7 h-7" />
+         </div>
+         <div>
+            <h1 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">Viết bài mới</h1>
+            <p className="text-slate-500 mt-1 text-sm">Soạn thảo và xuất bản nội dung lên hệ thống.</p>
+         </div>
+      </div>
 
-        {/* Bước 1 */}
+      <form onSubmit={handleSubmit} className="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-8">
+
+        {/* CỘT CHỌN CHUYÊN MỤC */}
         <div>
-          <h2 className="text-xl font-bold text-red-700 mb-3">Bước 1: Chọn loại bài viết</h2>
+          <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">BƯỚC 1: Chọn chuyên mục</label>
           <div className="flex flex-col sm:flex-row gap-4">
-            <label className={`flex-1 cursor-pointer border-2 rounded-xl p-4 transition-all ${category === 'TIN_TUC' ? 'border-red-600 bg-red-50' : 'border-gray-200'}`}>
+            <label className={`flex-1 cursor-pointer border-2 rounded-xl p-4 transition-all ${category === 'TIN_TUC' ? 'border-amber-500 bg-amber-50 shadow-md shadow-amber-100/50' : 'border-slate-100 hover:border-slate-300'}`}>
               <input type="radio" className="hidden" checked={category === 'TIN_TUC'} onChange={() => setCategory('TIN_TUC')} />
-              <div className="font-bold text-lg text-gray-800">📢 Tin tức - Sự kiện</div>
+              <div className={`font-bold text-sm md:text-base text-center sm:text-left flex items-center justify-center sm:justify-start gap-3 ${category === 'TIN_TUC' ? 'text-amber-800' : 'text-slate-700'}`}>
+                 <HiSpeakerphone className={`w-7 h-7 ${category === 'TIN_TUC' ? 'text-amber-600' : 'text-slate-400'}`} />
+                 Tin tức - Sự kiện
+              </div>
             </label>
-            <label className={`flex-1 cursor-pointer border-2 rounded-xl p-4 transition-all ${category === 'HOC_TAP_BAC' ? 'border-red-600 bg-red-50' : 'border-gray-200'}`}>
+
+            <label className={`flex-1 cursor-pointer border-2 rounded-xl p-4 transition-all ${category === 'HOC_TAP_BAC' ? 'border-purple-500 bg-purple-50 shadow-md shadow-purple-100/50' : 'border-slate-100 hover:border-slate-300'}`}>
               <input type="radio" className="hidden" checked={category === 'HOC_TAP_BAC'} onChange={() => setCategory('HOC_TAP_BAC')} />
-              <div className="font-bold text-lg text-gray-800">🌟 Học tập và làm theo Bác</div>
+              <div className={`font-bold text-sm md:text-base text-center sm:text-left flex items-center justify-center sm:justify-start gap-3 ${category === 'HOC_TAP_BAC' ? 'text-purple-800' : 'text-slate-700'}`}>
+                 <HiSparkles className={`w-7 h-7 ${category === 'HOC_TAP_BAC' ? 'text-purple-600' : 'text-slate-400'}`} />
+                 Học tập và làm theo Bác
+              </div>
             </label>
           </div>
         </div>
 
-        {/* Bước 2 */}
+        {/* VIẾT TIÊU ĐỀ */}
         <div>
-          <h2 className="text-xl font-bold text-red-700 mb-3">Bước 2: Viết tiêu đề</h2>
-          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Nhập tiêu đề..." className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-red-500 outline-none text-xl" />
+          <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">BƯỚC 2: Viết tiêu đề</label>
+          <input 
+             type="text" 
+             value={title} 
+             onChange={(e) => setTitle(e.target.value)} 
+             placeholder="Nhập tiêu đề bài viết..." 
+             className="w-full p-4 border border-slate-200 bg-slate-50 rounded-xl focus:ring-2 focus:ring-red-100 focus:border-red-500 focus:bg-white outline-none transition-all text-lg font-semibold text-slate-800 placeholder-slate-400" 
+          />
         </div>
 
-        {/* Bước 3 */}
+        {/* SOẠN NỘI DUNG */}
         <div>
-          <h2 className="text-xl font-bold text-red-700 mb-3">Bước 3: Soạn nội dung</h2>
-          <div className="bg-white">
+          <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">BƯỚC 3: Soạn nội dung</label>
+          <div className="h-[400px] sm:h-[500px] md:h-[600px] mb-12">
             <ReactQuill
               theme="snow"
               value={content}
               onChange={setContent}
               modules={modules}
               formats={formats}
-              style={{ height: '500px', marginBottom: '80px' }}
+              className="h-full rounded-xl bg-white overflow-hidden"
               placeholder="Thầy/cô soạn thảo nội dung chi tiết tại đây..."
             />
           </div>
         </div>
 
-        <div className="border-t pt-8 mt-4 text-right">
-          <button type="submit" disabled={isLoading} className="py-4 px-10 bg-red-800 hover:bg-red-700 text-white text-xl font-bold rounded-xl shadow-xl transition-all">
+        <div className="border-t border-slate-100 pt-6 mt-4 flex justify-end">
+          <button 
+             type="submit" 
+             disabled={isLoading} 
+             className="w-full md:w-auto py-3.5 px-10 bg-red-600 hover:bg-red-700 text-white text-sm md:text-base font-bold uppercase tracking-wider rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             {isLoading ? "ĐANG TẢI LÊN..." : "ĐĂNG BÀI VIẾT"}
           </button>
         </div>

@@ -6,7 +6,6 @@ export default function AdminArticleList() {
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // 1. READ: Lấy danh sách bài viết
     const fetchArticles = async () => {
         try {
             setLoading(true);
@@ -33,12 +32,10 @@ export default function AdminArticleList() {
         fetchArticles();
     }, []);
 
-    // 2. DELETE: Xóa bài viết
     const handleDelete = async (id, title) => {
         if (window.confirm(`Thầy/Cô có chắc chắn muốn xóa bài viết: "${title}" không? Hành động này không thể hoàn tác.`)) {
             try {
                 await api.delete(`/articles/${id}`);
-                // Xóa xong thì gọi lại hàm lấy danh sách để cập nhật giao diện
                 fetchArticles();
                 alert("Đã xóa bài viết thành công!");
             } catch (error) {
@@ -49,57 +46,62 @@ export default function AdminArticleList() {
     };
 
     return (
-        <div className="max-w-6xl mx-auto animate-fade-in">
-            <div className="flex justify-between items-center mb-8">
+        <div className="w-full max-w-full animate-fade-in font-sans">
+            
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 md:mb-8">
                 <div>
-                    <h1 className="text-3xl font-black text-gray-800">Quản lý bài viết</h1>
-                    <p className="text-gray-500 mt-1">Xem, sửa và xóa các nội dung đã đăng.</p>
+                    <h1 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">Quản lý bài viết</h1>
+                    <p className="text-sm text-slate-500 mt-1">Xem, sửa và xóa các nội dung đã đăng.</p>
                 </div>
-                <Link to="/admin/create-post" className="bg-red-700 hover:bg-red-800 text-white px-6 py-2.5 rounded-xl font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
-                    <span>+</span> Thêm bài mới
+                <Link to="/admin/create-post" className="w-full sm:w-auto justify-center bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                    <span className="text-lg leading-none">+</span> Thêm bài mới
                 </Link>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            {/* Bảng Dữ liệu Responsive */}
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                 {loading ? (
-                    <div className="p-10 text-center text-gray-500 font-bold">Đang tải dữ liệu...</div>
+                    <div className="p-10 text-center text-slate-400 font-bold tracking-widest text-sm uppercase animate-pulse">Đang tải dữ liệu...</div>
                 ) : articles.length === 0 ? (
-                    <div className="p-10 text-center text-gray-500 italic">Chưa có bài viết nào trong hệ thống.</div>
+                    <div className="p-10 text-center text-slate-500 italic">Chưa có bài viết nào trong hệ thống.</div>
                 ) : (
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
+                    <div className="overflow-x-auto w-full">
+                        <table className="w-full text-left border-collapse min-w-[800px]">
                             <thead>
-                                <tr className="bg-gray-50 border-b border-gray-200 text-gray-600 text-sm uppercase tracking-wider">
-                                    <th className="p-4 font-bold">ID</th>
-                                    <th className="p-4 font-bold w-1/2">Tiêu đề</th>
-                                    <th className="p-4 font-bold">Chuyên mục</th>
-                                    <th className="p-4 font-bold">Ngày đăng</th>
-                                    <th className="p-4 font-bold text-center">Thao tác</th>
+                                <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 text-[11px] uppercase font-black tracking-wider">
+                                    <th className="p-4 pl-6">ID</th>
+                                    <th className="p-4 w-1/2">Tiêu đề</th>
+                                    <th className="p-4">Chuyên mục</th>
+                                    <th className="p-4">Ngày đăng</th>
+                                    <th className="p-4 text-center pr-6">Thao tác</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody className="divide-y divide-slate-100">
                                 {articles.map((article) => (
-                                    <tr key={article.id} className="border-b border-gray-50 hover:bg-red-50/30 transition-colors">
-                                        <td className="p-4 text-gray-500 font-medium">#{article.id}</td>
-                                        <td className="p-4 font-bold text-gray-800 line-clamp-2 leading-snug">{article.title}</td>
+                                    <tr key={article.id} className="hover:bg-slate-50/80 transition-colors text-sm">
+                                        <td className="p-4 pl-6 text-slate-400 font-medium">#{article.id}</td>
+                                        <td className="p-4 font-bold text-slate-800 leading-snug">
+                                           <span className="line-clamp-2">{article.title}</span>
+                                        </td>
                                         <td className="p-4">
-                                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${article.category === 'TIN_TUC' ? 'bg-blue-100 text-blue-700' : 'bg-fuchsia-100 text-fuchsia-700'}`}>
+                                            <span className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider whitespace-nowrap ${article.category === 'TIN_TUC' ? 'bg-amber-50 text-amber-600 border border-amber-100' : 'bg-purple-50 text-purple-600 border border-purple-100'}`}>
                                                 {article.category === 'TIN_TUC' ? 'Tin Tức' : 'Học Tập Bác'}
                                             </span>
                                         </td>
-                                        <td className="p-4 text-sm text-gray-600">
-                                            <div className="font-bold text-gray-800">
+                                        <td className="p-4 text-xs text-slate-500 whitespace-nowrap">
+                                            <div className="font-bold text-slate-700">
                                                 {formatDateTime(article.createdAt).time}
                                             </div>
-                                            <div className="text-xs text-gray-500 mt-0.5">
+                                            <div className="mt-0.5">
                                                 {formatDateTime(article.createdAt).date}
                                             </div>
                                         </td>
-                                        <td className="p-4 flex items-center justify-center gap-3">
-                                            <Link to={`/admin/edit-post/${article.id}`} className="text-blue-600 hover:text-blue-900 font-semibold bg-blue-50 px-3 py-1 rounded">
+                                        <td className="p-4 pr-6 flex items-center justify-center gap-2">
+                                            <Link to={`/admin/edit-post/${article.id}`} className="text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-100 px-4 py-2 rounded-lg text-xs font-bold transition-colors">
                                                 Sửa
                                             </Link>
-                                            <button onClick={() => handleDelete(article.id, article.title)} className="text-red-600 hover:text-red-900 font-semibold bg-red-50 px-3 py-1 rounded">
+                                            <button onClick={() => handleDelete(article.id, article.title)} className="text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 border border-red-100 px-4 py-2 rounded-lg text-xs font-bold transition-colors">
                                                 Xóa
                                             </button>
                                         </td>

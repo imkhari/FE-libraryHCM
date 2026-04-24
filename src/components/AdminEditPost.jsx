@@ -52,11 +52,10 @@ export default function AdminEditPost() {
         setSaving(true);
         try {
             const cleanContent = cleanWordGarbageBeforeSave(content);
-
             await api.put(`/articles/${id}`, {
                 title,
                 category,
-                content: cleanContent // 🌟 ĐÃ FIX LỖI 400: Đổi từ 'cleanContent' thành 'content: cleanContent'
+                content: cleanContent 
             });
             alert("Cập nhật bài viết thành công!");
             navigate('/admin/articles');
@@ -85,7 +84,6 @@ export default function AdminEditPost() {
         ],
     };
 
-    // ĐÃ SỬA: Xóa chữ 'bullet'
     const formats = [
         'header', 'font', 'size',
         'bold', 'italic', 'underline', 'strike', 'blockquote',
@@ -94,36 +92,40 @@ export default function AdminEditPost() {
         'link', 'image', 'video', 'code-block'
     ];
 
-    if (loading) return <div className="p-10 text-center font-bold text-gray-500 font-['Lora',serif]">Đang tải dữ liệu bài viết...</div>;
+    if (loading) return (
+      <div className="flex h-[50vh] items-center justify-center">
+          <div className="animate-pulse text-lg font-bold text-slate-400 tracking-widest uppercase">Đang tải dữ liệu bài viết...</div>
+      </div>
+    );
 
     return (
-        <div className="max-w-5xl mx-auto animate-fade-in font-['Lora',serif] pb-20">
-            <div className="mb-8">
-                <h1 className="text-3xl font-black text-gray-800">Chỉnh sửa bài viết</h1>
-                <p className="text-gray-500 mt-1">Cập nhật nội dung cho bài viết #{id}</p>
+        <div className="w-full max-w-5xl mx-auto pb-10 font-['Lora',serif] animate-fade-in">
+            <div className="mb-6 md:mb-8">
+                <h1 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">✏️ Chỉnh sửa bài viết</h1>
+                <p className="text-slate-500 mt-1 text-sm">Đang cập nhật nội dung cho bài viết #{id}</p>
             </div>
 
-            <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+            <div className="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-200">
                 <form onSubmit={handleSubmit} className="flex flex-col gap-6">
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="md:col-span-2">
-                            <label className="block text-gray-700 font-bold mb-2 uppercase text-sm">Tiêu đề bài viết</label>
+                    <div className="flex flex-col md:flex-row gap-6">
+                        <div className="flex-1">
+                            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Tiêu đề bài viết</label>
                             <input
                                 type="text"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
-                                className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-bold text-gray-800"
+                                className="w-full p-3.5 border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-red-100 focus:border-red-500 outline-none transition-all font-semibold text-slate-800 text-lg"
                                 placeholder="Nhập tiêu đề..."
                             />
                         </div>
 
-                        <div>
-                            <label className="block text-gray-700 font-bold mb-2 uppercase text-sm">Chuyên mục</label>
+                        <div className="w-full md:w-72">
+                            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Chuyên mục</label>
                             <select
                                 value={category}
                                 onChange={(e) => setCategory(e.target.value)}
-                                className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-gray-50 cursor-pointer font-semibold"
+                                className="w-full p-3.5 border border-slate-200 rounded-xl bg-slate-50 hover:bg-white focus:ring-2 focus:ring-red-100 focus:border-red-500 outline-none transition-all cursor-pointer font-bold text-slate-700"
                             >
                                 <option value="TIN_TUC">Tin tức - Sự kiện</option>
                                 <option value="HOC_TAP_BAC">Học tập & Làm theo Bác</option>
@@ -131,31 +133,33 @@ export default function AdminEditPost() {
                         </div>
                     </div>
 
-                    <div className="mb-12">
-                        <label className="block text-gray-700 font-bold mb-2 uppercase text-sm">Nội dung chi tiết</label>
-                        <ReactQuill
-                            theme="snow"
-                            value={content}
-                            onChange={setContent}
-                            modules={modules}
-                            formats={formats}
-                            style={{ height: '650px', marginBottom: '60px' }}
-                            className="rounded-xl bg-white"
-                        />
+                    <div className="mt-4">
+                        <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Nội dung chi tiết</label>
+                        {/* 🌟 ĐÃ FIX: Xóa style fixed height, thay bằng h-[xxx] của Tailwind */}
+                        <div className="h-[400px] sm:h-[500px] md:h-[600px] mb-12">
+                            <ReactQuill
+                                theme="snow"
+                                value={content}
+                                onChange={setContent}
+                                modules={modules}
+                                formats={formats}
+                                className="h-full rounded-xl bg-white overflow-hidden"
+                            />
+                        </div>
                     </div>
 
-                    <div className="flex gap-4 mt-8 pt-6 border-t border-gray-100">
+                    <div className="flex flex-col sm:flex-row gap-4 mt-8 pt-6 border-t border-slate-100">
                         <button
                             type="button"
                             onClick={() => navigate('/admin/articles')}
-                            className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-colors"
+                            className="px-8 py-3.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 text-sm font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm"
                         >
                             Hủy bỏ
                         </button>
                         <button
                             type="submit"
                             disabled={saving}
-                            className={`flex-1 px-6 py-3 text-white font-bold rounded-xl transition-all shadow-md uppercase tracking-wider ${saving ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg'}`}
+                            className={`flex-1 px-6 py-3.5 text-white text-sm font-bold uppercase tracking-wider rounded-xl transition-all shadow-md ${saving ? 'bg-red-400 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700 hover:shadow-lg hover:-translate-y-0.5'}`}
                         >
                             {saving ? 'ĐANG LƯU THAY ĐỔI...' : 'CẬP NHẬT BÀI VIẾT'}
                         </button>

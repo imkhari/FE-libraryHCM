@@ -44,7 +44,7 @@ export default function AdminRegister() {
     <div className="min-h-screen flex items-center justify-center p-4 relative font-['Lora',serif]"
       style={{ backgroundImage: `url(${backgroundImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
       
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-0"></div>
+      {/* <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-0"></div> */}
 
       <div className="bg-white p-8 md:p-10 rounded-3xl shadow-2xl w-full max-w-md relative z-10 animate-fade-in border-t-4 border-red-700">
         <div className="text-center mb-6">

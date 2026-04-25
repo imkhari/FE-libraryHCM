@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
+// 🌟 Đã import CSS của Quill để Frontend hiểu giao diện Admin
+import 'react-quill-new/dist/quill.snow.css';
 
 function ArticleDetail() {
   const { id } = useParams();
@@ -20,30 +22,30 @@ function ArticleDetail() {
 
         const cachedArticles = sessionStorage.getItem('newsCache_ALL');
         let listData = [];
-        
+
         if (cachedArticles) {
           listData = JSON.parse(cachedArticles);
         } else {
           const listRes = await api.get('/articles');
-          
+
           listData = listRes.data.map(item => {
-             let thumbnail = "https://upload.wikimedia.org/wikipedia/commons/e/e0/Ho_Chi_Minh_1946.jpg";
-             if (item.content) {
-                const match = item.content.match(/<img[^>]+src="([^">]+)"/);
-                if (match) thumbnail = match[1];
-             }
-             return {
-               id: item.id,
-               title: item.title,
-               createdAt: item.createdAt,
-               thumbnail: thumbnail
-             };
+            let thumbnail = "https://upload.wikimedia.org/wikipedia/commons/e/e0/Ho_Chi_Minh_1946.jpg";
+            if (item.content) {
+              const match = item.content.match(/<img[^>]+src="([^">]+)"/);
+              if (match) thumbnail = match[1];
+            }
+            return {
+              id: item.id,
+              title: item.title,
+              createdAt: item.createdAt,
+              thumbnail: thumbnail
+            };
           });
 
           try {
-             sessionStorage.setItem('newsCache_ALL', JSON.stringify(listData));
+            sessionStorage.setItem('newsCache_ALL', JSON.stringify(listData));
           } catch (e) {
-             console.warn("Bộ nhớ đệm đầy, bỏ qua lưu cache.");
+            console.warn("Bộ nhớ đệm đầy, bỏ qua lưu cache.");
           }
         }
 
@@ -93,7 +95,7 @@ function ArticleDetail() {
         if (node.nodeValue) {
           let text = node.nodeValue;
           text = text.replace(/[\u200B-\u200D\uFEFF\u00AD]/g, '');
-          text = text.replace(/ - /g, '\u00A0-\u00A0'); 
+          text = text.replace(/ - /g, '\u00A0-\u00A0');
           node.nodeValue = text;
         }
       }
@@ -105,7 +107,46 @@ function ArticleDetail() {
     }
   }, [article?.content]);
 
-  if (loading) return <div className="min-h-screen flex justify-center items-center text-gray-500 font-['Lora',serif] font-bold">Đang tải nội dung...</div>;
+  if (loading) return (
+    <div className="min-h-screen bg-[#fcf9f2] py-8 px-4 font-['Lora',serif]">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Khung xương bài viết chính */}
+        <div className="lg:col-span-8 bg-white p-6 md:p-10 rounded-xl shadow-sm border border-gray-100 animate-pulse">
+          <div className="h-4 bg-slate-200 rounded w-32 mb-6"></div>
+          <div className="h-10 bg-slate-200 rounded w-full mb-3"></div>
+          <div className="h-10 bg-slate-200 rounded w-2/3 mb-8"></div>
+          <div className="h-4 bg-slate-200 rounded w-64 mb-8 pb-4 border-b border-gray-100"></div>
+
+          <div className="h-64 sm:h-96 bg-slate-200 rounded-2xl w-full mb-8"></div>
+          <div className="space-y-4">
+            <div className="h-4 bg-slate-200 rounded w-full"></div>
+            <div className="h-4 bg-slate-200 rounded w-full"></div>
+            <div className="h-4 bg-slate-200 rounded w-5/6"></div>
+            <div className="h-4 bg-slate-200 rounded w-full"></div>
+            <div className="h-4 bg-slate-200 rounded w-4/5"></div>
+          </div>
+        </div>
+
+        {/* Khung xương bài viết mới nhất (Sidebar) */}
+        <div className="lg:col-span-4 space-y-6">
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <div className="h-6 bg-slate-200 rounded w-1/2 mb-6"></div>
+            <div className="flex flex-col gap-6 animate-pulse">
+              {[1, 2, 3, 4].map((item) => (
+                <div key={item} className="flex gap-4">
+                  <div className="w-20 h-20 rounded bg-slate-200 shrink-0"></div>
+                  <div className="flex-1 py-1 space-y-3">
+                    <div className="h-4 bg-slate-200 rounded w-full"></div>
+                    <div className="h-4 bg-slate-200 rounded w-2/3"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
   if (!article) return <div className="min-h-screen flex justify-center items-center text-red-600 font-['Lora',serif] font-bold">Không tìm thấy bài viết!</div>;
 
   return (
@@ -133,34 +174,71 @@ function ArticleDetail() {
           </div>
 
           <div className="relative">
-            <style dangerouslySetInnerHTML={{__html: `
-              .article-clean-content, .article-clean-content * {
-                word-break: normal !important;
-                overflow-wrap: break-word !important;
-                white-space: normal !important;
-                -webkit-hyphens: none !important;
-                -ms-hyphens: none !important;
-                hyphens: none !important;
+            <style dangerouslySetInnerHTML={{
+              __html: `
+              .article-content-wrapper img {
+                max-width: 100% !important;
+                max-height: 450px !important; /* KHÓA CHẶT CHIỀU CAO Ở 400PX */
+                width: auto !important;
+                height: auto !important;
+                object-fit: contain !important; /* Đảm bảo ảnh không bị bóp méo */
+                margin: 2rem auto !important; /* Đẩy ra giữa */
+                display: block !important;
+                border-radius: 12px !important;
+                box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1) !important;
               }
-              .ql-align-center { text-align: center !important; }
-              .ql-align-right { text-align: right !important; }
-              .ql-align-justify { text-align: justify !important; }
+
+              .article-content-wrapper .ql-align-center,
+              .article-content-wrapper [style*="text-align: center"],
+              .article-content-wrapper [style*="text-align:center"] {
+                text-align: center !important;
+                display: block !important;
+                width: 100% !important;
+              }
+
+              .article-content-wrapper .ql-align-right,
+              .article-content-wrapper [style*="text-align: right"],
+              .article-content-wrapper [style*="text-align:right"] {
+                text-align: right !important;
+                display: block !important;
+                width: 100% !important;
+              }
+
+              .article-content-wrapper .ql-align-justify,
+              .article-content-wrapper [style*="text-align: justify"],
+              .article-content-wrapper [style*="text-align:justify"] {
+                text-align: justify !important;
+                display: block !important;
+              }
+
+              /* 3. Chuẩn hóa Video Youtube */
+              .article-content-wrapper iframe {
+                width: 100% !important;
+                aspect-ratio: 16 / 9 !important;
+                border-radius: 12px !important;
+                margin: 2rem auto !important;
+              }
             `}} />
 
-            <div 
+            {/* Khung giao diện bọc nội dung chuẩn WYSIWYG */}
+            <div
               className="
-                article-clean-content
+                article-content-wrapper 
+                ql-snow 
                 prose max-w-none 
                 prose-headings:font-black prose-headings:text-[#8b1c1c] 
                 prose-h6:text-[15px] prose-h6:font-normal prose-h6:text-gray-500 prose-h6:italic prose-h6:mt-8 prose-h6:border-l-4 prose-h6:border-gray-300 prose-h6:pl-4
-                prose-img:rounded-2xl prose-img:shadow-md prose-img:mx-auto
                 [&_p]:leading-[1.9] 
                 [&_p]:mb-6
                 [&_p]:text-gray-800
                 [&_p]:text-[17px]
               "
-              dangerouslySetInnerHTML={{ __html: sanitizedContent }}
-            />
+            >
+              <div
+                className="ql-editor !p-0"
+                dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+              />
+            </div>
           </div>
         </div>
 

@@ -122,9 +122,34 @@ function NewsPage() {
                     <button onClick={() => setActiveTab('HOC_TAP_BAC')} className={`px-6 py-2.5 rounded-full font-bold font-['Lora',serif] text-sm md:text-base border-2 transition-all ${activeTab === 'HOC_TAP_BAC' ? 'bg-[#cc0000] text-white border-[#cc0000] shadow-md' : 'bg-white text-gray-600 border-gray-200 hover:border-red-300'}`}>Học tập & Làm theo Bác</button>
                 </div>
 
-                {/* DANH SÁCH BÀI VIẾT */}
+                {/* DANH SÁCH BÀI VIẾT VÀ SKELETON */}
                 {loading && articles.length === 0 ? (
-                    <div className="flex justify-center items-center py-20"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-red-700"></div></div>
+                    // 🌟 Giao diện Skeleton Loading (Chạy 6 thẻ giả lập)
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-pulse">
+                        {[1, 2, 3, 4, 5, 6].map(item => (
+                            <div key={item} className="bg-white rounded-xl border border-gray-100 overflow-hidden flex flex-col h-[440px] shadow-sm">
+                                {/* Khung xương hình ảnh */}
+                                <div className="h-52 bg-slate-200 w-full relative border-b border-gray-100">
+                                    <div className="absolute top-3 left-3 bg-slate-300 w-16 h-6 rounded shadow-sm"></div>
+                                </div>
+                                {/* Khung xương nội dung */}
+                                <div className="p-6 flex flex-col flex-1">
+                                    <div className="h-5 bg-slate-200 rounded w-full mb-2"></div>
+                                    <div className="h-5 bg-slate-200 rounded w-4/5 mb-6"></div>
+                                    <div className="space-y-3 mb-5">
+                                        <div className="h-3 bg-slate-100 rounded w-full"></div>
+                                        <div className="h-3 bg-slate-100 rounded w-full"></div>
+                                        <div className="h-3 bg-slate-100 rounded w-5/6"></div>
+                                    </div>
+                                    {/* Khung xương Footer (Tác giả - Ngày) */}
+                                    <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
+                                        <div className="h-3 bg-slate-200 rounded w-28"></div>
+                                        <div className="h-3 bg-slate-200 rounded w-24"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 ) : articles.length > 0 ? (
                     <>
                         <motion.div

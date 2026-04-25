@@ -32,8 +32,39 @@ export default function AdminUserList() {
   };
 
   if (loading) return (
-    <div className="flex h-[50vh] items-center justify-center">
-        <div className="animate-pulse text-sm font-bold text-slate-400 tracking-widest uppercase">Đang tải danh sách nhân sự...</div>
+    <div className="w-full max-w-full animate-pulse font-['Lora',serif]">
+      {/* Khung xương phần Header */}
+      <div className="mb-6 md:mb-8">
+        <div className="h-8 md:h-10 bg-slate-200 rounded w-64 mb-2"></div>
+        <div className="h-4 bg-slate-200 rounded w-3/4 max-w-md"></div>
+      </div>
+
+      {/* Khung xương phần Bảng Dữ liệu */}
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-left border-collapse min-w-[800px]">
+            <thead>
+              <tr className="bg-slate-50 border-b border-slate-200 text-[11px] uppercase tracking-wider">
+                <th className="p-4 pl-6"><div className="h-3 bg-slate-200 rounded w-24"></div></th>
+                <th className="p-4"><div className="h-3 bg-slate-200 rounded w-32"></div></th>
+                <th className="p-4 text-center"><div className="h-3 bg-slate-200 rounded w-20 mx-auto"></div></th>
+                <th className="p-4 text-center pr-6"><div className="h-3 bg-slate-200 rounded w-24 mx-auto"></div></th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {/* Render 5 dòng loading giả mạo lập lòe */}
+              {[1, 2, 3, 4, 5].map((item) => (
+                <tr key={item}>
+                  <td className="p-4 pl-6"><div className="h-5 bg-slate-200 rounded w-40"></div></td>
+                  <td className="p-4"><div className="h-4 bg-slate-100 rounded w-32"></div></td>
+                  <td className="p-4 text-center"><div className="h-6 bg-slate-200 rounded-lg w-24 mx-auto"></div></td>
+                  <td className="p-4 pr-6 text-center"><div className="h-8 bg-slate-200 rounded-lg w-32 mx-auto"></div></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 

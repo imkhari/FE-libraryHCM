@@ -34,8 +34,48 @@ export default function AdminDashboard() {
   }, []);
 
   if (loading) return (
-    <div className="flex h-[50vh] items-center justify-center">
-      <div className="animate-pulse text-lg font-bold font-['Lora',serif] text-slate-400 tracking-widest uppercase">Đang tải dữ liệu...</div>
+    <div className="w-full max-w-full space-y-8 font-['Lora',serif] animate-pulse">
+      {/* Skeleton Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div className="space-y-2">
+          <div className="h-8 bg-slate-200 rounded w-48"></div>
+          <div className="h-4 bg-slate-100 rounded w-64"></div>
+        </div>
+        <div className="h-10 bg-slate-200 rounded-xl w-full sm:w-32"></div>
+      </div>
+
+      {/* Skeleton SECTION 1: LƯỢT TRUY CẬP */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
+        {[1, 2, 3, 4].map((item) => (
+          <div key={item} className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm flex items-center justify-between">
+            <div className="space-y-3">
+              <div className="h-3 bg-slate-200 rounded w-20"></div>
+              <div className="h-4 bg-slate-200 rounded w-24"></div>
+              <div className="h-10 bg-slate-200 rounded w-16"></div>
+            </div>
+            <div className="w-14 h-14 bg-slate-100 rounded-full"></div>
+          </div>
+        ))}
+      </div>
+
+      {/* Skeleton SECTION 2: BÀI VIẾT */}
+      <div className="pt-4 border-t border-slate-200/60">
+        <div className="h-4 bg-slate-200 rounded w-40 mb-4 ml-1"></div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+          {[1, 2, 3].map((item) => (
+            <div key={item} className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm flex items-center justify-between">
+              <div className="space-y-3">
+                <div className="h-3 bg-slate-200 rounded w-32"></div>
+                <div className="h-10 bg-slate-200 rounded w-16"></div>
+              </div>
+              <div className="w-14 h-14 bg-slate-100 rounded-lg"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Skeleton TỔNG KẾT */}
+      <div className="h-24 bg-slate-200 rounded-2xl shadow-sm border border-slate-200"></div>
     </div>
   );
 

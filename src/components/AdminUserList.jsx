@@ -38,7 +38,7 @@ export default function AdminUserList() {
   );
 
   return (
-    <div className="w-full max-w-full animate-fade-in font-sans">
+    <div className="w-full max-w-full animate-fade-in font-['Lora',serif]">
       
       {/* Header */}
       <div className="mb-6 md:mb-8">

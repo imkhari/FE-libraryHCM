@@ -27,32 +27,18 @@ function NewsPage() {
 
       const res = await api.get(`/articles${category !== 'ALL' ? `?category=${category}` : ''}`);
       
+      // MAP DỮ LIỆU CHUẨN THEO DTO TỪ BACKEND
       const processedArticles = res.data.map(article => {
-        let snippet = '';
-        let thumbnail = "https://upload.wikimedia.org/wikipedia/commons/e/e0/Ho_Chi_Minh_1946.jpg";
-        
-        if (article.content) {
-          let cleanString = article.content
-            .replace(/&nbsp;/gi, ' ')
-            .replace(/\u00A0/g, ' ')
-            .replace(/[\u200B-\u200D\uFEFF\u00AD]/g, '');
-
-          const match = cleanString.match(/<img[^>]+src="([^">]+)"/);
-          if (match) thumbnail = match[1];
-
-          const doc = new DOMParser().parseFromString(cleanString, 'text/html');
-          let rawText = doc.body.textContent || "";
-          snippet = rawText.length > 150 ? rawText.substring(0, 150) + '...' : rawText;
-        }
-
         return {
           id: article.id,
           title: article.title,
           category: article.category,
-          authorName: article.author?.fullName,
+          // Sửa lại cách lấy Tác giả chuẩn theo DTO
+          authorName: article.authorName || "Quản trị viên",
           createdAt: article.createdAt,
-          thumbnail: thumbnail,
-          snippet: snippet
+          // 👇 Tạm thời hardcode ảnh và snippet vì Backend DTO chưa trả về 2 trường này
+          thumbnail: article.thumbnail || "https://tranhdaquy24h.com/public/upload/images/7ef5cf3972688e36d779.jpg",
+          snippet: article.snippet || "Nội dung đang được cập nhật..." 
         };
       });
 

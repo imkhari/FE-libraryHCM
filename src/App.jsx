@@ -41,6 +41,7 @@ const MainLayout = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const searchRef = useRef(null);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -90,6 +91,20 @@ const MainLayout = () => {
 
     return () => clearTimeout(timeoutId);
   }, [keyword]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Nếu cuộn xuống quá 50px thì bật hiệu ứng Kính mờ
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleVoiceSearch = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -315,11 +330,18 @@ const MainLayout = () => {
       </div>
 
       {/* NAVBAR */}
-      <header className="bg-[#da251d] text-white shadow-md sticky top-0 z-50">
+      <header 
+        className={`text-white sticky top-0 z-50 transition-all duration-300 ${
+          isScrolled 
+            ? 'bg-[#da251d]/80 backdrop-blur-md shadow-lg border-b border-white/20' // Trạng thái khi cuộn: Kính mờ
+            : 'bg-[#da251d] shadow-md' // Trạng thái ở đầu trang: Màu đỏ đặc nguyên bản
+        }`}
+      >
         <div className="max-w-7xl mx-auto px-2 lg:px-4 h-11 md:h-12 flex justify-between items-center">
 
+          {/* Nút Hamburger Mobile */}
           <button
-            className="md:hidden p-1.5 hover:bg-red-800 rounded text-white"
+            className="md:hidden p-1.5 hover:bg-red-800 rounded text-white transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -327,7 +349,10 @@ const MainLayout = () => {
             </svg>
           </button>
 
+          {/* MENU DESKTOP */}
           <nav className="hidden md:flex items-center h-full overflow-visible whitespace-nowrap">
+            
+            {/* TRANG CHỦ */}
             <Link to="/" className="h-full px-3 md:px-4 gap-2 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
@@ -335,18 +360,21 @@ const MainLayout = () => {
               Trang chủ
             </Link>
 
+            {/* TIN TỨC */}
             <Link to="/news" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors">
               Tin tức - Sự kiện
             </Link>
 
+            {/* CUỘC ĐỜI */}
             <Link to="/bio" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors">
               Cuộc đời, sự nghiệp
             </Link>
 
+            {/* DROPDOWN 1 */}
             <div className="relative group h-full">
               <Link to="/category/cua-ho-chi-minh" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors cursor-pointer">
                 Tác phẩm của Hồ Chí Minh
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 ml-1 group-hover:-rotate-180 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </Link>
@@ -358,10 +386,11 @@ const MainLayout = () => {
               </div>
             </div>
 
+            {/* DROPDOWN 2 */}
             <div className="relative group h-full">
               <Link to="/ideology/sang-mai-niem-tin" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors cursor-pointer">
                 Sáng mãi niềm tin theo Bác
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 ml-1 group-hover:-rotate-180 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </Link>
@@ -374,12 +403,9 @@ const MainLayout = () => {
               </div>
             </div>
 
-            {/* <Link to="/gallery" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors">
-              Triển lãm Ảnh
-            </Link> */}
-
           </nav>
 
+          {/* PHẦN SEARCH (Giữ nguyên của bạn) */}
           <div className="ml-auto flex items-center shrink-0 z-[1000]">
             <button onClick={() => setIsSearchOpen(true)} className="md:hidden bg-white/20 hover:bg-white/30 p-1.5 rounded-full transition-all">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">

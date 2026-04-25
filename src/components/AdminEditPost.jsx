@@ -128,6 +128,7 @@ export default function AdminEditPost() {
                         </div>
 
                         <div className="w-full md:w-72">
+                            <label className="block text-[11px] font-black font-['Lora',serif] text-slate-400 uppercase tracking-widest mb-2 ml-1">Chuyên mục</label>
                             <select
                                 value={category}
                                 onChange={(e) => setCategory(e.target.value)}

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
-import TextToSpeech from '../components/TextToSpeech';
 
 function ArticleDetail() {
   const { id } = useParams();
@@ -27,7 +26,6 @@ function ArticleDetail() {
         } else {
           const listRes = await api.get('/articles');
           
-          // 🌟 ÉP CÂN DỮ LIỆU ĐỂ TRÁNH LỖI QUOTA EXCEEDED
           listData = listRes.data.map(item => {
              let thumbnail = "https://upload.wikimedia.org/wikipedia/commons/e/e0/Ho_Chi_Minh_1946.jpg";
              if (item.content) {
@@ -66,7 +64,7 @@ function ArticleDetail() {
   const getThumbnail = (htmlContent) => {
     if (article && article.thumbnail) return article.thumbnail;
     const match = htmlContent?.match(/<img[^>]+src="([^">]+)"/);
-    return match ? match[1] : "https://upload.wikimedia.org/wikipedia/commons/e/e0/Ho_Chi_Minh_1946.jpg";
+    return match ? match[1] : "https://tranhdaquy24h.com/public/upload/images/7ef5cf3972688e36d779.jpg";
   };
 
   const formatDateTime = (dateString) => {
@@ -141,8 +139,6 @@ function ArticleDetail() {
             <span className="mx-3">|</span>
             <span>Tác giả: <strong className="text-gray-800">{article.author?.fullName || article.author || "Ban Quản Trị"}</strong></span>
           </div>
-
-          <TextToSpeech textContent={sanitizedContent} />
 
           <div className="relative">
             <style dangerouslySetInnerHTML={{__html: `

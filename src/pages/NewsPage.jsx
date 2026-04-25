@@ -37,7 +37,7 @@ function NewsPage() {
           authorName: article.authorName || "Quản trị viên",
           createdAt: article.createdAt,
           // 👇 Tạm thời hardcode ảnh và snippet vì Backend DTO chưa trả về 2 trường này
-          thumbnail: article.thumbnail || "https://tranhdaquy24h.com/public/upload/images/7ef5cf3972688e36d779.jpg",
+          thumbnail: article.thumbnailUrl || "https://tranhdaquy24h.com/public/upload/images/7ef5cf3972688e36d779.jpg",
           snippet: article.snippet || "Nội dung đang được cập nhật..." 
         };
       });

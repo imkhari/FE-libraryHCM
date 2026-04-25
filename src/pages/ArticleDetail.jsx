@@ -142,7 +142,6 @@ function ArticleDetail() {
                 -ms-hyphens: none !important;
                 hyphens: none !important;
               }
-              /* 🌟 THÊM CLASS HỖ TRỢ CĂN LỀ TỪ ADMIN REACT-QUILL */
               .ql-align-center { text-align: center !important; }
               .ql-align-right { text-align: right !important; }
               .ql-align-justify { text-align: justify !important; }

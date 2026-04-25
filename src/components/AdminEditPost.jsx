@@ -143,6 +143,21 @@ export default function AdminEditPost() {
                     <div className="mt-4">
                         <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Nội dung chi tiết</label>
                         <div className="h-[400px] sm:h-[500px] md:h-[600px] mb-12">
+                            {/* 🌟 THÊM STYLE Ở ĐÂY ĐỂ TRỊ BỆNH KHUẤT CHỮ */}
+                            <style dangerouslySetInnerHTML={{__html: `
+                              .ql-container {
+                                min-height: 400px !important;
+                                font-size: 16px !important;
+                                border-bottom-left-radius: 0.5rem;
+                                border-bottom-right-radius: 0.5rem;
+                              }
+                              .ql-editor {
+                                min-height: 400px !important;
+                                max-height: 600px;
+                                overflow-y: auto !important; 
+                                padding-bottom: 50px !important;
+                              }
+                            `}} />
                             <ReactQuill
                                 theme="snow"
                                 value={content}

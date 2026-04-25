@@ -18,16 +18,21 @@ function NewsPage() {
   }, [activeTab]);
 
   const fetchArticles = async (category) => {
+    const cacheKey = `newsCache_${category}`;
+    const cachedData = sessionStorage.getItem(cacheKey);
+
+    // Nếu đã có Cache -> Load ngay lập tức (0 giây) và DỪNG HẲN (Thêm chữ return)
+    if (cachedData) {
+      setArticles(JSON.parse(cachedData));
+      setLoading(false);
+      return; 
+    }
+
+    // Nếu chưa có Cache -> Phải dọn sạch data của Tab cũ để ép React hiện vòng xoay Loading
+    setArticles([]);
     setLoading(true);
+
     try {
-      const cacheKey = `newsCache_${category}`;
-      const cachedData = sessionStorage.getItem(cacheKey);
-
-      if (cachedData) {
-        setArticles(JSON.parse(cachedData));
-        setLoading(false);
-      }
-
       const res = await api.get(`/articles${category !== 'ALL' ? `?category=${category}` : ''}`);
       
       const processedArticles = res.data.map(article => {

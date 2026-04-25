@@ -98,14 +98,6 @@ function ArticleDetail() {
         }
       }
 
-      const elements = doc.body.querySelectorAll('*');
-      elements.forEach(el => {
-        if (el.hasAttribute('style')) {
-          el.removeAttribute('style');
-        }
-        el.classList.remove('ql-align-justify', 'ql-align-center', 'ql-align-right');
-      });
-
       return doc.body.innerHTML;
     } catch (error) {
       console.error(error);
@@ -150,6 +142,10 @@ function ArticleDetail() {
                 -ms-hyphens: none !important;
                 hyphens: none !important;
               }
+              /* 🌟 THÊM CLASS HỖ TRỢ CĂN LỀ TỪ ADMIN REACT-QUILL */
+              .ql-align-center { text-align: center !important; }
+              .ql-align-right { text-align: right !important; }
+              .ql-align-justify { text-align: justify !important; }
             `}} />
 
             <div 
@@ -157,8 +153,8 @@ function ArticleDetail() {
                 article-clean-content
                 prose max-w-none 
                 prose-headings:font-black prose-headings:text-[#8b1c1c] 
+                prose-h6:text-[15px] prose-h6:font-normal prose-h6:text-gray-500 prose-h6:italic prose-h6:mt-8 prose-h6:border-l-4 prose-h6:border-gray-300 prose-h6:pl-4
                 prose-img:rounded-2xl prose-img:shadow-md prose-img:mx-auto
-                [&_*]:text-left 
                 [&_p]:leading-[1.9] 
                 [&_p]:mb-6
                 [&_p]:text-gray-800

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
+import TextToSpeech from '../components/TextToSpeech';
 
 function ArticleDetail() {
   const { id } = useParams();
@@ -140,6 +141,8 @@ function ArticleDetail() {
             <span className="mx-3">|</span>
             <span>Tác giả: <strong className="text-gray-800">{article.author?.fullName || article.author || "Ban Quản Trị"}</strong></span>
           </div>
+
+          <TextToSpeech textContent={sanitizedContent} />
 
           <div className="relative">
             <style dangerouslySetInnerHTML={{__html: `

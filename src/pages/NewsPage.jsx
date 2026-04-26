@@ -124,7 +124,6 @@ function NewsPage() {
 
                 {/* DANH SÁCH BÀI VIẾT VÀ SKELETON */}
                 {loading && articles.length === 0 ? (
-                    // 🌟 Giao diện Skeleton Loading (Chạy 6 thẻ giả lập)
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-pulse">
                         {[1, 2, 3, 4, 5, 6].map(item => (
                             <div key={item} className="bg-white rounded-xl border border-gray-100 overflow-hidden flex flex-col h-[440px] shadow-sm">
@@ -170,7 +169,15 @@ function NewsPage() {
                                         <div className="absolute top-3 left-3 bg-[#cc0000] text-white text-[10px] font-bold px-3 py-1.5 rounded shadow-md z-10 uppercase tracking-wider">
                                             {article.category === 'TIN_TUC' ? 'Tin tức' : 'Học tập Bác'}
                                         </div>
-                                        <img src={article.thumbnail} alt={article.title} loading="lazy" className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out" />
+                                        <img
+                                            src={article.thumbnail}
+                                            alt={article.title}
+                                            loading="lazy"
+                                            onError={(e) => {
+                                                e.target.onerror = null;
+                                                e.target.src = "https://tranhdaquy24h.com/public/upload/images/7ef5cf3972688e36d779.jpg";
+                                            }}
+                                            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out" />
                                     </div>
 
                                     <div className="p-6 flex flex-col flex-1">
@@ -203,8 +210,8 @@ function NewsPage() {
                                         key={index}
                                         onClick={() => paginate(index + 1)}
                                         className={`w-10 h-10 rounded-lg font-bold text-sm transition-all border flex items-center justify-center ${currentPage === index + 1
-                                                ? 'bg-[#cc0000] text-white border-[#cc0000] shadow-md'
-                                                : 'bg-white text-gray-600 border-gray-200 hover:bg-red-50 hover:text-red-700 hover:border-red-300'
+                                            ? 'bg-[#cc0000] text-white border-[#cc0000] shadow-md'
+                                            : 'bg-white text-gray-600 border-gray-200 hover:bg-red-50 hover:text-red-700 hover:border-red-300'
                                             }`}
                                     >
                                         {index + 1}

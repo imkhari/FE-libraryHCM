@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ReactQuill, { Quill } from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
@@ -6,7 +6,6 @@ import api from '../services/api';
 import toast from 'react-hot-toast';
 import { HiPencilAlt } from 'react-icons/hi';
 
-// 🌟 ĐĂNG KÝ FONT CHỮ MỚI & ÉP QUILL DÙNG INLINE STYLE
 const Font = Quill.import('attributors/style/font');
 Font.whitelist = ['sans-serif', 'serif', 'monospace', 'roboto', 'lora', 'montserrat', 'dancing-script'];
 Quill.register(Font, true);
@@ -24,6 +23,8 @@ export default function AdminEditPost() {
 
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    
+    const quillRef = useRef();
 
     useEffect(() => {
         const fetchArticle = async () => {
@@ -42,6 +43,84 @@ export default function AdminEditPost() {
         };
         fetchArticle();
     }, [id, navigate]);
+
+    // HÀM UPLOAD ẢNH BẰNG NÚT CLICK
+    const imageHandler = () => {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
+
+        input.onchange = async () => {
+            const file = input.files[0];
+            if (!file) return;
+
+            const toastId = toast.loading('Đang tải ảnh lên Cloud mây...');
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            formData.append('upload_preset', 'libhcm_upload');
+            const cloudName = 'dxrvv6djz';
+
+            try {
+                const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                const imageUrl = data.secure_url;
+
+                const editor = quillRef.current.getEditor();
+                const range = editor.getSelection();
+                editor.insertEmbed(range.index, 'image', imageUrl);
+                
+                toast.success('Đã chèn ảnh thành công!', { id: toastId });
+            } catch (error) {
+                console.error("Lỗi tải ảnh:", error);
+                toast.error('Lỗi tải ảnh. Vui lòng thử lại!', { id: toastId });
+            }
+        };
+    };
+
+    // 🌟 HÀM XỬ LÝ KHI NHẤN CTRL+V (COPY - PASTE ẢNH)
+    const handlePaste = async (e) => {
+        const clipboardData = e.clipboardData || window.clipboardData;
+        if (!clipboardData || !clipboardData.items) return;
+
+        const items = clipboardData.items;
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf("image") !== -1) {
+                e.preventDefault(); // CHẶN DÁN BASE64 MẶC ĐỊNH
+                
+                const file = items[i].getAsFile();
+                const toastId = toast.loading('Đang tải ảnh Copy-Paste lên Cloud...');
+                
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', 'libhcm_upload'); 
+                const cloudName = 'dxrvv6djz'; 
+
+                try {
+                    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await res.json();
+                    const imageUrl = data.secure_url;
+
+                    const editor = quillRef.current.getEditor();
+                    const range = editor.getSelection() || { index: editor.getLength() };
+                    editor.insertEmbed(range.index, 'image', imageUrl);
+                    
+                    toast.success('Dán ảnh thành công!', { id: toastId });
+                } catch (error) {
+                    console.error("Lỗi dán ảnh:", error);
+                    toast.error('Lỗi tải ảnh. Vui lòng thử lại!', { id: toastId });
+                }
+                break;
+            }
+        }
+    };
 
     const cleanWordGarbageBeforeSave = (rawHtml) => {
         if (!rawHtml) return "";
@@ -77,22 +156,26 @@ export default function AdminEditPost() {
         }
     };
 
-    // 🌟 MỞ RỘNG THANH CÔNG CỤ (FULL OPTION)
-    const modules = {
-        toolbar: [
-            [{ 'font': Font.whitelist }, { 'size': ['small', false, 'large', 'huge'] }],
-            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-            ['bold', 'italic', 'underline', 'strike'],
-            [{ 'color': [] }, { 'background': [] }],
-            [{ 'script': 'sub' }, { 'script': 'super' }],
-            [{ 'align': [] }],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-            [{ 'indent': '-1' }, { 'indent': '+1' }],
-            ['blockquote', 'code-block'],
-            ['link', 'image', 'video'],
-            ['clean']
-        ],
-    };
+    const modules = useMemo(() => ({
+        toolbar: {
+            container: [
+                [{ 'font': Font.whitelist }, { 'size': ['small', false, 'large', 'huge'] }],
+                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'script': 'sub' }, { 'script': 'super' }],
+                [{ 'align': [] }],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                [{ 'indent': '-1' }, { 'indent': '+1' }],
+                ['blockquote', 'code-block'],
+                ['link', 'image', 'video'],
+                ['clean']
+            ],
+            handlers: {
+                image: imageHandler
+            }
+        }
+    }), []);
 
     const formats = [
         'font', 'size', 'header',
@@ -103,8 +186,37 @@ export default function AdminEditPost() {
     ];
 
     if (loading) return (
-        <div className="flex h-[50vh] items-center justify-center">
-            <div className="animate-pulse text-lg font-bold font-['Lora',serif] text-slate-400 tracking-widest uppercase">Đang tải dữ liệu bài viết...</div>
+        <div className="w-full max-w-5xl mx-auto pb-10 font-['Lora',serif] animate-pulse">
+            <div className="mb-6 md:mb-8 flex items-center gap-3">
+                <div className="w-12 h-12 bg-slate-200 rounded-xl"></div>
+                <div className="space-y-2">
+                    <div className="h-8 bg-slate-200 rounded w-64"></div>
+                    <div className="h-4 bg-slate-200 rounded w-48"></div>
+                </div>
+            </div>
+
+            <div className="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-6">
+                <div className="flex flex-col md:flex-row gap-6">
+                    <div className="flex-1 space-y-3">
+                        <div className="h-3 bg-slate-200 rounded w-32"></div>
+                        <div className="h-14 bg-slate-100 rounded-xl w-full border border-slate-200"></div>
+                    </div>
+                    <div className="w-full md:w-72 space-y-3">
+                        <div className="h-3 bg-slate-200 rounded w-24"></div>
+                        <div className="h-14 bg-slate-100 rounded-xl w-full border border-slate-200"></div>
+                    </div>
+                </div>
+
+                <div className="space-y-3 mt-4">
+                    <div className="h-3 bg-slate-200 rounded w-40"></div>
+                    <div className="h-[530px] bg-slate-100 rounded-xl w-full border border-slate-200"></div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row justify-end gap-4 mt-8 pt-6 border-t border-slate-100">
+                    <div className="h-12 bg-slate-200 rounded-xl w-full sm:w-32"></div>
+                    <div className="h-12 bg-slate-300 rounded-xl w-full sm:w-48"></div>
+                </div>
+            </div>
         </div>
     );
 
@@ -151,7 +263,11 @@ export default function AdminEditPost() {
                     <div className="mb-12">
                         <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">BƯỚC 3: Soạn nội dung</label>
 
-                        <div className="relative rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+                        {/* 🌟 GẮN SỰ KIỆN CHẶN CTRL+V VÀO ĐÂY */}
+                        <div 
+                            className="relative rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm"
+                            onPasteCapture={handlePaste} 
+                        >
                             <style dangerouslySetInnerHTML={{
                                 __html: `
               .quill { display: flex; flex-direction: column; }
@@ -159,7 +275,6 @@ export default function AdminEditPost() {
               .ql-container { border: none !important; height: 530px !important; font-size: 16px !important; }
               .ql-editor { height: 100%; overflow-y: auto !important; padding: 16px 16px 60px 16px !important; }
               
-              /* CSS ĐỂ HIỂN THỊ TÊN FONT CHỮ TRONG MENU DROPDOWN */
               .ql-picker.ql-font .ql-picker-label[data-value="roboto"]::before,
               .ql-picker.ql-font .ql-picker-item[data-value="roboto"]::before { content: 'Roboto'; font-family: 'Roboto', sans-serif; }
               .ql-picker.ql-font .ql-picker-label[data-value="lora"]::before,
@@ -168,9 +283,18 @@ export default function AdminEditPost() {
               .ql-picker.ql-font .ql-picker-item[data-value="montserrat"]::before { content: 'Montserrat'; font-family: 'Montserrat', sans-serif; }
               .ql-picker.ql-font .ql-picker-label[data-value="dancing-script"]::before,
               .ql-picker.ql-font .ql-picker-item[data-value="dancing-script"]::before { content: 'Nghệ thuật'; font-family: 'Dancing Script', cursive; }
+              
+              .ql-editor img {
+                max-width: 100% !important; max-height: 450px !important; width: auto !important; object-fit: contain !important;
+                margin: 2rem auto !important; border-radius: 0.75rem !important; display: block !important; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1) !important;
+              }
+              .ql-editor iframe {
+                max-width: 100% !important; width: 100% !important; aspect-ratio: 16/9 !important; border-radius: 0.75rem !important; margin: 2rem auto !important;
+              }
             `}} />
 
                             <ReactQuill
+                                ref={quillRef} 
                                 theme="snow"
                                 value={content}
                                 onChange={setContent}

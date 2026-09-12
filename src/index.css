@@ -5,20 +5,35 @@
   --color-primary: #cc0000;
 }
 
-.prose *, .ql-editor *, [class*="prose"] * {
-    /* 1. Tuyệt đối cấm bẻ chữ giữa chừng (Giải quyết vụ d-ân, ti-ên) */
-    word-break: normal !important;
-    
-    /* 2. Chỉ rớt dòng nguyên một từ hoặc link dài */
-    overflow-wrap: break-word !important;
-    
-    /* 3. Dọn sạch các khoảng trắng lỗi từ PDF */
-    white-space: normal !important;
-    
-    /* 4. Tắt căn đều 2 bên (Justify) - Thủ phạm số 1 gây giãn chữ tiếng Việt */
-    text-align: left !important;
-    
-    /* 5. Khóa tính năng tự đoán ngắt từ của Trình duyệt (Chrome/Safari) */
-    -webkit-hyphens: none !important;
-    hyphens: none !important;
+.prose *,
+.ql-editor *,
+[class*="prose"] * {
+  /* 1. Tuyệt đối cấm bẻ chữ giữa chừng (Giải quyết vụ d-ân, ti-ên) */
+  word-break: normal !important;
+
+  /* 2. Chỉ rớt dòng nguyên một từ hoặc link dài */
+  overflow-wrap: break-word !important;
+
+  /* 3. Dọn sạch các khoảng trắng lỗi từ PDF */
+  white-space: normal !important;
+
+  /* 4. Tắt căn đều 2 bên (Justify) - Thủ phạm số 1 gây giãn chữ tiếng Việt */
+  text-align: left !important;
+
+  /* 5. Khóa tính năng tự đoán ngắt từ của Trình duyệt (Chrome/Safari) */
+  -webkit-hyphens: none !important;
+  hyphens: none !important;
+}
+
+/* Kéo đàn hồi thẩm mỹ: đỉnh trên màu đỏ (#da251d khớp Topbar), đáy dưới màu trắng (#ffffff khớp Footer) */
+html {
+  background: linear-gradient(to bottom, #da251d 0%, #da251d 50%, #ffffff 50%, #ffffff 100%) no-repeat fixed;
+  background-color: #da251d;
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: #fcf9f2;
 }

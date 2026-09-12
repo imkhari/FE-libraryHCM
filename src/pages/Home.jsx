@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../services/api';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -41,8 +41,15 @@ const BookCard = ({ doc, navigate }) => {
             <span className="text-red-900 font-['Lora',serif] font-bold text-sm md:text-base leading-tight line-clamp-4">{doc.title}</span>
           </div>
         )}
-        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center">
-          <span className="bg-red-700 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-lg font-['Lora',serif]">Đọc ngay</span>
+        <div className="absolute inset-0 bg-black/35 backdrop-blur-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center gap-1.5 p-2 pointer-events-none">
+          <span className="w-8 h-8 rounded-full bg-white/95 text-red-800 flex items-center justify-center shadow-md transform scale-90 group-hover:scale-100 transition-transform duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </span>
+          <span className="bg-white/95 text-red-900 px-3 py-1 rounded-full text-xs font-semibold shadow-sm font-['Lora',serif] tracking-wide">
+            Nhấn để đọc
+          </span>
         </div>
       </div>
 
@@ -82,6 +89,30 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const videoContainerRef = useRef(null);
+  const videoIframeRef = useRef(null);
+
+  // Tự động tạm dừng video (ngắt âm thanh) khi người dùng cuộn ra khỏi vùng video
+  useEffect(() => {
+    const container = videoContainerRef.current;
+    if (!container) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting && videoIframeRef.current?.contentWindow) {
+          videoIframeRef.current.contentWindow.postMessage(
+            JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }),
+            '*'
+          );
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     window.scrollTo({
@@ -199,9 +230,33 @@ function Home() {
         </motion.div>
 
         <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/70 to-transparent z-10 pointer-events-none"></div>
+
+        {/* NÚT SCROLL "KHÁM PHÁ TƯ LIỆU" TINH TẾ - MÀU TRẮNG */}
+        <button
+          onClick={() => {
+            const el = document.getElementById('about-section');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }}
+          className="absolute bottom-2.5 sm:bottom-4 md:bottom-5 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-1 cursor-pointer group text-white/80 hover:text-white transition-all duration-300 focus:outline-none"
+          title="Cuộn xuống khám phá tư liệu"
+        >
+          <span className="text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.25em] drop-shadow-md font-sans group-hover:tracking-[0.3em] transition-all">
+            Khám phá tư liệu
+          </span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/80 group-hover:text-white transform group-hover:translate-y-1 transition-all duration-300 animate-bounce [animation-duration:2s]"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
       </motion.div>
 
       <motion.section
+        id="about-section"
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -218,7 +273,7 @@ function Home() {
           <div className="h-1 w-16 md:w-20 bg-red-600 mt-4 rounded-full"></div>
         </div>
 
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 relative">
+        <div ref={videoContainerRef} className="max-w-5xl mx-auto px-4 sm:px-6 relative">
           {(() => {
             const youtubeId = "mRMwuVy7rKg";
 
@@ -226,9 +281,10 @@ function Home() {
               /* Bỏ viền, chỉ giữ lại bo góc và bóng đổ để video tràn viền hiện đại */
               <div className="relative w-full pt-[56.25%] rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl bg-black">
                 <iframe
+                  ref={videoIframeRef}
                   className="absolute top-0 left-0 w-full h-full"
-                  /* Thêm autoplay=1 và mute=1 để tự động chạy không tiếng, thêm loop=1 để lặp lại */
-                  src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&rel=0&showinfo=0&modestbranding=1&loop=1&playlist=${youtubeId}`}
+                  /* Thêm enablejsapi=1 để điều khiển ngắt tiếng khi cuộn, autoplay=1, mute=1 */
+                  src={`https://www.youtube.com/embed/${youtubeId}?enablejsapi=1&autoplay=1&mute=1&rel=0&showinfo=0&modestbranding=1&loop=1&playlist=${youtubeId}`}
                   title="Giới thiệu trường THPT Thái Phiên"
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -270,7 +326,7 @@ function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
-                className="mb-16 md:mb-20"
+                className="bg-white/90 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 lg:p-10 shadow-sm border border-stone-200/70"
               >
                 <div className="flex flex-col items-center justify-center mb-8 md:mb-10">
                   <h3 className="text-red-700 font-bold uppercase text-xs md:text-sm tracking-[0.3em] mb-2 font-['Lora',serif]">Tác phẩm của</h3>
@@ -280,9 +336,9 @@ function Home() {
                   <div className="h-1 w-16 md:w-20 bg-red-600 mt-4 rounded-full"></div>
                 </div>
 
-                <div className="px-0 sm:px-2 md:px-10 relative">
+                <div className="px-0 sm:px-2 md:px-6 relative">
                   <Swiper
-                    style={{ '--swiper-navigation-color': '#b91c1c', '--swiper-pagination-color': '#b91c1c', '--swiper-navigation-size': '20px' }}
+                    style={{ '--swiper-navigation-color': '#b91c1c', '--swiper-pagination-color': '#b91c1c', '--swiper-navigation-size': '20px', '--swiper-pagination-bottom': '4px' }}
                     modules={[Navigation, Pagination, Autoplay]}
                     spaceBetween={15}
                     slidesPerView={2}
@@ -290,7 +346,7 @@ function Home() {
                     pagination={{ clickable: true, dynamicBullets: true }}
                     autoplay={{ delay: 3500, disableOnInteraction: false }}
                     breakpoints={{ 640: { slidesPerView: 3, spaceBetween: 20 }, 1024: { slidesPerView: 4, spaceBetween: 20 }, 1280: { slidesPerView: 5, spaceBetween: 20 } }}
-                    className="pb-10 md:pb-12 pt-4 px-2"
+                    className="!pb-14 md:!pb-16 pt-4 px-2"
                   >
                     {booksByHoChiMinh.map((doc) => (
                       <SwiperSlide key={doc.id} className="!h-auto flex">
@@ -312,8 +368,14 @@ function Home() {
               </motion.section>
             )}
 
-            <div className="w-full flex justify-center my-10 md:my-16 opacity-20">
-              <div className="w-2/3 md:w-1/2 h-px bg-gradient-to-r from-transparent via-red-800 to-transparent"></div>
+            <div className="w-full flex items-center justify-center my-8 md:my-12 opacity-40 select-none">
+              <div className="h-px bg-gradient-to-r from-transparent via-red-800 to-red-800 w-16 md:w-28"></div>
+              <span className="mx-3 text-red-800 text-[10px] md:text-xs font-serif flex items-center gap-1.5">
+                <span className="text-[8px]">✦</span>
+                <span className="text-xs md:text-sm">❖</span>
+                <span className="text-[8px]">✦</span>
+              </span>
+              <div className="h-px bg-gradient-to-l from-transparent via-red-800 to-red-800 w-16 md:w-28"></div>
             </div>
 
             {booksAboutHoChiMinh.length > 0 && (
@@ -322,7 +384,7 @@ function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
-                className="mb-16 md:mb-20"
+                className="bg-[#fdfaf3] rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 lg:p-10 shadow-sm border border-amber-900/10"
               >
                 <div className="flex flex-col items-center justify-center mb-8 md:mb-10">
                   <h3 className="text-red-700 font-bold uppercase text-xs md:text-sm tracking-[0.3em] mb-2 font-['Lora',serif]">Tác phẩm về</h3>
@@ -332,9 +394,9 @@ function Home() {
                   <div className="h-1 w-16 md:w-20 bg-red-600 mt-4 rounded-full"></div>
                 </div>
 
-                <div className="px-0 sm:px-2 md:px-10 relative">
+                <div className="px-0 sm:px-2 md:px-6 relative">
                   <Swiper
-                    style={{ '--swiper-navigation-color': '#b91c1c', '--swiper-pagination-color': '#b91c1c', '--swiper-navigation-size': '20px' }}
+                    style={{ '--swiper-navigation-color': '#b91c1c', '--swiper-pagination-color': '#b91c1c', '--swiper-navigation-size': '20px', '--swiper-pagination-bottom': '4px' }}
                     modules={[Navigation, Pagination, Autoplay]}
                     spaceBetween={15}
                     slidesPerView={2}
@@ -342,7 +404,7 @@ function Home() {
                     pagination={{ clickable: true, dynamicBullets: true }}
                     autoplay={{ delay: 4000, disableOnInteraction: false, reverseDirection: true }}
                     breakpoints={{ 640: { slidesPerView: 3, spaceBetween: 20 }, 1024: { slidesPerView: 4, spaceBetween: 20 }, 1280: { slidesPerView: 5, spaceBetween: 20 } }}
-                    className="pb-10 md:pb-12 pt-4 px-2"
+                    className="!pb-14 md:!pb-16 pt-4 px-2"
                   >
                     {booksAboutHoChiMinh.map((doc) => (
                       <SwiperSlide key={`about-${doc.id}`} className="!h-auto flex">
@@ -366,8 +428,14 @@ function Home() {
 
             {articles.length > 0 && (
               <>
-                <div className="w-full flex justify-center my-10 md:my-16 opacity-20">
-                  <div className="w-2/3 md:w-1/2 h-px bg-gradient-to-r from-transparent via-red-800 to-transparent"></div>
+                <div className="w-full flex items-center justify-center my-8 md:my-12 opacity-40 select-none">
+                  <div className="h-px bg-gradient-to-r from-transparent via-red-800 to-red-800 w-16 md:w-28"></div>
+                  <span className="mx-3 text-red-800 text-[10px] md:text-xs font-serif flex items-center gap-1.5">
+                    <span className="text-[8px]">✦</span>
+                    <span className="text-xs md:text-sm">❖</span>
+                    <span className="text-[8px]">✦</span>
+                  </span>
+                  <div className="h-px bg-gradient-to-l from-transparent via-red-800 to-red-800 w-16 md:w-28"></div>
                 </div>
 
                 <motion.section
@@ -375,6 +443,7 @@ function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.8 }}
+                  className="bg-white/90 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 lg:p-10 shadow-sm border border-stone-200/70"
                 >
                   <div className="flex flex-col items-center justify-center mb-8 md:mb-10">
                     <h3 className="text-red-700 font-bold uppercase text-xs md:text-sm tracking-[0.3em] mb-2 font-['Lora',serif]">Những bài báo của</h3>
@@ -384,9 +453,9 @@ function Home() {
                     <div className="h-1 w-16 md:w-20 bg-red-600 mt-4 rounded-full"></div>
                   </div>
 
-                  <div className="px-0 sm:px-2 md:px-10 relative">
+                  <div className="px-0 sm:px-2 md:px-6 relative">
                     <Swiper
-                      style={{ '--swiper-navigation-color': '#b91c1c', '--swiper-pagination-color': '#b91c1c', '--swiper-navigation-size': '20px' }}
+                      style={{ '--swiper-navigation-color': '#b91c1c', '--swiper-pagination-color': '#b91c1c', '--swiper-navigation-size': '20px', '--swiper-pagination-bottom': '4px' }}
                       modules={[Navigation, Pagination, Autoplay]}
                       spaceBetween={15}
                       slidesPerView={2}
@@ -394,7 +463,7 @@ function Home() {
                       pagination={{ clickable: true, dynamicBullets: true }}
                       autoplay={{ delay: 4500, disableOnInteraction: false }}
                       breakpoints={{ 640: { slidesPerView: 3, spaceBetween: 20 }, 1024: { slidesPerView: 4, spaceBetween: 20 }, 1280: { slidesPerView: 5, spaceBetween: 20 } }}
-                      className="pb-10 md:pb-12 pt-4 px-2"
+                      className="!pb-14 md:!pb-16 pt-4 px-2"
                     >
                       {articles.map((doc) => (
                         <SwiperSlide key={`article-${doc.id}`} className="!h-auto flex">

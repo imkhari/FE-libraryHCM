@@ -32,10 +32,11 @@ const lineVerticalVariants = {
   visible: { scaleY: 1, opacity: 1, transition: { duration: 0.6, ease: "easeInOut" } }
 };
 
-// COMPONENT MŨI TÊN 
+// COMPONENT MŨI TÊN
 const ArrowDownRed = () => (
-  <motion.div variants={lineVerticalVariants} className="w-1.5 h-10 md:h-14 bg-red-500 relative my-1 origin-top rounded-full">
-    <div className="absolute -bottom-2 -left-[6px] w-0 h-0 border-l-[9px] border-l-transparent border-r-[9px] border-r-transparent border-t-[10px] border-t-red-500"></div>
+  <motion.div variants={lineVerticalVariants} className="flex flex-col items-center my-3 select-none">
+    <div className="w-0.5 h-8 md:h-10 bg-gradient-to-b from-red-600 to-red-400"></div>
+    <div className="w-2.5 h-2.5 rotate-45 border-b-2 border-r-2 border-red-600 -mt-1"></div>
   </motion.div>
 );
 
@@ -127,30 +128,30 @@ function BioPage() {
             </div>
           </motion.div>
 
-          {/* CỘT PHẢI (Chứa Timeline và Sơ đồ tư duy) */}
-          <div className="w-full lg:w-[68%] flex flex-col">
+          {/* CỘT PHẢI (Chứa Timeline) */}
+          <div className="w-full lg:w-[72%] flex flex-col">
 
             {/* TIMELINE SECTION */}
             <motion.div variants={rightColumnVariants} initial="hidden" animate="visible" className="bg-white p-6 md:p-10 rounded-2xl shadow-xl border border-red-50/50 relative overflow-hidden">
               <div className="absolute top-0 right-0 opacity-[0.03] pointer-events-none w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')]"></div>
-              
+
               <div className="relative z-10">
                 <h2 className="text-2xl font-black text-gray-800 mb-10 pb-4 border-b-2 border-red-100 uppercase tracking-widest flex items-center gap-3">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   Dòng thời gian lịch sử
                 </h2>
-                
+
                 {/* Dây cuộn Timeline */}
                 <div className="space-y-12 border-l-[3px] border-red-100 ml-3 md:ml-4 relative">
                   {timelineData.map((item, index) => {
-                    const yearWatermark = item.year.slice(-4); 
+                    const yearWatermark = item.year.slice(-4);
                     return (
-                      <motion.div 
+                      <motion.div
                         initial={{ opacity: 0, x: 50 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true, margin: "-50px" }}
                         transition={{ duration: 0.6, type: "spring", stiffness: 100, delay: 0.1 }}
-                        key={index} 
+                        key={index}
                         className="relative pl-8 md:pl-12 group"
                       >
                         {/* Nút mốc thời gian */}
@@ -160,7 +161,7 @@ function BioPage() {
 
                         {/* Thẻ Card nội dung */}
                         <div className="bg-white p-6 md:p-8 rounded-2xl shadow-[0_5px_20px_rgba(185,28,28,0.05)] border border-red-50 group-hover:shadow-[0_15px_30px_rgba(185,28,28,0.12)] transition-all duration-300 relative overflow-hidden">
-                          
+
                           <div className="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-red-100 transition-colors duration-500"></div>
 
                           <div className="absolute top-2 right-4 opacity-5 font-black text-6xl md:text-7xl text-red-900 pointer-events-none select-none">
@@ -174,7 +175,6 @@ function BioPage() {
                             <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 leading-snug group-hover:text-red-700 transition-colors">
                               {item.title}
                             </h3>
-                            {/* ĐÃ SỬA: Bỏ text-justify, thêm font Lora */}
                             <p className="text-gray-700 leading-relaxed font-['Lora',serif] text-[15px] md:text-[16px]">
                               {item.content}
                             </p>
@@ -187,89 +187,139 @@ function BioPage() {
               </div>
             </motion.div>
 
-            {/* SƠ ĐỒ TƯ DUY */}
+          </div>
+        </div>
+
+        {/* DẢI PHÂN CÁCH TRANG TRỌNG */}
+        <div className="w-full flex items-center justify-center my-14 md:my-20 opacity-40 select-none">
+          <div className="h-px bg-gradient-to-r from-transparent via-red-800 to-red-800 w-24 md:w-40"></div>
+          <span className="mx-4 text-red-800 text-xs font-serif flex items-center gap-2">
+            <span>✦</span>
+            <span className="text-base">❖</span>
+            <span>✦</span>
+          </span>
+          <div className="h-px bg-gradient-to-l from-transparent via-red-800 to-red-800 w-24 md:w-40"></div>
+        </div>
+
+        {/* SƠ ĐỒ TƯ DUY - CĂN GIỮA TOÀN TRANG */}
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={containerVariants}
+          className="w-full max-w-3xl mx-auto px-2 sm:px-4"
+        >
+          <div className="text-center mb-12">
+            <h3 className="text-red-700 font-bold uppercase text-xs md:text-sm tracking-[0.3em] mb-2 font-['Lora',serif]">
+              Phân tích Lịch sử
+            </h3>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-red-800 uppercase tracking-tight font-['Lora',serif] leading-tight">
+              Tầm nhìn vĩ đại <br className="hidden sm:block" /> về con đường cứu nước
+            </h2>
+            <div className="h-1.5 w-24 bg-red-600 mx-auto mt-4 rounded-full shadow-[0_0_10px_rgba(220,38,38,0.4)]"></div>
+          </div>
+
+          <div className="flex flex-col items-center w-full">
+
+            {/* BƯỚC 1: MỤC TIÊU TỐI THƯỢNG */}
             <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-100px" }}
-              variants={containerVariants}
-              className="mt-20 pt-16 border-t-2 border-dashed border-red-200 w-full"
+              variants={mapNodeVariants}
+              className="bg-gradient-to-r from-red-900 via-red-800 to-red-900 text-white rounded-2xl shadow-lg border border-red-700/50 p-6 sm:p-7 text-center w-full max-w-2xl relative overflow-hidden"
             >
-              <div className="text-center mb-16 px-2">
-                <h3 className="text-red-700 font-bold uppercase text-sm tracking-[0.3em] mb-3">Phân tích Lịch sử</h3>
-                <h2 className="text-[26px] sm:text-3xl md:text-4xl font-black text-red-800 uppercase tracking-tight leading-tight mx-auto max-w-2xl">
-                  Tầm nhìn vĩ đại <br className="hidden sm:block" /> về con đường cứu nước
-                </h2>
-                <div className="h-1.5 w-24 bg-red-600 mx-auto mt-5 rounded-full shadow-[0_0_10px_rgba(220,38,38,0.5)]"></div>
+              <div className="text-yellow-300 font-bold uppercase text-[11px] sm:text-xs tracking-[0.25em] mb-2 font-['Lora',serif]">
+                Mục tiêu tối thượng
               </div>
+              <h3 className="text-lg sm:text-xl md:text-2xl font-black tracking-wide uppercase font-['Lora',serif] leading-snug">
+                Đánh đuổi thực dân — Giành độc lập cho dân tộc
+              </h3>
+            </motion.div>
 
-              <div className="flex flex-col items-center w-full px-4">
+            <ArrowDownRed />
 
-                {/* BƯỚC 1 */}
-                <motion.div variants={mapNodeVariants} className="bg-red-800 text-white font-black text-base md:text-xl px-6 py-5 rounded-xl shadow-[0_10px_20px_rgba(185,28,28,0.3)] z-10 text-center border-2 border-red-600 w-full max-w-2xl">
-                  MỤC TIÊU TỐI THƯỢNG:<br />ĐÁNH ĐUỔI THỰC DÂN, GIÀNH ĐỘC LẬP
-                </motion.div>
+            {/* BƯỚC 2: NGUYỄN TẤT THÀNH */}
+            <motion.div
+              variants={mapNodeVariants}
+              className="bg-white rounded-2xl border border-stone-200/80 p-6 sm:p-8 w-full max-w-2xl shadow-md hover:shadow-xl transition-all duration-300 relative overflow-hidden"
+            >
+              <div className="inline-block px-3 py-1 bg-red-50 text-red-800 text-xs font-bold rounded-full mb-3 border border-red-100 uppercase tracking-wider">
+                Giai đoạn khởi đầu • 1911
+              </div>
+              <h3 className="text-xl sm:text-2xl font-black text-red-900 mb-1 font-['Lora',serif]">
+                NGUYỄN TẤT THÀNH
+              </h3>
+              <p className="text-sm text-red-700 mb-5 font-['Lora',serif] italic">
+                Khởi hành từ Bến cảng Nhà Rồng
+              </p>
 
-                <ArrowDownRed />
-
-                {/* BƯỚC 2 */}
-                <motion.div variants={mapNodeVariants} className="bg-red-50 border-2 border-red-600 p-6 md:p-8 rounded-2xl w-full max-w-2xl shadow-[0_8px_20px_rgba(220,38,38,0.15)] relative overflow-hidden">
-                  <div className="absolute top-0 left-0 w-full h-1.5 bg-red-600"></div>
-                  <h3 className="text-xl md:text-2xl font-black text-red-800 mb-1 text-center">NGUYỄN TẤT THÀNH</h3>
-                  <p className="text-sm md:text-base text-red-600 mb-6 text-center font-['Lora',serif] italic">Khởi hành từ Bến cảng Nhà Rồng</p>
-
-                  <ul className="space-y-4 text-sm md:text-base text-gray-800">
-                    <li className="flex items-start gap-3">
-                      <span className="text-red-600 font-bold mt-0.5 text-lg">✔</span>
-                      <div><b>Tư duy độc lập:</b> Kiên quyết không đi theo lối mòn đã thất bại của các phong trào trước đó.</div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-red-600 font-bold mt-0.5 text-lg">✔</span>
-                      <div><b>Tầm nhìn đột phá:</b> Hướng sang phương Tây để tìm hiểu tận gốc rễ sào huyệt của chủ nghĩa đế quốc.</div>
-                    </li>
-                  </ul>
-                  <div className="mt-6 p-4 bg-white border-l-4 border-red-600 font-['Lora',serif] italic text-[14px] md:text-base text-red-900 shadow-sm rounded-r">
-                    "Muốn đánh hổ phải vào hang hổ. Phải xem nước Pháp làm thế nào rồi về giúp đồng bào."
+              <ul className="space-y-3.5 text-sm sm:text-[15px] text-stone-800 font-['Lora',serif]">
+                <li className="flex items-start gap-3">
+                  <span className="w-5 h-5 rounded-full bg-red-100 text-red-700 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">✓</span>
+                  <div>
+                    <strong className="text-stone-900">Tư duy độc lập:</strong> Kiên quyết không đi theo lối mòn đã thất bại của các phong trào cứu nước trước đó.
                   </div>
-                </motion.div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="w-5 h-5 rounded-full bg-red-100 text-red-700 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">✓</span>
+                  <div>
+                    <strong className="text-stone-900">Tầm nhìn đột phá:</strong> Hướng sang phương Tây để tìm hiểu tận gốc rễ sào huyệt của chủ nghĩa đế quốc.
+                  </div>
+                </li>
+              </ul>
 
-                <ArrowDownRed />
-
-                {/* BƯỚC 3 */}
-                <motion.div variants={mapNodeVariants} className="bg-yellow-50 border-2 border-yellow-500 p-6 rounded-xl w-full max-w-2xl shadow-md relative">
-                  <div className="absolute -left-3 -top-3 bg-yellow-500 text-white text-sm font-black px-3 py-1 rounded-lg shadow-md tracking-wider">NĂM 1920</div>
-                  <h4 className="font-black text-red-800 uppercase text-lg md:text-xl mb-3 text-center mt-2">Bắt gặp Ánh sáng Chân lý</h4>
-                  <p className="text-sm md:text-base text-gray-700 text-center leading-relaxed">
-                    Tìm ra con đường giải phóng dân tộc: Chỉ có <b>Chủ nghĩa xã hội và Chủ nghĩa cộng sản</b> mới giải phóng được các dân tộc bị áp bức.
-                  </p>
-                </motion.div>
-
-                <ArrowDownRed />
-
-                {/* BƯỚC 4 */}
-                <motion.div variants={mapNodeVariants} className="bg-white border-2 border-red-800 p-6 md:p-8 rounded-xl w-full max-w-2xl shadow-[0_10px_25px_rgba(185,28,28,0.15)]">
-                  <h4 className="font-black text-red-800 uppercase text-lg md:text-xl mb-5 text-center">Vận dụng Sáng tạo</h4>
-                  <ul className="space-y-4 text-sm md:text-base text-gray-800 font-medium">
-                    <li className="flex items-center gap-3">
-                      <span className="text-red-600 text-xl">★</span>
-                      Độc lập dân tộc gắn liền với Chủ nghĩa xã hội.
-                    </li>
-                    <li className="flex items-center gap-3">
-                      <span className="text-red-600 text-xl">★</span>
-                      Cách mạng thuộc địa liên kết chặt chẽ với chính quốc.
-                    </li>
-                    <li className="flex items-center gap-3">
-                      <span className="text-red-600 text-xl">★</span>
-                      Đại đoàn kết toàn dân tộc do Đảng Cộng sản lãnh đạo.
-                    </li>
-                  </ul>
-                </motion.div>
-
+              <div className="mt-5 p-4 bg-amber-50/70 border-l-4 border-red-700 font-['Lora',serif] italic text-sm sm:text-[15px] text-stone-800 rounded-r shadow-xs">
+                "Muốn đánh hổ phải vào hang hổ. Phải xem nước Pháp làm thế nào rồi về giúp đồng bào."
               </div>
             </motion.div>
 
+            <ArrowDownRed />
+
+            {/* BƯỚC 3: BẮT GẶP ÁNH SÁNG CHÂN LÝ */}
+            <motion.div
+              variants={mapNodeVariants}
+              className="bg-white rounded-2xl border border-amber-200/80 p-6 sm:p-8 w-full max-w-2xl shadow-md hover:shadow-xl transition-all duration-300 relative overflow-hidden"
+            >
+              <div className="inline-block px-3 py-1 bg-amber-100 text-amber-900 text-xs font-bold rounded-full mb-3 border border-amber-200 uppercase tracking-wider">
+                Mốc son lịch sử • Năm 1920
+              </div>
+              <h4 className="font-black text-red-900 text-xl sm:text-2xl mb-3 font-['Lora',serif]">
+                Bắt gặp Ánh sáng Chân lý
+              </h4>
+              <p className="text-stone-700 text-sm sm:text-[15px] leading-relaxed font-['Lora',serif]">
+                Đọc <em>Luận cương của V.I. Lênin</em>, tìm ra con đường giải phóng dân tộc: Chỉ có <strong className="text-red-900">Chủ nghĩa xã hội và Chủ nghĩa cộng sản</strong> mới giải phóng được các dân tộc bị áp bức và nhân dân lao động trên toàn thế giới.
+              </p>
+            </motion.div>
+
+            <ArrowDownRed />
+
+            {/* BƯỚC 4: VẬN DỤNG SÁNG TẠO */}
+            <motion.div
+              variants={mapNodeVariants}
+              className="bg-white rounded-2xl border border-stone-200/80 p-6 sm:p-8 w-full max-w-2xl shadow-md hover:shadow-xl transition-all duration-300 relative overflow-hidden"
+            >
+              <div className="inline-block px-3 py-1 bg-red-50 text-red-800 text-xs font-bold rounded-full mb-3 border border-red-100 uppercase tracking-wider">
+                Thực tiễn thắng lợi
+              </div>
+              <h4 className="font-black text-red-900 text-xl sm:text-2xl mb-4 font-['Lora',serif]">
+                Vận dụng Sáng tạo vào Thực tiễn
+              </h4>
+              <ul className="space-y-3.5 text-sm sm:text-[15px] text-stone-800 font-['Lora',serif]">
+                <li className="flex items-center gap-3">
+                  <span className="text-amber-600 text-lg">★</span>
+                  <span>Độc lập dân tộc gắn liền với Chủ nghĩa xã hội.</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="text-amber-600 text-lg">★</span>
+                  <span>Cách mạng thuộc địa liên kết chặt chẽ với cách mạng chính quốc.</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="text-amber-600 text-lg">★</span>
+                  <span>Đại đoàn kết toàn dân tộc do Đảng Cộng sản Việt Nam lãnh đạo.</span>
+                </li>
+              </ul>
+            </motion.div>
+
           </div>
-        </div>
+        </motion.section>
       </div>
     </div>
   );

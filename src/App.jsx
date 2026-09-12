@@ -330,12 +330,11 @@ const MainLayout = () => {
       </div>
 
       {/* NAVBAR */}
-      <header 
-        className={`text-white sticky top-0 z-50 transition-all duration-300 ${
-          isScrolled 
-            ? 'bg-[#da251d]/80 backdrop-blur-md shadow-lg border-b border-white/20' // Trạng thái khi cuộn: Kính mờ
-            : 'bg-[#da251d] shadow-md' // Trạng thái ở đầu trang: Màu đỏ đặc nguyên bản
-        }`}
+      <header
+        className={`text-white sticky top-0 z-50 transition-all duration-300 ${isScrolled
+          ? 'bg-[#da251d]/80 backdrop-blur-md shadow-lg border-b border-white/20' // Trạng thái khi cuộn: Kính mờ
+          : 'bg-[#da251d] shadow-md' // Trạng thái ở đầu trang: Màu đỏ đặc nguyên bản
+          }`}
       >
         <div className="max-w-7xl mx-auto px-2 lg:px-4 h-11 md:h-12 flex justify-between items-center">
 
@@ -351,7 +350,7 @@ const MainLayout = () => {
 
           {/* MENU DESKTOP */}
           <nav className="hidden md:flex items-center h-full overflow-visible whitespace-nowrap">
-            
+
             {/* TRANG CHỦ */}
             <Link to="/" className="h-full px-3 md:px-4 gap-2 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5" viewBox="0 0 20 20" fill="currentColor">

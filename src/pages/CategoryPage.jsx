@@ -110,7 +110,7 @@ function CategoryPage() {
       });
   };
 
-  const mainDiaryBook = displayDocs.find(doc => doc.slug === 'nhat-ky-trong-tu-full') || displayDocs[0];
+  const mainDiaryBook = displayDocs.find(doc => doc.slug === 'nhat-ky-trong-tu') || displayDocs[0];
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -187,7 +187,6 @@ function CategoryPage() {
                 </p>
              </div>
              
-             {/* ĐÃ SỬA: Đổi text-justify thành text-left, thêm font Lora */}
              <div className="text-sm md:text-[15px] text-stone-600 leading-relaxed text-left mb-8 space-y-3 font-['Lora',serif]">
                <p>
                  Bảo vật quốc gia <b>"Nhật ký trong tù"</b> là tập thơ chữ Hán gồm 133 bài, được Chủ tịch Hồ Chí Minh sáng tác trong thời gian bị chính quyền Tưởng Giới Thạch bắt giam trái phép ở Quảng Tây, Trung Quốc (từ tháng 8/1942 đến tháng 9/1943). 
@@ -336,25 +335,33 @@ function CategoryPage() {
                       variants={itemVariants}
                       key={doc.id} 
                       onClick={() => navigate(`/book/${doc.id}`)} 
-                      className="group cursor-pointer flex flex-col h-full bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200 hover:shadow-xl hover:border-red-300 transition-shadow duration-300 relative"
+                      className="group cursor-pointer flex flex-col h-full bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 relative"
                     >
-                      <div className="aspect-[2/3] overflow-hidden bg-gray-100">
-                        <motion.img 
-                          whileHover={{ scale: 1.05 }}
-                          transition={{ duration: 0.5 }}
+                      <div className="aspect-[2/3] overflow-hidden bg-gray-100 relative">
+                        <img 
                           src={doc.coverImageUrl || 'https://via.placeholder.com/400x600?text=No+Cover'} 
                           loading="lazy"
-                          className="w-full h-full object-cover" 
+                          className="w-full h-full object-cover transform group-hover:scale-108 transition-transform duration-500 ease-out" 
                           alt={doc.title} 
                         />
                         {type === 'ho-chi-minh-toan-tap' && (
-                          <div className="absolute top-2 right-2 bg-red-700 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">
+                          <div className="absolute top-2 right-2 bg-red-700 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm z-10">
                             2011
                           </div>
                         )}
+                        <div className="absolute inset-0 bg-black/35 backdrop-blur-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center gap-1.5 p-2 pointer-events-none z-20">
+                          <span className="w-8 h-8 rounded-full bg-white/95 text-red-800 flex items-center justify-center shadow-md transform scale-90 group-hover:scale-100 transition-transform duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                          </span>
+                          <span className="bg-white/95 text-red-900 px-3 py-1 rounded-full text-xs font-semibold shadow-sm font-['Lora',serif] tracking-wide">
+                            Nhấn để đọc
+                          </span>
+                        </div>
                       </div>
                       <div className="p-3 flex-1 flex flex-col">
-                        <h3 className="text-sm font-bold text-gray-800 line-clamp-2 leading-snug group-hover:text-red-700 transition-colors">
+                        <h3 className="text-sm font-bold text-gray-800 line-clamp-2 leading-snug group-hover:text-red-700 transition-colors font-['Lora',serif]">
                           {doc.title}
                         </h3>
                         <p className="mt-auto pt-2 text-[11px] text-gray-500 italic line-clamp-1 font-['Lora',serif]">

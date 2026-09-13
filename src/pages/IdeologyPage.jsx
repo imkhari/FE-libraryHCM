@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import api from '../services/api';
+import { videosList } from '../data/videos';
 
 function IdeologyPage() {
     const navigate = useNavigate();
@@ -43,19 +44,6 @@ function IdeologyPage() {
             behavior: 'smooth'
         });
     }, [currentPage]);
-
-    const videosList = [
-        { id: 1, youtubeId: "58HGVK6j-80", title: "Hành trình tìm đường cứu nước của Chủ tịch Hồ Chí Minh" },
-        { id: 2, youtubeId: "RR0p5Aqrhto", title: "TOÀN CẢNH HÀNH TRÌNH TÌM ĐƯỜNG CỨU NƯỚC" },
-        { id: 3, youtubeId: "d5MYTDacTZ4", title: "Hồ Chí Minh - Chân dung một con người" },
-        { id: 4, youtubeId: "H5_Hu1ju1QM", title: "Hồ Chí Minh - Một hành trình" },
-        { id: 5, youtubeId: "e0CEWmWG79U", title: "Hồ Chí Minh – Dấu chân đầu tiên" },
-        { id: 6, youtubeId: "VzpimJtKfnE", title: "Hồ Chí Minh thắp sáng niềm tin" },
-        { id: 7, youtubeId: "01q6P2LfgxE", title: "Hồ Chí Minh giữ trọn một con đường" },
-        { id: 8, youtubeId: "H4xEN0wMzEo", title: "Bác Hồ với nhân dân - Những thước phim vô giá" },
-        { id: 9, youtubeId: "xjMcJ7yJA8M", title: "Hồ Chí Minh - Bài ca kết đoàn" },
-        { id: 10, youtubeId: "34GKvR8nZus", title: "Bác Hồ đọc Tuyên ngôn Độc lập" }
-    ];
 
     const targetVangVongTitles = [
         "Tập 1: TÔI HIẾN CẢ ĐỜI TÔI CHO DÂN TỘC TÔI",
@@ -360,6 +348,10 @@ function IdeologyPage() {
                                         <img
                                             src={`https://img.youtube.com/vi/${v.youtubeId}/mqdefault.jpg`}
                                             loading="lazy"
+                                            onError={(e) => {
+                                                e.currentTarget.onerror = null;
+                                                e.currentTarget.src = "/anh-bac-Ho.jpg";
+                                            }}
                                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                                             alt="Video thumbnail"
                                         />

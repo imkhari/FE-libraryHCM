@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import * as pdfjsLib from 'pdfjs-dist/build/pdf.mjs';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
@@ -152,13 +152,52 @@ function ReaderPage() {
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
   const [downloadProgress, setDownloadProgress] = useState(null);
-  const [defaultPageSize, setDefaultPageSize] = useState({ width: 650, height: 850 });
+  const [basePageSize, setBasePageSize] = useState({ width: 595, height: 842 });
   const [zoomScale, setZoomScale] = useState(1.15);
   const [customUrlInput, setCustomUrlInput] = useState('');
   const [activePdfUrl, setActivePdfUrl] = useState(null);
   const [scrollProgress, setScrollProgress] = useState(0);
 
   const scrollContainerRef = useRef(null);
+  const currentPageRef = useRef(1);
+  const isZoomingRef = useRef(false);
+
+  useEffect(() => {
+    currentPageRef.current = currentPage;
+  }, [currentPage]);
+
+  // Kích thước mặc định tự co giãn theo zoomScale cho các trang chưa cuộn tới
+  const defaultPageSize = useMemo(() => ({
+    width: Math.round(basePageSize.width * zoomScale),
+    height: Math.round(basePageSize.height * zoomScale),
+  }), [basePageSize, zoomScale]);
+
+  // Xử lý zoom mà không bị nhảy hay reset trang đọc
+  const handleZoom = (newScaleOrFn) => {
+    isZoomingRef.current = true;
+    const pageToAnchor = currentPageRef.current || 1;
+
+    setZoomScale((prev) => {
+      const next = typeof newScaleOrFn === 'function' ? newScaleOrFn(prev) : newScaleOrFn;
+      return Math.min(2.5, Math.max(0.6, Number(next.toFixed(2))));
+    });
+
+    // Cuộn giữ nguyên trang đang đọc khi kích thước trang thay đổi
+    setTimeout(() => {
+      const pageEl = document.getElementById(`pdf-page-${pageToAnchor}`);
+      if (pageEl) {
+        pageEl.scrollIntoView({ behavior: 'auto', block: 'start' });
+      }
+      setTimeout(() => {
+        isZoomingRef.current = false;
+      }, 150);
+    }, 60);
+  };
+
+  const handlePageVisible = useCallback((pageNum) => {
+    if (isZoomingRef.current) return;
+    setCurrentPage(pageNum);
+  }, []);
 
   // Lấy thông tin sách từ API
   useEffect(() => {
@@ -213,12 +252,11 @@ function ReaderPage() {
           setTotalPages(doc.numPages);
           setCurrentPage(1);
 
-          // Chỉ lấy kích thước của Trang 1 làm kích thước mẫu mặc định
-          // Giúp 49 trang còn lại không bị kích hoạt tải sớm
+          // Lấy kích thước chuẩn (scale 1) của Trang 1
           try {
             const firstPage = await doc.getPage(1);
-            const vp = firstPage.getViewport({ scale: zoomScale });
-            setDefaultPageSize({ width: vp.width, height: vp.height });
+            const vp = firstPage.getViewport({ scale: 1 });
+            setBasePageSize({ width: vp.width, height: vp.height });
           } catch (e) {
             console.warn("Không thể đo trang đầu:", e);
           }
@@ -244,8 +282,8 @@ function ReaderPage() {
             setCurrentPage(1);
 
             const firstPage = await doc.getPage(1);
-            const vp = firstPage.getViewport({ scale: zoomScale });
-            setDefaultPageSize({ width: vp.width, height: vp.height });
+            const vp = firstPage.getViewport({ scale: 1 });
+            setBasePageSize({ width: vp.width, height: vp.height });
 
             setLoading(false);
           }
@@ -258,7 +296,7 @@ function ReaderPage() {
 
     loadDocument();
     return () => { isMounted = false; };
-  }, [activePdfUrl, zoomScale]);
+  }, [activePdfUrl]);
 
   // Theo dõi vị trí cuộn để tính % đọc sách
   const handleScroll = () => {
@@ -420,7 +458,7 @@ function ReaderPage() {
           {activePdfUrl && !loading && (
             <div className="hidden md:flex items-center gap-1 px-2 py-1 rounded-full bg-black/5 dark:bg-white/10 text-xs font-mono">
               <button
-                onClick={() => setZoomScale((s) => Math.max(0.6, s - 0.15))}
+                onClick={() => handleZoom((s) => s - 0.15)}
                 className="p-1 hover:bg-black/10 dark:hover:bg-white/10 rounded-full cursor-pointer"
                 title="Thu nhỏ"
               >
@@ -429,14 +467,14 @@ function ReaderPage() {
                 </svg>
               </button>
               <button
-                onClick={() => setZoomScale(1.15)}
+                onClick={() => handleZoom(1.15)}
                 className="px-1.5 hover:underline cursor-pointer"
                 title="Đặt lại 100%"
               >
                 {Math.round(zoomScale * 100)}%
               </button>
               <button
-                onClick={() => setZoomScale((s) => Math.min(2.5, s + 0.15))}
+                onClick={() => handleZoom((s) => s + 0.15)}
                 className="p-1 hover:bg-black/10 dark:hover:bg-white/10 rounded-full cursor-pointer"
                 title="Phóng to"
               >
@@ -679,7 +717,7 @@ function ReaderPage() {
                   defaultPageSize={defaultPageSize}
                   pageFilter={currentTheme.pageFilter}
                   bookShadow={currentTheme.bookShadow}
-                  onVisible={setCurrentPage}
+                  onVisible={handlePageVisible}
                   theme={theme}
                 />
               ))}

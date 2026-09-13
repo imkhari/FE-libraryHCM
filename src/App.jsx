@@ -352,53 +352,53 @@ const MainLayout = () => {
           <nav className="hidden md:flex items-center h-full overflow-visible whitespace-nowrap">
 
             {/* TRANG CHỦ */}
-            <Link to="/" className="h-full px-3 md:px-4 gap-2 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5" viewBox="0 0 20 20" fill="currentColor">
+            <Link to="/" className="h-full px-3 md:px-4 gap-2 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors cursor-pointer select-none">
+              <svg xmlns="http://www.w3.org/2000/svg" className="pointer-events-none h-4 w-4 md:h-5 md:w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
               </svg>
               Trang chủ
             </Link>
 
             {/* TIN TỨC */}
-            <Link to="/news" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors">
+            <Link to="/news" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors cursor-pointer select-none">
               Tin tức - Sự kiện
             </Link>
 
             {/* CUỘC ĐỜI */}
-            <Link to="/bio" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors">
+            <Link to="/bio" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors cursor-pointer select-none">
               Cuộc đời, sự nghiệp
             </Link>
 
             {/* DROPDOWN 1 */}
-            <div className="relative group h-full">
-              <Link to="/category/cua-ho-chi-minh" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors cursor-pointer">
+            <div className="relative group h-full flex items-center cursor-pointer">
+              <Link to="/category/cua-ho-chi-minh" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors cursor-pointer select-none">
                 Tác phẩm của Hồ Chí Minh
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 ml-1 group-hover:-rotate-180 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="pointer-events-none h-3 w-3 ml-1 group-hover:-rotate-180 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </Link>
-              <div className="absolute left-0 top-full hidden group-hover:block w-[280px] bg-[#fdfbf2] text-gray-800 shadow-2xl border-t-[3px] border-red-700 py-1 z-[999]">
-                <Link to="/category/ho-chi-minh-toan-tap" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Hồ Chí Minh Toàn tập</Link>
-                <Link to="/category/nhat-ky-trong-tu" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Nhật ký trong tù</Link>
-                <Link to="/category/tho-ho-chi-minh" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Thơ Hồ Chí Minh</Link>
-                <Link to="/category/bai-bao" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 transition-colors">Những bài báo của Hồ Chí Minh</Link>
+              <div className="absolute left-0 top-full hidden group-hover:block w-[280px] bg-[#fdfbf2] text-gray-800 shadow-2xl border-t-[3px] border-red-700 py-1 z-[999] before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 before:content-['']">
+                <Link to="/category/ho-chi-minh-toan-tap" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors cursor-pointer">Hồ Chí Minh Toàn tập</Link>
+                <Link to="/category/nhat-ky-trong-tu" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors cursor-pointer">Nhật ký trong tù</Link>
+                <Link to="/category/tho-ho-chi-minh" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors cursor-pointer">Thơ Hồ Chí Minh</Link>
+                <Link to="/category/bai-bao" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 transition-colors cursor-pointer">Những bài báo của Hồ Chí Minh</Link>
               </div>
             </div>
 
             {/* DROPDOWN 2 */}
-            <div className="relative group h-full">
-              <Link to="/ideology/sang-mai-niem-tin" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors cursor-pointer">
+            <div className="relative group h-full flex items-center cursor-pointer">
+              <Link to="/ideology/sang-mai-niem-tin" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors cursor-pointer select-none">
                 Sáng mãi niềm tin theo Bác
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 ml-1 group-hover:-rotate-180 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="pointer-events-none h-3 w-3 ml-1 group-hover:-rotate-180 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </Link>
-              <div className="absolute left-0 top-full hidden group-hover:block w-[300px] bg-[#fdfbf2] text-gray-800 shadow-2xl border-t-[3px] border-red-700 py-1 z-[999]">
-                <Link to="/ideology/vang-vong-loi-non-nuoc" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Hồ Chí Minh – Vang vọng lời non nước</Link>
-                <Link to="/category/ve-ho-chi-minh" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Những tác phẩm viết về Hồ Chí Minh</Link>
-                <Link to="/ideology/tai-lieu-hoc-tap" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 transition-colors">Tài liệu học tập làm theo Bác</Link>
-                <Link to="/ideology/trong-long-dan-toc" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Hồ Chí Minh trong lòng dân tộc và thế giới</Link>
-                <Link to="/gallery" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors">Triển lãm Ảnh</Link>
+              <div className="absolute left-0 top-full hidden group-hover:block w-[300px] bg-[#fdfbf2] text-gray-800 shadow-2xl border-t-[3px] border-red-700 py-1 z-[999] before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 before:content-['']">
+                <Link to="/ideology/vang-vong-loi-non-nuoc" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors cursor-pointer">Hồ Chí Minh – Vang vọng lời non nước</Link>
+                <Link to="/category/ve-ho-chi-minh" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors cursor-pointer">Những tác phẩm viết về Hồ Chí Minh</Link>
+                <Link to="/ideology/tai-lieu-hoc-tap" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors cursor-pointer">Tài liệu học tập làm theo Bác</Link>
+                <Link to="/ideology/trong-long-dan-toc" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors cursor-pointer">Hồ Chí Minh trong lòng dân tộc và thế giới</Link>
+                <Link to="/gallery" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 transition-colors cursor-pointer">Triển lãm Ảnh</Link>
               </div>
             </div>
 

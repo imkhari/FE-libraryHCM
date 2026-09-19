@@ -159,7 +159,7 @@ function BookDetail() {
           <nav className="flex items-center gap-2 text-xs md:text-sm text-gray-500 font-medium">
             <Link to="/" className="hover:text-red-700 transition-colors">Trang chủ</Link>
             <span>/</span>
-            <Link to="/category/book" className="hover:text-red-700 transition-colors">Tủ sách tư liệu</Link>
+            <Link to="/category/cua-ho-chi-minh" className="hover:text-red-700 transition-colors">Tủ sách tư liệu</Link>
             <span>/</span>
             <span className="text-gray-800 font-semibold truncate max-w-[200px] md:max-w-[320px]">{book.title}</span>
           </nav>

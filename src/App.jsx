@@ -1,5 +1,6 @@
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate, Outlet, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate, Outlet, useLocation, Navigate } from 'react-router-dom';
 import React, { useState, useEffect, useRef } from 'react';
+import { Toaster } from 'react-hot-toast';
 import api from './services/api';
 import Home from './pages/Home';
 import BookDetail from './pages/BookDetail';
@@ -11,7 +12,7 @@ import IdeologyPage from './pages/IdeologyPage';
 import ArticleDetail from './pages/ArticleDetail';
 import VideoDetailPage from './pages/VideoDetailPage';
 import GalleryPage from './pages/GalleryPage';
-// import JourneyMapPage from './pages/JourneyMapPage';
+import JourneyMapPage from './pages/JourneyMapPage';
 import LaunchOverlay from './pages/LaunchOverlay';
 import NewsPage from './pages/NewsPage';
 import VisitorTracker from './components/VisitorTracker';
@@ -24,7 +25,6 @@ import AdminEditPost from './components/AdminEditPost';
 import AdminUserList from './components/AdminUserList';
 import AdminLayout from './components/AdminLayout';
 import BG2 from './assets/bg2.jpeg';
-import FooterImg from './assets/bg1.jpg';
 
 const MainLayout = () => {
   const navigate = useNavigate();
@@ -364,10 +364,23 @@ const MainLayout = () => {
               Tin tức - Sự kiện
             </Link>
 
-            {/* CUỘC ĐỜI */}
-            <Link to="/bio" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors cursor-pointer select-none">
-              Cuộc đời, sự nghiệp
-            </Link>
+            {/* CUỘC ĐỜI, SỰ NGHIỆP (DROPDOWN) */}
+            <div className="relative group h-full flex items-center cursor-pointer">
+              <Link to="/bio" className="h-full px-2 md:px-3 flex items-center text-[11px] md:text-[13px] font-bold uppercase hover:bg-red-800 transition-colors cursor-pointer select-none">
+                Cuộc đời, sự nghiệp
+                <svg xmlns="http://www.w3.org/2000/svg" className="pointer-events-none h-3 w-3 ml-1 group-hover:-rotate-180 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </Link>
+              <div className="absolute left-0 top-full hidden group-hover:block w-[300px] bg-white/95 backdrop-blur-2xl text-gray-800 shadow-[0_20px_50px_rgba(0,0,0,0.18)] border border-white/60 border-t-[3px] border-t-red-700 py-2 rounded-b-2xl z-[999] ring-1 ring-black/5 before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 before:content-['']">
+                <Link to="/bio" className="block px-4 py-2.5 text-[13px] font-medium text-gray-700 hover:bg-red-50/90 hover:text-red-700 hover:pl-5 border-b border-gray-100/80 transition-all duration-200 cursor-pointer">
+                  Tiểu sử & Sự nghiệp
+                </Link>
+                <Link to="/map" className="block px-4 py-2.5 text-[13px] font-medium text-gray-700 hover:bg-red-50/90 hover:text-red-700 hover:pl-5 transition-all duration-200 cursor-pointer">
+                  Hành trình 30 năm cứu nước (1911 - 1941)
+                </Link>
+              </div>
+            </div>
 
             {/* DROPDOWN 1 */}
             <div className="relative group h-full flex items-center cursor-pointer">
@@ -377,11 +390,11 @@ const MainLayout = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </Link>
-              <div className="absolute left-0 top-full hidden group-hover:block w-[280px] bg-[#fdfbf2] text-gray-800 shadow-2xl border-t-[3px] border-red-700 py-1 z-[999] before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 before:content-['']">
-                <Link to="/category/ho-chi-minh-toan-tap" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors cursor-pointer">Hồ Chí Minh Toàn tập</Link>
-                <Link to="/category/nhat-ky-trong-tu" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors cursor-pointer">Nhật ký trong tù</Link>
-                <Link to="/category/tho-ho-chi-minh" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors cursor-pointer">Thơ Hồ Chí Minh</Link>
-                <Link to="/category/bai-bao" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 transition-colors cursor-pointer">Những bài báo của Hồ Chí Minh</Link>
+              <div className="absolute left-0 top-full hidden group-hover:block w-[290px] bg-white/95 backdrop-blur-2xl text-gray-800 shadow-[0_20px_50px_rgba(0,0,0,0.18)] border border-white/60 border-t-[3px] border-t-red-700 py-2 rounded-b-2xl z-[999] ring-1 ring-black/5 before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 before:content-['']">
+                <Link to="/category/ho-chi-minh-toan-tap" className="block px-4 py-2.5 text-[13px] font-medium text-gray-700 hover:bg-red-50/90 hover:text-red-700 hover:pl-5 border-b border-gray-100/80 transition-all duration-200 cursor-pointer">Hồ Chí Minh Toàn tập</Link>
+                <Link to="/category/nhat-ky-trong-tu" className="block px-4 py-2.5 text-[13px] font-medium text-gray-700 hover:bg-red-50/90 hover:text-red-700 hover:pl-5 border-b border-gray-100/80 transition-all duration-200 cursor-pointer">Nhật ký trong tù</Link>
+                <Link to="/category/tho-ho-chi-minh" className="block px-4 py-2.5 text-[13px] font-medium text-gray-700 hover:bg-red-50/90 hover:text-red-700 hover:pl-5 border-b border-gray-100/80 transition-all duration-200 cursor-pointer">Thơ Hồ Chí Minh</Link>
+                <Link to="/category/bai-bao" className="block px-4 py-2.5 text-[13px] font-medium text-gray-700 hover:bg-red-50/90 hover:text-red-700 hover:pl-5 transition-all duration-200 cursor-pointer">Những bài báo của Hồ Chí Minh</Link>
               </div>
             </div>
 
@@ -393,12 +406,12 @@ const MainLayout = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </Link>
-              <div className="absolute left-0 top-full hidden group-hover:block w-[300px] bg-[#fdfbf2] text-gray-800 shadow-2xl border-t-[3px] border-red-700 py-1 z-[999] before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 before:content-['']">
-                <Link to="/ideology/vang-vong-loi-non-nuoc" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors cursor-pointer">Hồ Chí Minh – Vang vọng lời non nước</Link>
-                <Link to="/category/ve-ho-chi-minh" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors cursor-pointer">Những tác phẩm viết về Hồ Chí Minh</Link>
-                <Link to="/ideology/tai-lieu-hoc-tap" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors cursor-pointer">Tài liệu học tập làm theo Bác</Link>
-                <Link to="/ideology/trong-long-dan-toc" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 border-b border-gray-200/60 transition-colors cursor-pointer">Hồ Chí Minh trong lòng dân tộc và thế giới</Link>
-                <Link to="/gallery" className="block px-4 py-2.5 text-[13px] font-medium hover:bg-red-100 hover:text-red-800 transition-colors cursor-pointer">Triển lãm Ảnh</Link>
+              <div className="absolute left-0 top-full hidden group-hover:block w-[310px] bg-white/95 backdrop-blur-2xl text-gray-800 shadow-[0_20px_50px_rgba(0,0,0,0.18)] border border-white/60 border-t-[3px] border-t-red-700 py-2 rounded-b-2xl z-[999] ring-1 ring-black/5 before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 before:content-['']">
+                <Link to="/ideology/vang-vong-loi-non-nuoc" className="block px-4 py-2.5 text-[13px] font-medium text-gray-700 hover:bg-red-50/90 hover:text-red-700 hover:pl-5 border-b border-gray-100/80 transition-all duration-200 cursor-pointer">Hồ Chí Minh – Vang vọng lời non nước</Link>
+                <Link to="/category/ve-ho-chi-minh" className="block px-4 py-2.5 text-[13px] font-medium text-gray-700 hover:bg-red-50/90 hover:text-red-700 hover:pl-5 border-b border-gray-100/80 transition-all duration-200 cursor-pointer">Những tác phẩm viết về Hồ Chí Minh</Link>
+                <Link to="/ideology/tai-lieu-hoc-tap" className="block px-4 py-2.5 text-[13px] font-medium text-gray-700 hover:bg-red-50/90 hover:text-red-700 hover:pl-5 border-b border-gray-100/80 transition-all duration-200 cursor-pointer">Tài liệu học tập làm theo Bác</Link>
+                <Link to="/ideology/trong-long-dan-toc" className="block px-4 py-2.5 text-[13px] font-medium text-gray-700 hover:bg-red-50/90 hover:text-red-700 hover:pl-5 border-b border-gray-100/80 transition-all duration-200 cursor-pointer">Hồ Chí Minh trong lòng dân tộc và thế giới</Link>
+                <Link to="/gallery" className="block px-4 py-2.5 text-[13px] font-medium text-gray-700 hover:bg-red-50/90 hover:text-red-700 hover:pl-5 transition-all duration-200 cursor-pointer">Triển lãm Ảnh</Link>
               </div>
             </div>
 
@@ -448,7 +461,7 @@ const MainLayout = () => {
               </button>
 
               {showDropdown && keyword.trim().length >= 2 && (
-                <div className="absolute top-[calc(100%+10px)] right-0 w-[340px] xl:w-[400px] bg-white rounded-xl shadow-[0_15px_50px_rgba(0,0,0,0.2)] border border-gray-100 overflow-hidden transform transition-all">
+                <div className="absolute top-[calc(100%+10px)] right-0 w-[340px] xl:w-[400px] bg-white/95 backdrop-blur-2xl rounded-2xl shadow-[0_25px_60px_rgba(0,0,0,0.2)] border border-white/80 overflow-hidden transform transition-all ring-1 ring-black/5">
                   {isSearching ? (
                     <div className="flex justify-center items-center py-6 text-gray-500">
                       <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-red-700"></div>
@@ -501,8 +514,11 @@ const MainLayout = () => {
         {isMobileMenuOpen && (
           <div className="md:hidden bg-[#b71a14] w-full border-t border-red-800 shadow-xl flex flex-col absolute top-full left-0 z-50 max-h-[80vh] overflow-y-auto">
             <Link to="/" className="px-4 py-3 text-sm font-bold uppercase border-b border-red-800/50 text-white">Trang chủ</Link>
-            <Link to="/news" className="px-4 py-3 text-sm font-bold uppercase border-b border-red-800/50 text-white">Tin tức - Sự kiện</Link>
-            <Link to="/bio" className="px-4 py-3 text-sm font-bold uppercase border-b border-red-800/50 text-white">Cuộc đời, sự nghiệp</Link>
+            <div className="flex flex-col border-b border-red-800/50">
+              <Link to="/bio" className="px-4 py-3 text-sm font-bold uppercase text-white bg-red-800/30">Cuộc đời, sự nghiệp</Link>
+              <Link to="/bio" className="px-8 py-2 text-sm text-red-100 border-t border-red-800/30">- Tiểu sử & Sự nghiệp</Link>
+              <Link to="/map" className="px-8 py-2 text-sm text-red-100 border-t border-red-800/30">- Hành trình 30 năm cứu nước (1911 - 1941)</Link>
+            </div>
 
             <div className="flex flex-col border-b border-red-800/50">
               <Link to="/category/cua-ho-chi-minh" className="px-4 py-3 text-sm font-bold uppercase text-white bg-red-800/30">Tác phẩm của Hồ Chí Minh</Link>
@@ -529,9 +545,9 @@ const MainLayout = () => {
       </header>
 
       {location.pathname !== "/" && (
-        <div className="bg-[#f2f2f2] border-b border-gray-200 text-[11px] md:text-[13px] text-gray-700 font-medium overflow-hidden">
+        <div className="bg-stone-100/80 backdrop-blur-md border-b border-stone-200/70 text-[11px] md:text-[13px] text-stone-700 font-medium overflow-hidden">
           <div className="max-w-7xl mx-auto flex items-center h-8 md:h-10 px-2 lg:px-4">
-            <div className="hidden md:flex items-center shrink-0 pr-4 border-r border-gray-300 h-full relative z-10 bg-[#f2f2f2]">
+            <div className="hidden md:flex items-center shrink-0 pr-4 border-r border-stone-200 h-full relative z-10 bg-stone-100/80 backdrop-blur-md">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
@@ -581,14 +597,7 @@ const MainLayout = () => {
         <Outlet />
       </div>
 
-      <footer className="relative bg-white border-t-4 border-red-700 pt-8 pb-6 overflow-hidden">
-        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex justify-center items-center">
-          <img
-            src={FooterImg}
-            alt="Hoa văn"
-            className="w-full h-full object-cover object-bottom opacity-100 select-none md:w-full md:h-auto md:object-contain md:opacity-100 md:mb-100"
-          />
-        </div>
+      <footer className="bg-white border-t-4 border-red-700 pt-8 pb-8 text-gray-700">
 
         <div className="max-w-7xl mx-auto px-4 relative z-10">
           <div className="mb-6 border-b border-red-100 pb-4 text-center md:text-left">
@@ -634,7 +643,7 @@ const MainLayout = () => {
 
       <button
         onClick={scrollToTop}
-        className={`fixed bottom-6 right-6 md:bottom-15 md:right-15 z-[1000] p-3 md:p-4 rounded-full bg-red-800 text-white shadow-2xl transition-all duration-500 hover:bg-red-700 hover:-translate-y-2 active:scale-90 ${showScrollTop ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0 pointer-events-none'}`}
+        className={`fixed bottom-6 right-6 md:bottom-12 md:right-12 z-[1000] p-3 md:p-3.5 rounded-full bg-red-700/85 backdrop-blur-md text-white border border-white/30 shadow-[0_10px_30px_rgba(185,28,28,0.35)] transition-all duration-300 hover:bg-red-600/95 hover:-translate-y-1.5 active:scale-90 ${showScrollTop ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0 pointer-events-none'}`}
         title="Cuộn lên đầu trang"
       >
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -725,6 +734,7 @@ function App() {
 
   return (
     <Router>
+      <Toaster position="top-right" reverseOrder={false} toastOptions={{ duration: 3000 }} />
       <VisitorTracker />
       {/* Chèn LaunchOverlay vào đây để nó phủ lên toàn bộ ứng dụng. 
         Khi pháo hoa nổ xong, nó sẽ gọi hàm onComplete để tự ẩn đi.
@@ -746,7 +756,24 @@ function App() {
           <Route path="/article/:id" element={<ArticleDetail />} />
           <Route path="/video/:id" element={<VideoDetailPage />} />
           <Route path="/gallery" element={<GalleryPage />} />
-          {/* <Route path="/map" element={<JourneyMapPage />} /> */}
+          <Route path="/map" element={<JourneyMapPage />} />
+          <Route path="/tin-tuc" element={<Navigate to="/news" replace />} />
+          <Route
+            path="*"
+            element={
+              <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4 py-16 font-sans">
+                <h1 className="text-6xl font-black text-red-700 font-['Lora',serif] mb-3">404</h1>
+                <p className="text-xl font-bold text-stone-800 mb-2 font-['Lora',serif]">Không tìm thấy trang yêu cầu</p>
+                <p className="text-stone-500 mb-6 text-sm max-w-md">Đường dẫn bạn truy cập không tồn tại hoặc đã được chuyển sang địa chỉ mới.</p>
+                <Link
+                  to="/"
+                  className="px-6 py-2.5 bg-red-700 hover:bg-red-800 text-white rounded-full font-bold text-sm transition-colors shadow-sm cursor-pointer"
+                >
+                  Trở về Trang chủ
+                </Link>
+              </div>
+            }
+          />
         </Route>
 
         <Route path="/reader/:id" element={<ReaderPage />} />

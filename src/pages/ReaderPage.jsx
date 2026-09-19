@@ -154,7 +154,7 @@ function ReaderPage() {
   const [downloadProgress, setDownloadProgress] = useState(null);
   const [basePageSize, setBasePageSize] = useState({ width: 595, height: 842 });
   const [zoomScale, setZoomScale] = useState(1.15);
-  const [customUrlInput, setCustomUrlInput] = useState('');
+  const [drivePreviewUrl, setDrivePreviewUrl] = useState(null);
   const [activePdfUrl, setActivePdfUrl] = useState(null);
   const [scrollProgress, setScrollProgress] = useState(0);
 
@@ -203,14 +203,44 @@ function ReaderPage() {
   useEffect(() => {
     api.get(`/documents/${id}`)
       .then((res) => {
-        setBook(res.data);
-        if (res.data?.pdfUrl && res.data.pdfUrl.startsWith('http') && !res.data.pdfUrl.includes('drive.google.com')) {
-          setActivePdfUrl(res.data.pdfUrl);
+        const bookData = res.data;
+        setBook(bookData);
+
+        const rawPdfUrl = (bookData?.pdfUrl || '').trim();
+
+        if (rawPdfUrl.startsWith('http')) {
+          if (rawPdfUrl.includes('drive.google.com')) {
+            // Chuyển đổi thành liên kết preview của Google Drive để nhúng đọc trực tiếp
+            let previewUrl = rawPdfUrl;
+            if (!previewUrl.includes('/preview')) {
+              const matchFileD = previewUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+              if (matchFileD && matchFileD[1]) {
+                previewUrl = `https://drive.google.com/file/d/${matchFileD[1]}/preview`;
+              } else {
+                const matchId = previewUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+                if (matchId && matchId[1]) {
+                  previewUrl = `https://drive.google.com/file/d/${matchId[1]}/preview`;
+                }
+              }
+            }
+            setDrivePreviewUrl(previewUrl);
+            setActivePdfUrl(null);
+            setLoading(false);
+          } else {
+            // File PDF trực tiếp (Cloudflare R2, CDN,...)
+            setDrivePreviewUrl(null);
+            setActivePdfUrl(rawPdfUrl);
+          }
         } else {
+          setDrivePreviewUrl(null);
           setActivePdfUrl(null);
+          setLoading(false);
         }
       })
-      .catch((err) => console.error("Lỗi tải thông tin sách:", err));
+      .catch((err) => {
+        console.error("Lỗi tải thông tin sách:", err);
+        setLoading(false);
+      });
   }, [id]);
 
   // Tải file PDF từ Cloudflare R2 với Stream Range Requests và đo tiến độ tải
@@ -547,7 +577,7 @@ function ReaderPage() {
             )}
           </button>
 
-          {/* Nút tải về PDF */}
+          {/* Nút tải về PDF / Mở tab mới */}
           {activePdfUrl && (
             <a
               href={activePdfUrl}
@@ -562,16 +592,32 @@ function ReaderPage() {
               <span>Tải file</span>
             </a>
           )}
+
+          {drivePreviewUrl && (
+            <a
+              href={book?.pdfUrl ? book.pdfUrl.trim() : drivePreviewUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:flex items-center gap-1.5 py-1.5 px-3 rounded-full bg-red-700 hover:bg-red-800 text-white text-xs font-medium shadow-xs active:scale-95 transition-all cursor-pointer"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+              <span>Mở tab mới</span>
+            </a>
+          )}
         </div>
       </header>
 
       {/* THANH TIẾN ĐỘ ĐỌC MỎNG TRÊN ĐỈNH */}
-      <div className="w-full h-1 bg-black/5 dark:bg-white/5 shrink-0 z-30">
-        <div
-          className="h-full bg-red-600 transition-all duration-150"
-          style={{ width: `${scrollProgress}%` }}
-        ></div>
-      </div>
+      {activePdfUrl && (
+        <div className="w-full h-1 bg-black/5 dark:bg-white/5 shrink-0 z-30">
+          <div
+            className="h-full bg-red-600 transition-all duration-150"
+            style={{ width: `${scrollProgress}%` }}
+          ></div>
+        </div>
+      )}
 
       {/* THÂN PHÒNG ĐỌC: SIDEBAR + VÙNG CUỘN PDF */}
       <div className="flex-1 flex overflow-hidden relative z-10">
@@ -607,70 +653,72 @@ function ReaderPage() {
         <div
           ref={scrollContainerRef}
           onScroll={handleScroll}
-          className="flex-1 h-full overflow-y-auto overflow-x-hidden flex flex-col items-center py-6 px-2 md:px-6 relative scroll-smooth"
+          className="flex-1 h-full overflow-y-auto overflow-x-hidden flex flex-col items-center py-4 sm:py-6 px-2 md:px-6 relative scroll-smooth"
         >
-          {/* TRƯỜNG HỢP 1: CHƯA CÓ LINK CLOUDFLARE R2 */}
-          {!activePdfUrl && (
-            <div className="my-auto max-w-xl w-full p-8 rounded-3xl bg-white/90 dark:bg-stone-900/90 shadow-2xl border border-stone-200/80 dark:border-stone-800 text-center backdrop-blur-xl">
+          {/* TRƯỜNG HỢP 1: TÀI LIỆU GOOGLE DRIVE ĐƯỢC EMBED ĐỌC TRỰC TIẾP */}
+          {drivePreviewUrl && (
+            <div className="w-full h-full flex flex-col max-w-6xl mx-auto flex-1 min-h-[550px] p-1 sm:p-3">
+              <iframe
+                src={drivePreviewUrl}
+                title={book.title}
+                className="w-full h-full flex-1 rounded-2xl shadow-xl border border-stone-200/80 dark:border-stone-800 bg-white min-h-[78vh]"
+                allow="autoplay"
+                allowFullScreen
+              />
+            </div>
+          )}
+
+          {/* TRƯỜNG HỢP 2: CHƯA CÓ LIÊN KẾT ĐỌC TRỰC TUYẾN (DƯỚI GÓC NHÌN NGƯỜI DÙNG) */}
+          {!activePdfUrl && !drivePreviewUrl && (
+            <div className="my-auto max-w-lg w-full p-8 sm:p-10 rounded-3xl bg-white/95 dark:bg-stone-900/95 shadow-2xl border border-stone-200/80 dark:border-stone-800 text-center backdrop-blur-xl font-sans">
               {book.coverImageUrl ? (
-                <img
-                  src={book.coverImageUrl}
-                  alt={book.title}
-                  className="w-24 h-36 object-cover rounded-xl shadow-lg mx-auto mb-4 border border-stone-200"
-                />
+                <div className="w-24 sm:w-28 aspect-[2/3] rounded-xl overflow-hidden shadow-lg mx-auto mb-5 border border-stone-200/80 bg-stone-100">
+                  <img
+                    src={book.coverImageUrl}
+                    alt={book.title}
+                    className="w-full h-full object-cover select-none"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = "/anh-bac-Ho.jpg";
+                    }}
+                  />
+                </div>
               ) : (
-                <div className="w-16 h-16 rounded-2xl bg-amber-50 dark:bg-stone-800 text-amber-600 flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 rounded-2xl bg-amber-50 dark:bg-stone-800 text-amber-600 flex items-center justify-center mx-auto mb-5 shadow-xs">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                   </svg>
                 </div>
               )}
 
-              <h2 className="font-['Lora',serif] font-bold text-lg md:text-xl text-stone-800 dark:text-stone-100 mb-2">
-                {book.title}
-              </h2>
-              <p className="text-xs md:text-sm text-stone-500 dark:text-stone-400 mb-6 leading-relaxed">
-                Tác phẩm này đang dùng liên kết Google Drive cũ. Để đọc cuộn trực tiếp trên web, bạn hãy upload file PDF lên Cloudflare R2 và cập nhật link vào Database.
-              </p>
-
-              {/* Khung dán link Cloudflare R2 để mở đọc ngay */}
-              <div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700/60 mb-6 text-left">
-                <label className="block text-xs font-bold text-stone-600 dark:text-stone-300 mb-2 uppercase tracking-wide">
-                  Dán link Cloudflare R2 để mở đọc ngay:
-                </label>
-                <div className="flex gap-2">
-                  <input
-                    type="url"
-                    placeholder="https://pub-xxxx.r2.dev/ten-sach.pdf"
-                    value={customUrlInput}
-                    onChange={(e) => setCustomUrlInput(e.target.value)}
-                    className="flex-1 px-3.5 py-2 text-xs rounded-xl bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 text-stone-800 dark:text-stone-200 focus:outline-none focus:ring-2 focus:ring-red-600 font-mono"
-                  />
-                  <button
-                    onClick={() => {
-                      if (customUrlInput.trim()) {
-                        setActivePdfUrl(customUrlInput.trim());
-                      }
-                    }}
-                    className="px-4 py-2 bg-red-700 hover:bg-red-800 text-white font-bold text-xs rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer whitespace-nowrap"
-                  >
-                    Mở đọc
-                  </button>
-                </div>
+              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200/80 mb-3 font-sans">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                Tài liệu đang được số hóa
               </div>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <h2 className="font-['Lora',serif] font-bold text-lg sm:text-xl text-stone-800 dark:text-stone-100 mb-2 leading-snug">
+                {book.title}
+              </h2>
+              <p className="text-xs text-stone-500 dark:text-stone-400 mb-6 font-sans">
+                Tác giả: <strong className="text-stone-700 dark:text-stone-300">{book.author || "Hồ Chí Minh"}</strong>
+              </p>
+
+              <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-300 mb-8 leading-relaxed font-['Lora',serif] italic bg-stone-50/80 dark:bg-stone-800/50 p-4 rounded-2xl border border-stone-100 dark:border-stone-800">
+                "Tác phẩm hiện đang trong quá trình số hóa tài liệu trực tuyến để mang lại trải nghiệm đọc tốt nhất cho bạn đọc. Quý độc giả vui lòng quay lại sau hoặc đón đọc các tác phẩm khác trong thư viện."
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 font-sans">
                 <button
                   onClick={() => navigate(-1)}
-                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 text-xs font-bold text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all"
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 text-xs font-bold text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all cursor-pointer shadow-2xs"
                 >
-                  Quay lại
+                  ← Quay lại
                 </button>
                 <button
-                  onClick={() => navigate('/reader/57')}
-                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-red-700 hover:bg-red-800 text-white text-xs font-bold shadow-md hover:shadow-lg transition-all"
+                  onClick={() => navigate('/category/book')}
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-red-700 hover:bg-red-800 text-white text-xs font-bold shadow-md hover:shadow-lg transition-all cursor-pointer"
                 >
-                  Xem sách đã có link R2 (Tập 1 - ID: 57) →
+                  Khám phá tủ sách tư liệu →
                 </button>
               </div>
             </div>

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import api from '../services/api'; 
 import BackgroundADMIN from '../assets/bg4.jpeg';
 
@@ -7,9 +7,18 @@ export default function AdminLogin() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [infoMessage, setInfoMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const location = useLocation();
 
-  const backgroundImageUrl = BackgroundADMIN; 
+  const backgroundImageUrl = BackgroundADMIN;
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('expired') === 'true') {
+      setInfoMessage('Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại để tiếp tục.');
+    }
+  }, [location.search]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -18,16 +27,15 @@ export default function AdminLogin() {
 
     try {
       const response = await api.post('/auth/login', { 
-        username: username, 
+        username: username.trim(), 
         password: password 
       });
 
-      // ĐÃ SỬA: Lấy thêm thuộc tính 'role' từ API trả về
       const { token, fullName, role } = response.data;
       
       localStorage.setItem('adminToken', token);
       localStorage.setItem('adminName', fullName);
-      localStorage.setItem('userRole', role); // Lúc này biến role đã có dữ liệu hợp lệ
+      localStorage.setItem('userRole', role);
       
       window.location.href = '/admin/dashboard';
       
@@ -35,7 +43,7 @@ export default function AdminLogin() {
       if (err.response && err.response.status === 401) {
         setError('Sai tên đăng nhập hoặc mật khẩu. Vui lòng thử lại!');
       } else {
-        setError('Lỗi kết nối máy chủ !');
+        setError('Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại!');
       }
     } finally {
       setIsLoading(false);
@@ -62,7 +70,17 @@ export default function AdminLogin() {
           <p className="text-gray-500 mt-2 text-sm">Không gian văn hóa Hồ Chí Minh</p>
         </div>
 
-        {error && <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded mb-6 text-sm shadow-sm">{error}</div>}
+        {infoMessage && (
+          <div className="bg-amber-50 border-l-4 border-amber-500 text-amber-800 px-4 py-3 rounded-xl mb-5 text-xs sm:text-sm shadow-xs font-sans font-medium">
+            {infoMessage}
+          </div>
+        )}
+
+        {error && (
+          <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-xl mb-5 text-xs sm:text-sm shadow-xs font-sans font-medium">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleLogin} className="flex flex-col gap-5">
           <div>

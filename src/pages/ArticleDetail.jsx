@@ -2,13 +2,13 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
 import 'react-quill-new/dist/quill.snow.css';
-import { FaFacebookF, FaTelegramPlane, FaPaperPlane } from 'react-icons/fa';
-import { 
-  HiCalendar, 
-  HiLink, 
-  HiPrinter, 
-  HiArrowLeft, 
-  HiCheck 
+import { FaFacebookF, FaTelegramPlane } from 'react-icons/fa';
+import {
+  HiCalendar,
+  HiLink,
+  HiPrinter,
+  HiArrowLeft,
+  HiCheck
 } from 'react-icons/hi';
 import toast from 'react-hot-toast';
 
@@ -30,16 +30,29 @@ function ArticleDetail() {
   // State cho nút Copy Link
   const [copied, setCopied] = useState(false);
 
-  // State cho Form Bình Luận
-  const [commentEmail, setCommentEmail] = useState('');
-  const [commentContent, setCommentContent] = useState('');
-
   useEffect(() => {
     window.scrollTo(0, 0);
     setLoading(true);
 
     const fetchData = async () => {
       try {
+        // Nếu id không phải số (ví dụ người dùng vào đường dẫn /news/id)
+        if (!id || id === 'id' || isNaN(Number(id))) {
+          const listRes = await api.get('/articles');
+          const listData = listRes.data || [];
+          if (listData.length > 0) {
+            setArticle(listData[0]);
+            const otherArticles = listData.slice(1, 6).map(item => ({
+              id: item.id,
+              title: item.title,
+              createdAt: item.createdAt,
+              thumbnail: item.thumbnailUrl || "https://tranhdaquy24h.com/public/upload/images/7ef5cf3972688e36d779.jpg"
+            }));
+            setRecentArticles(otherArticles);
+          }
+          return;
+        }
+
         const detailRes = await api.get(`/articles/${id}`);
         setArticle(detailRes.data);
 
@@ -117,7 +130,7 @@ function ArticleDetail() {
 
   // Chia sẻ bài viết
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
-  
+
   const handleShareFacebook = () => {
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`, '_blank', 'width=600,height=400');
   };
@@ -157,18 +170,7 @@ function ArticleDetail() {
     window.print();
   };
 
-  // Gửi bình luận
-  const handleCommentSubmit = (e) => {
-    e.preventDefault();
-    if (!commentEmail.trim() || !commentContent.trim()) {
-      toast.error("Vui lòng nhập đầy đủ email và nội dung bình luận!");
-      return;
-    }
 
-    toast.success("Bình luận của bạn đã được gửi thành công!");
-    setCommentEmail('');
-    setCommentContent('');
-  };
 
   if (loading) return (
     <div className="min-h-screen bg-[#fcf9f2] py-8 px-4 font-['Lora',serif]">
@@ -216,7 +218,7 @@ function ArticleDetail() {
       </div>
       <h2 className="text-2xl font-black text-stone-900 mb-2">Không tìm thấy bài viết</h2>
       <p className="text-stone-500 text-sm mb-6 max-w-sm">Bài viết có thể đã được gỡ bỏ hoặc đường dẫn không còn tồn tại.</p>
-      <button 
+      <button
         onClick={() => navigate('/news')}
         className="px-6 py-2.5 bg-red-700 hover:bg-red-800 text-white rounded-xl text-sm font-bold shadow-md transition-colors cursor-pointer"
       >
@@ -246,8 +248,8 @@ function ArticleDetail() {
                 </span>
               </nav>
 
-              <button 
-                onClick={() => navigate('/news')} 
+              <button
+                onClick={() => navigate('/news')}
                 className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-stone-100 hover:bg-red-50 text-stone-700 hover:text-red-700 font-bold text-xs transition-all border border-stone-200/80 cursor-pointer hover:shadow-xs"
               >
                 <HiArrowLeft className="w-3.5 h-3.5" />
@@ -282,7 +284,7 @@ function ArticleDetail() {
                   <HiCalendar className="w-4 h-4 text-stone-400 shrink-0" />
                   <span>Đăng lúc: <strong className="text-stone-700 font-mono">{formatDateTime(article.createdAt || article.publishDate)}</strong></span>
                 </span>
-                
+
                 <span className="text-stone-300 hidden sm:inline">•</span>
 
                 <span className="flex items-center gap-1.5">
@@ -299,11 +301,10 @@ function ArticleDetail() {
                     type="button"
                     title={item.title}
                     onClick={() => setFontSizeIdx(idx)}
-                    className={`w-7 h-7 rounded-lg text-xs font-bold transition-all flex items-center justify-center cursor-pointer ${
-                      fontSizeIdx === idx
+                    className={`w-7 h-7 rounded-lg text-xs font-bold transition-all flex items-center justify-center cursor-pointer ${fontSizeIdx === idx
                         ? 'bg-red-700 text-white shadow-2xs'
                         : 'bg-white text-stone-600 hover:bg-stone-200/70 border border-stone-200'
-                    }`}
+                      }`}
                   >
                     {item.label}
                   </button>
@@ -484,11 +485,10 @@ function ArticleDetail() {
                   type="button"
                   onClick={handleCopyLink}
                   title="Sao chép liên kết bài viết"
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 flex items-center gap-1.5 cursor-pointer border ${
-                    copied
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 flex items-center gap-1.5 cursor-pointer border ${copied
                       ? 'bg-emerald-50 text-emerald-700 border-emerald-300 shadow-2xs'
                       : 'bg-stone-100/90 text-stone-700 border-stone-200 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300'
-                  }`}
+                    }`}
                 >
                   {copied ? (
                     <>
@@ -506,60 +506,12 @@ function ArticleDetail() {
             </div>
 
           </div>
-
-          {/* KHU VỰC BÌNH LUẬN BÀI VIẾT (GIỮ NHƯ CŨ) */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200/80 shadow-xs mb-8 no-print">
-            <h3 className="font-bold text-stone-900 text-base mb-4 flex items-center gap-2">
-              <span className="w-1.5 h-4 bg-red-700 rounded-full inline-block"></span>
-              Bình luận bài viết
-            </h3>
-            
-            <form onSubmit={handleCommentSubmit} className="flex flex-col gap-3.5 font-sans">
-              <div>
-                <input 
-                  type="email" 
-                  required
-                  value={commentEmail}
-                  onChange={(e) => setCommentEmail(e.target.value)}
-                  placeholder="Email của bạn *"
-                  className="w-full p-3 rounded-xl border border-stone-200 bg-stone-50/60 focus:bg-white focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all text-xs sm:text-sm font-medium placeholder-stone-400"
-                />
-              </div>
-
-              <div>
-                <textarea 
-                  required
-                  rows="3"
-                  value={commentContent}
-                  onChange={(e) => setCommentContent(e.target.value)}
-                  placeholder="Chia sẻ ý kiến của bạn về bài viết..."
-                  className="w-full p-3 rounded-xl border border-stone-200 bg-stone-50/60 focus:bg-white focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all resize-y text-xs sm:text-sm font-medium placeholder-stone-400 min-h-[80px]"
-                ></textarea>
-              </div>
-
-              <div className="flex justify-end gap-2 mt-1">
-                <button 
-                  type="button" 
-                  onClick={() => { setCommentEmail(''); setCommentContent(''); }}
-                  className="px-4 py-2 bg-white border border-stone-200 text-stone-500 hover:text-stone-700 rounded-xl text-xs font-bold transition-colors shadow-2xs cursor-pointer"
-                >
-                  Hủy
-                </button>
-                <button 
-                  type="submit" 
-                  className="px-5 py-2 bg-red-700 hover:bg-red-800 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer hover:shadow-md"
-                >
-                  <FaPaperPlane className="w-3 h-3" /> Gửi
-                </button>
-              </div>
-            </form>
-          </div>
         </div>
 
         {/* CỘT BÀI VIẾT MỚI NHẤT (SIDEBAR 4 PHẦN) */}
         <div className="lg:col-span-4 space-y-6 no-print">
           <div className="bg-white p-5 sm:p-6 rounded-3xl shadow-xs border border-stone-200/80 sticky top-24">
-            
+
             <div className="flex items-center justify-between pb-3.5 mb-5 border-b-2 border-red-700">
               <h3 className="font-black text-red-800 uppercase tracking-wide text-sm flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
@@ -573,9 +525,9 @@ function ArticleDetail() {
             <div className="flex flex-col gap-4 divide-y divide-stone-100">
               {recentArticles.length > 0 ? (
                 recentArticles.map(item => (
-                  <Link 
-                    key={item.id} 
-                    to={`/article/${item.id}`} 
+                  <Link
+                    key={item.id}
+                    to={`/article/${item.id}`}
                     className="flex gap-3.5 group cursor-pointer pt-3.5 first:pt-0"
                   >
                     {/* Ảnh đại diện bài viết bên phải */}

@@ -133,7 +133,7 @@ function BioPage() {
 
             {/* TIMELINE SECTION */}
             <motion.div variants={rightColumnVariants} initial="hidden" animate="visible" className="bg-white p-6 md:p-10 rounded-2xl shadow-xl border border-red-50/50 relative overflow-hidden">
-              <div className="absolute top-0 right-0 opacity-[0.03] pointer-events-none w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')]"></div>
+              <div className="absolute top-0 right-0 opacity-[0.02] pointer-events-none w-full h-full bg-radial from-stone-900 to-transparent"></div>
 
               <div className="relative z-10">
                 <h2 className="text-2xl font-black text-gray-800 mb-10 pb-4 border-b-2 border-red-100 uppercase tracking-widest flex items-center gap-3">

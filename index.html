@@ -28,6 +28,26 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap"
     rel="stylesheet">
+  <script>
+    // Tự động gỡ bỏ Service Worker lạ (sw.js) từ các dự án khác bám trên localhost:5173
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function (registrations) {
+        if (registrations && registrations.length > 0) {
+          Promise.all(registrations.map(function (r) { return r.unregister(); })).then(function () {
+            if ('caches' in window) {
+              caches.keys().then(function (names) {
+                return Promise.all(names.map(function (name) { return caches.delete(name); }));
+              }).then(function () {
+                window.location.reload();
+              });
+            } else {
+              window.location.reload();
+            }
+          });
+        }
+      });
+    }
+  </script>
 </head>
 
 <body>

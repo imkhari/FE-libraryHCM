@@ -655,19 +655,19 @@ const MainLayout = () => {
   );
 };
 
+// ------- KHU VỰC QUẢN TRỊ ADMIN-------
+// Chặn người lạ không có Token
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem('adminToken');
+  if (!token) {
+    return <Navigate to="/admin/login" replace />;
+  }
+  return children;
+};
+
 function App() {
   // Thêm State để kiểm soát việc hiện/ẩn bức màn Kích hoạt
   const [showLaunchOverlay, setShowLaunchOverlay] = useState(true);
-
-  // ------- KHU VỰC QUẢN TRỊ ADMIN-------
-  // Chặn người lạ không có Token
-  const ProtectedRoute = ({ children }) => {
-    const token = localStorage.getItem('adminToken');
-    if (!token) {
-      return <Navigate to="/admin/login" replace />;
-    }
-    return children;
-  };
 
   // const AdminLayout = ({ children }) => {
   //   const adminName = localStorage.getItem('adminName') || 'Quản trị viên';

@@ -189,7 +189,7 @@ function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.05 }}
           transition={{ duration: 2 }}
-          className="absolute inset-0 z-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"
+          className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.06)_0,transparent_70%)]"
         ></motion.div>
 
         <div className="relative z-30 w-full max-w-4xl mx-auto text-center px-4 pt-12 md:pt-20 lg:pt-24 pb-0">

@@ -96,12 +96,28 @@ function CategoryPage() {
   }, [currentPage]);
 
   const fetchData = (page) => {
-    setLoading(true);
+    const cacheKey = `cat_${type}_p${page}`;
+    const cached = sessionStorage.getItem(cacheKey);
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        setDisplayDocs(parsed.docs);
+        setTotalPages(parsed.totalPages || 1);
+        setLoading(false);
+      } catch (e) {
+        console.error(e);
+      }
+    } else {
+      setLoading(true);
+    }
+
     api.get(`/documents/category/${type}?page=${page - 1}&size=${itemsPerPage}`)
       .then((res) => {
         const data = res.data.content || res.data;
+        const totalP = res.data.totalPages || 1;
         setDisplayDocs(data);
-        setTotalPages(res.data.totalPages || 1);
+        setTotalPages(totalP);
+        sessionStorage.setItem(cacheKey, JSON.stringify({ docs: data, totalPages: totalP }));
         setLoading(false);
       })
       .catch((err) => {

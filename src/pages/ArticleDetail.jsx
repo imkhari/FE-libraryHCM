@@ -32,7 +32,33 @@ function ArticleDetail() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    setLoading(true);
+
+    // 1. Phục hồi cache tức thì (Instant 0ms render)
+    const cachedArticle = sessionStorage.getItem(`article_detail_${id}`);
+    const cachedList = sessionStorage.getItem('articles_list_cache');
+
+    if (cachedArticle) {
+      try {
+        setArticle(JSON.parse(cachedArticle));
+        setLoading(false);
+      } catch (e) {
+        console.error(e);
+      }
+    } else {
+      setLoading(true);
+    }
+
+    if (cachedList) {
+      try {
+        const parsedList = JSON.parse(cachedList);
+        const otherArticles = parsedList
+          .filter(item => item.id.toString() !== id.toString())
+          .slice(0, 5);
+        setRecentArticles(otherArticles);
+      } catch (e) {
+        console.error(e);
+      }
+    }
 
     const fetchData = async () => {
       try {
@@ -53,22 +79,31 @@ function ArticleDetail() {
           return;
         }
 
-        const detailRes = await api.get(`/articles/${id}`);
-        setArticle(detailRes.data);
+        // TỐI ƯU HÓA: GỌI SONG SONG (PARALLEL PROMISE.ALL)
+        const [detailRes, listRes] = await Promise.all([
+          api.get(`/articles/${id}`),
+          api.get('/articles')
+        ]);
 
-        const listRes = await api.get('/articles');
-        const listData = (listRes.data || []).map(item => ({
-          id: item.id,
-          title: item.title,
-          createdAt: item.createdAt,
-          thumbnail: item.thumbnailUrl || "https://tranhdaquy24h.com/public/upload/images/7ef5cf3972688e36d779.jpg"
-        }));
+        if (detailRes && detailRes.data) {
+          setArticle(detailRes.data);
+          sessionStorage.setItem(`article_detail_${id}`, JSON.stringify(detailRes.data));
+        }
 
-        const otherArticles = listData
-          .filter(item => item.id.toString() !== id.toString())
-          .slice(0, 5);
+        if (listRes && listRes.data) {
+          const listData = (listRes.data || []).map(item => ({
+            id: item.id,
+            title: item.title,
+            createdAt: item.createdAt,
+            thumbnail: item.thumbnailUrl || "https://tranhdaquy24h.com/public/upload/images/7ef5cf3972688e36d779.jpg"
+          }));
+          sessionStorage.setItem('articles_list_cache', JSON.stringify(listData));
 
-        setRecentArticles(otherArticles);
+          const otherArticles = listData
+            .filter(item => item.id.toString() !== id.toString())
+            .slice(0, 5);
+          setRecentArticles(otherArticles);
+        }
       } catch (error) {
         console.error("Lỗi khi tải chi tiết bài viết:", error);
       } finally {

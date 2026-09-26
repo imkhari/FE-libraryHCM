@@ -14,11 +14,22 @@ function NewsPage() {
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        loadArticles();
+
+        // Phục hồi cache tức thì (Instant render 0ms)
+        const cached = sessionStorage.getItem('news_articles_cache');
+        if (cached) {
+            try {
+                setAllArticles(JSON.parse(cached));
+                setLoading(false);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        loadArticles(!cached);
     }, []);
 
-    const loadArticles = async () => {
-        setLoading(true);
+    const loadArticles = async (showLoading = true) => {
+        if (showLoading) setLoading(true);
         try {
             const res = await api.get('/articles');
             const data = (res.data || []).map(article => ({
@@ -30,14 +41,15 @@ function NewsPage() {
                 thumbnail: article.thumbnailUrl || "/anh-bac-Ho.jpg",
                 snippet: article.snippet || "Thông tin hoạt động và bài viết chuyên đề mới nhất từ nhà trường..."
             }));
-            // Đảm bảo bài viết luôn hiển thị theo thời gian mới nhất (mới nhất lên đầu)
+            // Đảm bảo bài viết luôn hiển thị theo thời gian mới nhất
             data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt) || b.id - a.id);
             setAllArticles(data);
+            sessionStorage.setItem('news_articles_cache', JSON.stringify(data));
         } catch (error) {
             console.error("Lỗi tải danh sách bài viết từ máy chủ:", error);
-            setAllArticles([]);
+            if (showLoading) setAllArticles([]);
         } finally {
-            setLoading(false);
+            if (showLoading) setLoading(false);
         }
     };
 
